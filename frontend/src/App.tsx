@@ -1,14 +1,14 @@
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { UserRouter } from './routes/Index'
 
-function App() {
-
-  return (
+export default function App(){
+  return(
     <>
-      <div>
-        <h1 className='font-bold underline text-4xl'>hello world</h1>
-      </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path={'/*'} element={<UserRouter/>}/>
+    </Routes>
+    </BrowserRouter>
     </>
   )
 }
-
-export default App
