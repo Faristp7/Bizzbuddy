@@ -1,8 +1,9 @@
-import Logo from '../assets/img/BizBuddy-logos_black.png'
+import Logo from '../../assets/img/BizBuddy-logos_black.png'
 import { useState } from 'react'
-import '../App.css'
+import '../../App.css'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { userSignup } from '../../Api/userApi'
 
 interface FormData {
     username: string
@@ -29,13 +30,14 @@ export default function SignUp() {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
+        const {data} = await userSignup(formData)
+        console.log(data);
+        
     };
 
     return (
-
         <div className='flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row'>
             <div className='hidden lg:block '>
                 <div>
@@ -117,7 +119,6 @@ export default function SignUp() {
                                     </button>
                                 </div>
                             </form>
-
                         </div>
                         <div className='text-center mt-4'>
                             <h4 className='text-sm text-gray-600'>

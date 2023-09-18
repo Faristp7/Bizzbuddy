@@ -1,7 +1,7 @@
-import Logo from '../assets/img/BizBuddy-logos_black.png'
+import Logo from '../../assets/img/BizBuddy-logos_black.png'
 import { FormEvent, useState } from 'react'
 import { motion } from 'framer-motion'
-import '../App.css'
+import '../../App.css'
 import { Link } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 
