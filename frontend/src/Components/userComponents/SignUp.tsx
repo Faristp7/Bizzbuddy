@@ -4,37 +4,73 @@ import '../../App.css'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { userSignup } from '../../Api/userApi'
+import Meter from './Meter'
 
 interface FormData {
     username: string
     email: string
+    phone: string
     password: string,
     ReenterPassword: string
+}
+
+function check(password: string): string {
+    if (password.length < 4) return 'weak'
+
+    const hasDigit = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+{}\]:;<>,.?~\\-]/.test(password);
+
+    if (hasDigit && hasSpecialChar)
+        return 'strong'
+    return "medium"
 }
 
 export default function SignUp() {
     const [formData, setFormData] = useState<FormData>({
         username: '',
         email: '',
+        phone: '',
         password: '',
         ReenterPassword: ''
     });
-    // const [passwordError, setPasswordError] = useState<boolean | null>(null);
+    const [passwordError, setPasswordError] = useState<string | null>("");
+    const [strength, setStrength] = useState<string>("");
+    const [showPasswordMeter, setPasswordMeter] = useState<boolean>(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-
+        setStrength(check(formData.password))
+        const newValue = name === 'phone' ? parseInt(value, 10) : value
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: newValue,
         });
+
+        if (name === 'password')
+            setPasswordMeter(true)
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const {data} = await userSignup(formData)
-        console.log(data);
-        
+        const trimmedUsername = formData.username.trim()
+        const whiteSpace = /\s/.test(trimmedUsername)
+        if (formData.password !== formData.ReenterPassword) {
+            setPasswordError("password does not match")
+        }
+        else if (formData.phone.toString().length !== 10) {
+            setPasswordError('number must be 10 digits')
+        }
+        else if (trimmedUsername === '') {
+            setPasswordError("Username cannot be empty")
+        }
+        else if (whiteSpace) {
+            setPasswordError('Username cannot contain spaces')
+        }
+        else {
+            setPasswordError("")
+            const { data } = await userSignup(formData)
+            console.log(data);
+        }
     };
 
     return (
@@ -67,6 +103,7 @@ export default function SignUp() {
                                         id="username"
                                         name="username"
                                         value={formData.username}
+                                        pattern='^[a-zA-Z0-9_-]{3,16}$'
                                         onChange={handleChange}
                                         className="mt-1 p-2 w-80 sm:w-80 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder='Username'
@@ -79,9 +116,22 @@ export default function SignUp() {
                                         id="Email"
                                         name="email"
                                         value={formData.email}
+                                        pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
                                         onChange={handleChange}
                                         className="mt-1 p-2 w-80 sm:w-80 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder='Email Address'
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <input
+                                        type="number"
+                                        id="Phone"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 w-80 sm:w-80 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+                                        placeholder='phone number'
                                         required
                                     />
                                 </div>
@@ -109,7 +159,16 @@ export default function SignUp() {
                                         required
                                     />
                                 </div>
-                                <p className='text-center mt-4'>&nbsp;</p>
+                                <p className='text-center mt-4 mb-4 text-red-500'>{passwordError ? passwordError : "\u00a0"}</p>
+                                {showPasswordMeter && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }} 
+                                        animate={{ opacity: 1, y: 0 }} 
+                                        transition={{ duration: 0.3 }} 
+                                    >
+                                        <Meter strength={strength} />
+                                    </motion.div>
+                                )}
                                 <div className='flex justify-center mt-4'>
                                     <button
                                         type="submit"
