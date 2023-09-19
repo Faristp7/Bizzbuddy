@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { Login, SignUp } from "../Components/userComponents/Index";
+import { Login, OtpModal, SignUp } from "../Components/userComponents/Index";
 
 export default function UserRouter() {
   return (
@@ -7,7 +7,7 @@ export default function UserRouter() {
       <Routes>
         <Route path={"/"} element={<Login />} />
         <Route path={"/signUp"} element={<SignUp />} />
-        {/* <Route path={"/otpModal"} element={<OtpModal />} /> */}
+        <Route path={"/otpModal/:phone"} element={<OtpModal />} />
       </Routes>
     </>
   );

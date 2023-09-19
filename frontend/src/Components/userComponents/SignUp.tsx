@@ -1,11 +1,10 @@
 import Logo from '../../assets/img/BizBuddy-logos_black.png'
 import { useState } from 'react'
 import '../../App.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { userSignup } from '../../Api/userApi'
 import Meter from './Meter'
-import OtpModal from './OtpModal'
 
 interface FormData {
     username: string
@@ -41,7 +40,8 @@ export default function SignUp() {
     const [passwordError, setPasswordError] = useState<string | null>("");
     const [strength, setStrength] = useState<string>("");
     const [showPasswordMeter, setPasswordMeter] = useState<boolean>(false);
-    // const [showOtpModal, setShowOtpModal] = useState<boolean>(true);
+
+    const navigate = useNavigate()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -80,8 +80,7 @@ export default function SignUp() {
                 const { data } = await userSignup(formData)
                 setPasswordError(data)
                 if(data.message === 'sendOtp'){
-                    // setShowOtpModal(true)
-                    // console.log(showOtpModal);
+                    navigate(`/otpModal/${formData.phone}`)
                 }
             }
         }
@@ -93,8 +92,6 @@ export default function SignUp() {
                 <div>
                     <img src={Logo} alt="banner image" style={{ width: '32rem' }} />
                 </div>
-            <OtpModal phone={formData.phone}/>
-
             </div>
             <div className='sm:hidden'>
                 <h3 className='text-center'>
