@@ -10,12 +10,12 @@ export async function signUp(req, res) {
         return res.json({message:'phone number must be 10 digits'})
     }
     else{
-        const alreadyExistUser = userModel.findOne({username})
+        const alreadyExistUser = await userModel.findOne({username})
         if(alreadyExistUser){
           return res.json({message : 'username already taken' ,error : true})
         }  
         else{
-
+          return res.json({message : 'sendOtp'})
             // const userSchema = new userModel({
             //     username,
             //     email,

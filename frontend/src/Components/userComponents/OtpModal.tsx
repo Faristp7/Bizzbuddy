@@ -5,7 +5,9 @@ import { useState, useEffect } from 'react';
 import { auth } from '../../fireBase/FireBaseConfig'
 import { RecaptchaVerifier ,signInWithPhoneNumber } from '@firebase/auth';
 
-export default function OtpModal({number}) {
+export default function OtpModal({phone} : {phone : any}) {
+    console.log(phone);
+    
     const [otp, setOtp] = useState<string>('');
     const [remainingTime, setRemainingTime] = useState<number>(60)
     const [isTimerActive, setTimerActive] = useState<boolean>(false)
@@ -45,6 +47,7 @@ export default function OtpModal({number}) {
             (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
                 'size': 'invisible',
                 'callback': (response: any) => {
+                    console.log(response);
                     onSignup()
                 },
                 'expired-callback': () => {
@@ -57,20 +60,24 @@ export default function OtpModal({number}) {
     function onSignup() {
         onCaptchVerify()
         const appVerifier = (window as any).recaptchaVerifier
+        const phoneNumber = "+919562146113"
         signInWithPhoneNumber(auth, phoneNumber, appVerifier)
             .then((confirmationResult) => {
                 // SMS sent. Prompt user to type the code from the message, then sign the
                 // user in with confirmationResult.confirm(code).
-                window.confirmationResult = confirmationResult;
+                (window as any).confirmationResult = confirmationResult;
                 // ...
             }).catch((error) => {
-                // Error; SMS not sent
-                // ...
+               console.log(error);
             });
+    }
+    const handleSubmit = () => {
+        onSignup()
     }
 
     return (
         <div className="flex justify-center items-center min-h-screen">
+            <button onClick={handleSubmit}>clcikme</button>
             <div id='recaptcha-container'></div>
             <div className="border-0 shadow-none sm:border-2 sm:shadow-lg bg-white rounded-lg p-5 w-96" style={{ width: '26rem' }}>
                 <div className="">
