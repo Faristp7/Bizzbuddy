@@ -15,15 +15,19 @@ interface FormData {
 }
 
 function check(password: string): string {
-    if (password.length < 4) return 'weak'
-
-    const hasDigit = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+{}\]:;<>,.?~\\-]/.test(password);
-
-    if (hasDigit && hasSpecialChar)
-        return 'strong'
-    return "medium"
-}
+    if (password.length < 4 || !password.trim()) {
+      return 'weak';
+    }
+  
+    const digitCount = (password.match(/\d/g) || []).length; // Count the number of digits
+  
+    if (digitCount >= 3 && /[!@#$%^&*()_+{}\]:;<>,.?~\\-]/.test(password)) {
+      return 'strong';
+    }
+  
+    return 'medium';
+  }
+  
 
 export default function SignUp() {
     const [formData, setFormData] = useState<FormData>({
@@ -66,10 +70,14 @@ export default function SignUp() {
         else if (whiteSpace) {
             setPasswordError('Username cannot contain spaces')
         }
-        else {
+        else {    
             setPasswordError("")
-            const { data } = await userSignup(formData)
-            console.log(data);
+            if(strength === 'weak'){
+                setPasswordError('password is weak')
+            }else{
+                const { data } = await userSignup(formData)
+                setPasswordError(data)
+            }
         }
     };
 
