@@ -2,13 +2,20 @@ import Logo from '../../assets/img/BizBuddy-logos_black.png'
 import { FormEvent, useState } from 'react'
 import { motion } from 'framer-motion'
 import '../../App.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
-
+import jwtDecode from 'jwt-decode'
+import { googleSignin } from '../../Api/userApi'
 
 interface FormData {
     username: string,
     password: string
+}
+
+interface googleData {
+    email : string
+    given_name : string
+    picture : string
 }
 
 export default function Login() {
@@ -30,8 +37,19 @@ export default function Login() {
         console.log('Form submitted:', formData);
     };
 
-    const handleSuccess = (credentialResponse: CredentialResponse) => {
-        console.log(credentialResponse);
+    const navigate = useNavigate()
+
+    const handleSuccess = async(credentialResponse: CredentialResponse) => {
+        if (credentialResponse.credential) {
+            const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
+            const {email , given_name ,picture} = credentialResponseDecoded as googleData
+            const {data} = await googleSignin({email ,given_name ,picture})
+            localStorage.setItem('JwtToken' , data.token)
+            navigate('/userHomePage')
+        }
+        else {
+            console.log("credinitial undefined");
+        }
     };
 
     const handleError = () => {
