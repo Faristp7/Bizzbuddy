@@ -16,18 +16,18 @@ interface FormData {
 
 function check(password: string): string {
     if (password.length < 4 || !password.trim()) {
-      return 'weak';
+        return 'weak';
     }
-  
+
     const digitCount = (password.match(/\d/g) || []).length; // Count the number of digits
-  
+
     if (digitCount >= 3 && /[!@#$%^&*()_+{}\]:;<>,.?~\\-]/.test(password)) {
-      return 'strong';
+        return 'strong';
     }
-  
+
     return 'medium';
-  }
-  
+}
+
 
 export default function SignUp() {
     const [formData, setFormData] = useState<FormData>({
@@ -72,14 +72,14 @@ export default function SignUp() {
         else if (whiteSpace) {
             setPasswordError('Username cannot contain spaces')
         }
-        else {    
+        else {
             setPasswordError("")
-            if(strength === 'weak'){
+            if (strength === 'weak') {
                 setPasswordError('password is weak')
-            }else{
+            } else {
                 const { data } = await userSignup(formData)
                 setPasswordError(data)
-                if(data.message === 'sendOtp'){
+                if (data.message === 'sendOtp') {
                     navigate(`/otpModal/${formData.phone}`)
                 }
             }
@@ -174,9 +174,9 @@ export default function SignUp() {
                                 <p className='text-center mt-4 mb-4 text-red-500'>{passwordError ? passwordError : "\u00a0"}</p>
                                 {showPasswordMeter && (
                                     <motion.div
-                                        initial={{ opacity: 0, y: -10 }} 
-                                        animate={{ opacity: 1, y: 0 }} 
-                                        transition={{ duration: 0.3 }} 
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3 }}
                                     >
                                         <Meter strength={strength} />
                                     </motion.div>
