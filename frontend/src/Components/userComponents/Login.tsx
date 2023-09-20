@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 import jwtDecode from 'jwt-decode'
 import { googleSignin } from '../../Api/userApi'
+import { useDispatch } from 'react-redux'
+import { userLoggedIn } from '../../Redux/user/userReducer'
 
 interface FormData {
     username: string,
@@ -13,9 +15,9 @@ interface FormData {
 }
 
 interface googleData {
-    email : string
-    given_name : string
-    picture : string
+    email: string
+    given_name: string
+    picture: string
 }
 
 export default function Login() {
@@ -38,13 +40,15 @@ export default function Login() {
     };
 
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
-    const handleSuccess = async(credentialResponse: CredentialResponse) => {
+    const handleSuccess = async (credentialResponse: CredentialResponse) => {
         if (credentialResponse.credential) {
             const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
-            const {email , given_name ,picture} = credentialResponseDecoded as googleData
-            const {data} = await googleSignin({email ,given_name ,picture})
-            localStorage.setItem('JwtToken' , data.token)
+            const { email, given_name, picture } = credentialResponseDecoded as googleData
+            const { data } = await googleSignin({ email, given_name, picture })
+            localStorage.setItem('JwtToken', data.token)
+            dispatch(userLoggedIn())
             navigate('/userHomePage')
         }
         else {

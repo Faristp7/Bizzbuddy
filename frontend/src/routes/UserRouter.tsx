@@ -1,7 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import { Login, OtpModal, SignUp, UserHomePage } from "../Components/userComponents/Index";
+import { useSelector } from "react-redux";
 
 export default function UserRouter() {
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+  console.log(isLoggedIn);
+  
   return (
     <>
       <Routes>
