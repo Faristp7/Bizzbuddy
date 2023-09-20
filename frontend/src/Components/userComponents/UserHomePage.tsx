@@ -1,7 +1,10 @@
-export default function UserHomePage() {
+import { useNavigate } from "react-router-dom"
 
+export default function UserHomePage() {
+    const navigate = useNavigate()
     const handleLogout = () => {
         localStorage.removeItem('JwtToken')
+        navigate('/')
     }
   return (
     <div>
