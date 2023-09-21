@@ -14,19 +14,13 @@ export async function signUp(req, res) {
         return res.json({ message: "username already taken", error: true });
       } else {
         return res.json({ message: "sendOtp" });
-        // const userSchema = new userModel({
-        //     username,
-        //     email,
-        //     phone,
-        //     password
-        // })
-        // const savedStatus =  await userSchema.save()
       }
     }
   } catch (error) {
     console.log(error);
   }
 }
+
 
 export async function googleSignin(req, res) {
   const secrectKey = 'bizzbuddy'
@@ -53,6 +47,14 @@ export async function googleSignin(req, res) {
       })
       await userSchema.save()
     }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function saveUser(req,res){
+  try {
+    console.log(req,body);
   } catch (error) {
     console.log(error);
   }

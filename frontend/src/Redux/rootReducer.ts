@@ -1,10 +1,14 @@
-import {combineReducers} from '@reduxjs/toolkit'
-import adminReducer from './admin/adminReducer'
-import userReducer from './user/userReducer'
+import { combineReducers } from "@reduxjs/toolkit";
+import adminReducer from "./admin/adminReducer";
+import userReducer from "./user/authSlice";
+import dataSlice from "./user/dataSlice";
 
 const rootReducer = combineReducers({
-    admin : adminReducer,
-    user : userReducer,
-})
+    // user
+    user: userReducer,
+    signUpData:dataSlice,
+    // admin
+    admin: adminReducer,
+});
 
-export default rootReducer
+export default rootReducer;

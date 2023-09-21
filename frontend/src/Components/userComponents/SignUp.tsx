@@ -5,6 +5,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { userSignup } from '../../Api/userApi'
 import Meter from './Meter'
+import { useDispatch } from 'react-redux'
+import { updateFormData } from '../../Redux/user/dataSlice'
 
 interface FormData {
     username: string
@@ -42,6 +44,7 @@ export default function SignUp() {
     const [showPasswordMeter, setPasswordMeter] = useState<boolean>(false);
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -80,6 +83,7 @@ export default function SignUp() {
                 const { data } = await userSignup(formData)
                 setPasswordError(data)
                 if (data.message === 'sendOtp') {
+                    dispatch(updateFormData(formData))
                     navigate(`/otpModal/${formData.phone}`)
                 }
             }
