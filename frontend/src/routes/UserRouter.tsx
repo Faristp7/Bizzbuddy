@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router-dom"; 
 import {
   Login,
+  NavigationBar,
   OtpModal,
   SignUp,
   UserHomePage,
@@ -27,6 +28,7 @@ export default function UserRouter() {
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/otpModal/:phone" element={<OtpModal />} />
         <Route path="/userHomePage" element={isLoggedIn ? <UserHomePage /> : <Navigate to="/" />} />
+        <Route path="/navigationBar" element={isLoggedIn ? <NavigationBar /> : <Navigate to="/" />} />
       </Routes>
     </>
   );

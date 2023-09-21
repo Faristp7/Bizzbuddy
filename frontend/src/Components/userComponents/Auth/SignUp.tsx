@@ -92,6 +92,7 @@ export default function SignUp() {
 
     return (
         <div className='flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row'>
+            
             <div className='hidden lg:block '>
                 <div>
                     <img src={Logo} alt="banner image" style={{ width: '32rem' }} />
