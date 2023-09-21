@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import './user.css';
+import '../user.css';
 import OTPInput from 'react-otp-input';
 import { useState, useEffect } from 'react';
-import { auth } from '../../fireBase/FireBaseConfig'
+import { auth } from '../../../fireBase/FireBaseConfig'
 import { RecaptchaVerifier, signInWithPhoneNumber } from '@firebase/auth';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../Redux/user/dataSlice';
-import { saveUser } from '../../Api/userApi';
+import { RootState } from '../../../Redux/user/dataSlice';
+import { saveUser } from '../../../Api/userApi';
 import { motion } from 'framer-motion';
 
 export default function OtpModal() {

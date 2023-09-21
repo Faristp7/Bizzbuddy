@@ -1,27 +1,32 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { Login, OtpModal, SignUp, UserHomePage } from "../Components/userComponents/Index";
-import { useSelector } from "react-redux";
-import { RootState } from "../Redux/user/authSlice";
+import { Route, Routes, Navigate } from "react-router-dom"; 
+import {
+  Login,
+  OtpModal,
+  SignUp,
+  UserHomePage,
+} from "../Components/userComponents/Index";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, userLoggedOut } from "../Redux/user/authSlice";
+import { useEffect } from "react";
 
 export default function UserRouter() {
-  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn)
+  const dispatch = useDispatch()
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    const token = localStorage.getItem("JwtToken");
+    if(!token){
+      dispatch(userLoggedOut(false))
+    }
+  })
 
   return (
     <>
       <Routes>
-        {!isLoggedIn ? (
-          <>
-            <Route path={"/"} element={<Login />} />
-            <Route path={"/signUp"} element={<SignUp />} />
-            <Route path={"/otpModal/:phone"} element={<OtpModal />} />
-            <Route path={"/userHomePage"} element={<Navigate to={"/"} />} />
-          </>
-        ) : (
-          <>
-            <Route path={"/userHomePage"} element={<UserHomePage />} />
-            <Route path={"/"} element={<Navigate to={"/userHomePage"} />} />
-          </>
-        )}
+        <Route path="/" element={isLoggedIn ? <Navigate to="/userHomePage" /> : <Login />} />
+        <Route path="/signUp" element={<SignUp />} />
+        <Route path="/otpModal/:phone" element={<OtpModal />} />
+        <Route path="/userHomePage" element={isLoggedIn ? <UserHomePage /> : <Navigate to="/" />} />
       </Routes>
     </>
   );

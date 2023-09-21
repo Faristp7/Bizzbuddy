@@ -1,12 +1,12 @@
-import Logo from '../../assets/img/BizBuddy-logos_black.png'
+import Logo from '../../../assets/img/BizBuddy-logos_black.png'
 import { useState } from 'react'
-import '../../App.css'
+import '../../../App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { userSignup } from '../../Api/userApi'
+import { userSignup } from '../../../Api/userApi'
 import Meter from './Meter'
 import { useDispatch } from 'react-redux'
-import { updateFormData } from '../../Redux/user/dataSlice'
+import { updateFormData } from '../../../Redux/user/dataSlice'
 
 interface FormData {
     username: string

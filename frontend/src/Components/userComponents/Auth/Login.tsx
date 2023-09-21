@@ -1,13 +1,13 @@
-import Logo from '../../assets/img/BizBuddy-logos_black.png'
+import Logo from '../../../assets/img/BizBuddy-logos_black.png'
 import { FormEvent, useState } from 'react'
 import { motion } from 'framer-motion'
-import '../../App.css'
+import '../../../App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 import jwtDecode from 'jwt-decode'
-import { googleSignin } from '../../Api/userApi'
+import { googleSignin } from '../../../Api/userApi'
 import { useDispatch } from 'react-redux'
-import { userLoggedIn } from '../../Redux/user/authSlice'
+import { userLoggedIn } from '../../../Redux/user/authSlice'
 
 interface FormData {
     username: string,
