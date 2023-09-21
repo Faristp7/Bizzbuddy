@@ -1,18 +1,27 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Login, OtpModal, SignUp, UserHomePage } from "../Components/userComponents/Index";
 import { useSelector } from "react-redux";
+import { RootState } from "../Redux/user/userReducer";
 
 export default function UserRouter() {
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
-  console.log(isLoggedIn);
-  
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn)
+
   return (
     <>
       <Routes>
-        <Route path={"/"} element={<Login />} />
-        <Route path={"/signUp"} element={<SignUp />} />
-        <Route path={"/otpModal/:phone"} element={<OtpModal />} />
-        <Route path={"/userHomePage"} element={<UserHomePage />} />
+        {!isLoggedIn ? (
+          <>
+            <Route path={"/"} element={<Login />} />
+            <Route path={"/signUp"} element={<SignUp />} />
+            <Route path={"/otpModal/:phone"} element={<OtpModal />} />
+            <Route path={"/userHomePage"} element={<Navigate to={"/"} />} />
+          </>
+        ) : (
+          <>
+            <Route path={"/userHomePage"} element={<UserHomePage />} />
+            <Route path={"/"} element={<Navigate to={"/userHomePage"} />} />
+          </>
+        )}
       </Routes>
     </>
   );

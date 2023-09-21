@@ -79,7 +79,7 @@ export default function OtpModal() {
     function verifyOtp() {
         (window as any ).confirmationResult.confirm(otp).then(async(res:any) => {
             console.log(res);
-        }).className((err : any)=>{
+        }).catch((err : any)=>{
             console.log(err);
             
         })

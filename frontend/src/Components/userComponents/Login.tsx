@@ -48,7 +48,7 @@ export default function Login() {
             const { email, given_name, picture } = credentialResponseDecoded as googleData
             const { data } = await googleSignin({ email, given_name, picture })
             localStorage.setItem('JwtToken', data.token)
-            dispatch(userLoggedIn())
+            dispatch(userLoggedIn(true))
             navigate('/userHomePage')
         }
         else {
