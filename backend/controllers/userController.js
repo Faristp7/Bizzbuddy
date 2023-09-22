@@ -64,12 +64,8 @@ export async function saveUser(req,res){
 
 export async function adminLogin(req,res){
   try {
-    const {adminName , password} = req.body
-    const adminSchema = new adminModel({
-      adminName,
-      password
-    })
-    adminSchema.save()
+    const {username , password} = req.body
+    console.log(req.body, "espanval");
   } catch (error) {
     console.log(error);
   }

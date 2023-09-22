@@ -5,7 +5,7 @@ import '../../../App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 import jwtDecode from 'jwt-decode'
-import { googleSignin } from '../../../Api/userApi'
+import { adminLogin, googleSignin } from '../../../Api/userApi'
 import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../../../Redux/user/authSlice'
 
@@ -34,9 +34,10 @@ export default function Login() {
         });
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
+       const {data} = await adminLogin(formData)
+       console.log(data);
     };
 
     const navigate = useNavigate()
@@ -59,6 +60,7 @@ export default function Login() {
     const handleError = () => {
         console.log('Login Failed');
     };
+
     return (
         <div className='flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row'>
             <div className='hidden lg:block '>

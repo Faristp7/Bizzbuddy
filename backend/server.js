@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import dbConnect from "./config/config.js";
 import userRouter from "./routers/userRoute.js";
+import adminRouter from './routers/adminRoute.js'
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use(
 );
 
 app.use("/", userRouter);
+app.use('/admin', adminRouter)
 
 dbConnect();
 
