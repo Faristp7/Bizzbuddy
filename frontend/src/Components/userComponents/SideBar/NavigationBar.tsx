@@ -1,67 +1,102 @@
 import "../user.css"
 import home from '../../../assets/icon/homeIcon.png'
 import logo from '../../../assets/img/handshake.png'
-import {useEffect ,useState} from 'react'
+import search from '../../../assets/icon/search.png'
+import message from '../../../assets/icon/send.png'
+import create from '../../../assets/icon/create.png'
+import logout from '../../../assets/icon/logout.png'
+import { useEffect, useState } from 'react'
+import { motion } from "framer-motion"
 
 export default function NavigationBar() {
+  const savedTheme = localStorage.getItem('theme');
+  const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false);
+  const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
 
-  const [theme ,setTheme] = useState<boolean>(false)
-  const rootElement = document.documentElement;
   useEffect(() => {
-    switch(theme){
-      case true :
-        rootElement.classList.add('dark');
-        break;
-      case false :
-        rootElement.classList.remove('dark')
-        break;
-      default :
-         break
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === true) {
+      document.documentElement.classList.add('dark');
+    } else if (theme === false) {
+      document.documentElement.classList.remove('dark');
+    } else {
+      if (prefersDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
-  },[theme])
+  }, [theme]);
 
-  function handleTheme(){
-    setTheme(!theme)
+  function handleTheme() {
+    const newTheme = !theme;
+    setTheme(newTheme);
+    localStorage.setItem('theme', JSON.stringify(newTheme));
   }
   return (
     <div className="">
-      <div className="fixed left-0 bottom-0 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white dark:bg-slate-900 duration-100">
+      <div className="border-t-2 sm:border-r-2 sm:border-t-0 fixed left-0 bottom-2 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white dark:bg-slate-950 duration-300">
         <div className="px-3">
           <div className="">
-            <h1 className="hidden md:block uppercase font-bold text-4xl my-3">Bizzbuddy</h1>
-            <img className="hidden sm:block md:hidden w-10 invert mt-10" src={logo} alt="Logo" />
+            <h1 className="hidden md:block uppercase font-bold text-4xl my-3 mt-6">Bizzbuddy</h1>
+            <img className="hidden sm:block md:hidden w-10 invert-0 mt-10 dark:invert" src={logo} alt="Logo" />
           </div>
-          <div className="flex flex-row gap-10 sm:flex-col mt-10">
-            <div className="border-0 md:border-blue-500 md:border-2 flex-1 rounded-lg flex justify-center">
-              <img src={home} className="invert" alt="home" />
-              <p className="hidden md:block">Home</p>
-            </div>
-            <div className="border-0 md:border-blue-500 md:border-2 flex-1 rounded-lg flex justify-center">
-              <img src={home} className="invert" alt="home" />
-              <p className="hidden md:block">Profile</p>
-            </div>
-            <div className="border-0 md:border-blue-500 md:border-2 flex-1 rounded-lg flex justify-center">
-              <img src={home} className="invert" alt="home" />
-              <p className="hidden md:block">Search</p>
-            </div>
-            <div className="border-0 md:border-blue-500 md:border-2 flex-1 rounded-lg flex justify-center">
-              <img src={home} className="invert" alt="home" />
-              <p className="hidden md:block">messages</p>
-            </div>
-            <div className="border-0 md:border-blue-500 md:border-2 flex-1 rounded-lg flex justify-center">
-              <img src={home} className="invert" alt="home" />
-              <p className="hidden md:block">create</p>
-            </div>
-            <div className="hidden sm:block border-0 md:border-blue-500 md:border-2 flex-1 rounded-lg">
+          <div className="flex flex-row gap-10 md:gap-8 sm:flex-col mt-2 sm:mt-12">
+            {/* Home */}
+            <motion.div
+              className="navationDivIconBar order-1 sm:order-1"
+              whileTap={{ scale: 1.1 }}>
+              <img src={home} className="navigationBarIcon" alt="home" />
+              <p className="navigationBarText">Home</p>
+            </motion.div>
+            {/* search */}
+            <motion.div
+              className=
+              "navationDivIconBar order-2 sm:order-4"
+              whileTap={{ scale: 1.1 }}>
+              <img src={search} className="navigationBarIcon " alt="home" />
+              <p className="navigationBarText">Search</p>
+            </motion.div>
+            {/* create */}
+            <motion.div
+              className="navationDivIconBar order-3 sm:order-3"
+              whileTap={{ scale: 1.1 }}
+              onClick={handleTheme}>
+              <img src={create} className="navigationBarIcon" alt="home" />
+              <p className="navigationBarText">Create</p>
+            </motion.div>
+            {/* message */}
+            <motion.div
+              className="navationDivIconBar order-4 sm:order-2"
+              whileTap={{ scale: 1.1 }}>
+              <img src={message} className="navigationBarIcon " alt="home" />
+              <p className="navigationBarText">Messages</p>
+            </motion.div>
+            {/* profile */}
+            <motion.div
+              className="navationDivIconBar order-5 sm:order-5"
+              whileTap={{ scale: 1.1 }}>
+              <div className="md:ml-3 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={demoData} /></div>
+              <p className="navigationBarText">Profile</p>
+            </motion.div>
+          </div>
+
+          <div className="mt-16 hidden sm:block">
+            {/* theme */}
+            <motion.div className="md:my-7 sm:my-10 navationDivIconBar">
               <div className="flex justify-center">
-                <img src={home} className="invert-0 dark:invert" alt="home" />
-                <p className="hidden md:block" onClick={handleTheme}>Logout</p>
+                <img src={home} className="navigationBarIcon" alt="home" />
+                <p className="navigationBarText">Theme</p>
               </div>
-            </div>
+            </motion.div>
+            {/* logout */}
+            <motion.div
+              className="navationDivIconBar "
+              whileTap={{ scale: 1.1 }}>
+              <img src={logout} className="navigationBarIcon " alt="home" />
+              <p className="navigationBarText">Logout</p>
+            </motion.div>
           </div>
-          {/* <div className="mt-40  hidden sm:block">
-            <button className="border-blue-500 border-2 flex-1 rounded-lg">logout</button>
-          </div> */}
         </div>
       </div>
     </div>
