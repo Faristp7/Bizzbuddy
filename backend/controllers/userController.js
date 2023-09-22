@@ -1,4 +1,5 @@
 import userModel from "../models/userModel.js";
+import adminModel from '../models/adminModel.js'
 import jwt from 'jsonwebtoken'
 
 export async function signUp(req, res) {
@@ -55,6 +56,20 @@ export async function googleSignin(req, res) {
 export async function saveUser(req,res){
   try {
     console.log(req.body);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+export async function adminLogin(req,res){
+  try {
+    const {adminName , password} = req.body
+    const adminSchema = new adminModel({
+      adminName,
+      password
+    })
+    adminSchema.save()
   } catch (error) {
     console.log(error);
   }

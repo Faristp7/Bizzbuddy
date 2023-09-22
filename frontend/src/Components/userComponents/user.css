@@ -7,7 +7,7 @@ body {
 }
 
 .navationDivIconBar{
-  @apply py-1 md:justify-start sm:justify-center cursor-pointer border-0 md:border-blue-900 md:border-2 flex-1 rounded-lg flex hover:bg-gray-100 dark:hover:bg-slate-900 duration-100
+  @apply py-1 md:justify-start sm:justify-center cursor-pointer border-0 md:border-blue-950 md:border-2 flex-1 rounded-lg flex hover:bg-gray-100 dark:hover:bg-slate-900 duration-100
 }
 
 .navigationBarIcon{
