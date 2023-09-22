@@ -4,7 +4,7 @@ import OTPInput from 'react-otp-input';
 import { useState, useEffect } from 'react';
 import { auth } from '../../../fireBase/FireBaseConfig'
 import { RecaptchaVerifier, signInWithPhoneNumber } from '@firebase/auth';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/user/dataSlice';
 import { saveUser } from '../../../Api/userApi';
@@ -37,10 +37,8 @@ export default function OtpModal() {
 
     const showStatus = (message: any, duration = 5000) => {
         setStatus(message);
-        // setShowNotification(true);
 
         setTimeout(() => {
-            // setShowNotification(false);
         }, duration);
     };
 
@@ -142,7 +140,7 @@ export default function OtpModal() {
                             <AnimatePresence>
                                 {showInfoPopup && (
                                     <motion.div
-                                        className="bg-gray-100 border-1 border-black text-center p-2 rounded-md absolute top-4 left-5 right-10 sm:right-0"
+                                        className="bg-gray-100 border-1 border-black text-center p-2 rounded-md absolute top-4 left-5"
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
@@ -191,7 +189,7 @@ export default function OtpModal() {
                         >
                             Verify
                         </motion.button>
-                        <button className='flex-1 py-2 border border-blue-600 font-semibold rounded-full text-blue-600 hover:bg-slate-100'>Cancel</button>
+                        <button className='flex-1 py-2 border border-blue-600 font-semibold rounded-full text-blue-600 hover:bg-slate-100'><Link to={'/signUp'}>Cancel</Link></button>
                     </div>
                 </div>
             </div>

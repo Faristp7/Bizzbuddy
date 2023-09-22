@@ -12,11 +12,11 @@ export default function UserHomePage() {
     navigate('/')
   }
   return (
-    <div className="">
+    <div className="flex" style={{height:'2000px'}}>
       <div>
         <NavigationBar />
       </div>
-      <div className="bg-red-600">
+      <div className="flex-grow">
         <button onClick={handleLogout} className="text-4xl font-bold">onClick</button>
         <div className="dark:text-white bg-red-400">SwithThem</div>
       </div>
