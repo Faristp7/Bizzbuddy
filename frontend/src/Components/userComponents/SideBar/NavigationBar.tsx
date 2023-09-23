@@ -47,12 +47,12 @@ export default function NavigationBar() {
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    localStorage.removeItem('JwtToken')
+    localStorage.removeItem('JwtToken')    
     navigate('/')
   }
   return (
     <div className="">
-      <div className="border-t-2 sm:border-r-2 sm:border-t-0 fixed left-0 bottom-2 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white dark:bg-slate-950 duration-300">
+      <div className="border-t-2 sm:border-r-2 sm:border-t-0 fixed left-0 bottom-2 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white bg-white dark:bg-slate-950 duration-300">
         <div className="px-3">
           <div className="">
             <h1 className="hidden md:block uppercase font-bold text-4xl my-3 mt-6">Bizzbuddy</h1>
@@ -98,7 +98,7 @@ export default function NavigationBar() {
                 <motion.div
                   className="navationDivIconBar order-5 sm:order-5"
                   whileTap={{ scale: 1.1 }}>
-                  <div className="md:ml-3 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={demoData} /></div>
+                  <div className="md:ml-4 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={demoData} /></div>
                   <p className="navigationBarText">Profile</p>
                 </motion.div>
               </>

@@ -19,11 +19,12 @@ export default function UserRouter() {
 
   useEffect(() => {
     const token = localStorage.getItem("JwtToken");
-    if (!token) {
+    if (!token) {      
       dispatch(userLoggedOut(false))
       dispatch(adminLoggedOut(false))
     }
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
   return (
     <>
