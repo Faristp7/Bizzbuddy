@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode'
 import { adminLogin, googleSignin } from '../../../Api/userApi'
 import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../../../Redux/user/authSlice'
+import { Wobble } from "@uiball/loaders"
 
 interface FormData {
     email: string,
@@ -28,6 +29,7 @@ export default function Login() {
 
     const [error, setError] = useState<string>('')
     const [showError, setShowError] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
         if (showError) {
@@ -49,10 +51,18 @@ export default function Login() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true)
         const { data } = await adminLogin(formData)
-        console.log(data);
         setError(data.message)
+        setLoading(false)
         setShowError(true)
+        if(data.token){
+            if(data.role === 'user'){
+                dispatch(userLoggedIn(true))
+                navigate('/userHomePage')
+            }
+            localStorage.setItem('JwtToken', data.token)        
+        }
     };
 
     const navigate = useNavigate()
@@ -104,7 +114,7 @@ export default function Login() {
                                 initial={{ opacity: 0, y: -100 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -100 }}
-                                className="fixed top-5 right-5 p-2 rounded-lg border-2 border-black text-white"
+                                className="fixed top-5 right-5 p-2 rounded-lg border-2 border-black text-red-700"
                             >
                                 {error}
                             </motion.div>
@@ -142,12 +152,14 @@ export default function Login() {
                                 </h6>
                             </div>
                             <div className='flex justify-center'>
-                                <button
-                                    type="submit"
-                                    className="px-10 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-500"
-                                >
-                                    Login
-                                </button>
+                                {loading ? <Wobble size={45} speed={0.9} color="black" /> :
+                                    <button
+                                        type="submit"
+                                        className="px-10 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-500"
+                                    >
+                                        Login
+                                    </button>
+                                }
                             </div>
                             <p className='text-center font-thin my-3'>
                                 Or

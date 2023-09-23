@@ -176,7 +176,7 @@ export default function SignUp() {
                                         required
                                     />
                                 </div>
-                                <p className='text-center mt-4 mb-4 text-red-500'>{passwordError ? "yes this is error " : "\u00a0"}</p>
+                                <p className='text-center mt-4 mb-4 text-red-500'>{passwordError ? passwordError  : "\u00a0"}</p>
                                 {showPasswordMeter && (
                                     <motion.div
                                         initial={{ opacity: 0, y: -10 }}

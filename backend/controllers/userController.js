@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import adminModel from "../models/adminModel.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 export async function signUp(req, res) {
   try {
@@ -11,7 +12,7 @@ export async function signUp(req, res) {
       return res.json({ message: "phone number must be 10 digits" });
     } else {
       const alreadyExistUser = await userModel.findOne({ email });
-      if (alreadyExistUser || email === 'admin@gmail.com') {
+      if (alreadyExistUser || email === "admin@gmail.com") {
         return res.json({ message: "username already taken", error: true });
       } else {
         return res.json({ message: "sendOtp" });
@@ -62,16 +63,61 @@ export async function saveUser(req, res) {
       password,
     });
     await userSchema.save();
-    return res.status(200).json({ success : true})
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function adminLogin(req, res) {
+export async function roleLogIn(req, res) {
   try {
-    const { username, password } = req.body;
-    console.log(req.body, "espanval");
+    const secrectKey = process.env.SECRECTKEY;
+    let role;
+    const { email, password } = req.body;
+    let approvedStatus;
+    if (email === "admin@gmail.com") {
+      approvedStatus = await adminLogIn(email, password);
+      role = "admin";
+    } else {
+      approvedStatus = await userLogin(email, password);
+      if (!approvedStatus)
+        return res.json({ message: "credential not matching" });
+      role = "user";
+    }
+    if (approvedStatus) {
+      const token = jwt.sign({ email }, secrectKey, { expiresIn: "1h" });
+      res.json({ token, role });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function adminLogIn(email, password) {
+  try {
+    const isAdminValid = await adminModel.findOne({ email });
+    if (isAdminValid) {
+      const verifed = bcrypt.compareSync(password, isAdminValid.password);
+      if (verifed) return true;
+      return false;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function userLogin(email, password) {
+  try {
+    const isUserValid = await userModel.findOne({ email });
+    if (isUserValid) {
+      const verifed = bcrypt.compareSync(password, isUserValid.password);
+      if (verifed) return true;
+      return false;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.log(error);
   }

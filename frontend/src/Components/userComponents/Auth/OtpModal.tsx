@@ -5,12 +5,12 @@ import { useState, useEffect } from 'react';
 import { auth } from '../../../fireBase/FireBaseConfig'
 import { RecaptchaVerifier, signInWithPhoneNumber } from '@firebase/auth';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../Redux/user/dataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, clearFormData } from '../../../Redux/user/dataSlice';
 import { saveUser } from '../../../Api/userApi';
 import { AnimatePresence, motion } from 'framer-motion';
 import InfoIcon from '../../../assets/icon/icons8-info-30.png'
-import toast from 'react-hot-toast';
+import toast,{Toaster} from 'react-hot-toast';
 
 export default function OtpModal() {
     const [otp, setOtp] = useState('');
@@ -24,6 +24,7 @@ export default function OtpModal() {
     const { phone } = useParams();
     const formData = useSelector((state: RootState) => state.signUpData);
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleChange = (otp: string) => {
         setOtp(otp);
@@ -96,11 +97,10 @@ export default function OtpModal() {
                 const { data } = await saveUser(formData);
 
                 if (data.success)
-                    console.log(data.success);
-
                 toast.success('Successfully saved', {
                     position: 'top-right'
                 })
+                dispatch(clearFormData({}))
                 navigate('/')
 
                 toast.error('Try once more', {
@@ -134,10 +134,12 @@ export default function OtpModal() {
 
     useEffect(() => {
         sendOTP();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
+            <Toaster/>
             <div className="flex justify-center items-center min-h-screen">
                 <div id='recaptcha-container'></div>
                 <div className=" border-0 shadow-none sm:border-2 sm:shadow-lg bg-white rounded-lg p-5 w-96" style={{ width: '26rem' }}>
