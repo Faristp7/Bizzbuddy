@@ -9,18 +9,19 @@ import {
 } from "../Components/userComponents/Index";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, userLoggedOut } from "../Redux/user/authSlice";
-import { rootState } from "../Redux/admin/adminAuth";
+import { adminLoggedOut, rootState } from "../Redux/admin/adminAuth";
 import { useEffect } from "react";
 
 export default function UserRouter() {
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
-  const adminIsLoggedin = useSelector((state : rootState) => state.admin.isAdminLoggedIn)
+  const adminIsLoggedin = useSelector((state: rootState) => state.admin.isAdminLoggedIn)
 
   useEffect(() => {
     const token = localStorage.getItem("JwtToken");
     if (!token) {
       dispatch(userLoggedOut(false))
+      dispatch(adminLoggedOut(false))
     }
   })
 
