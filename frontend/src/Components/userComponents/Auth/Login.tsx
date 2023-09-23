@@ -9,6 +9,7 @@ import { adminLogin, googleSignin } from '../../../Api/userApi'
 import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../../../Redux/user/authSlice'
 import { Wobble } from "@uiball/loaders"
+import { adminLoggedIn } from '../../../Redux/admin/adminAuth'
 
 interface FormData {
     email: string,
@@ -60,6 +61,9 @@ export default function Login() {
             if(data.role === 'user'){
                 dispatch(userLoggedIn(true))
                 navigate('/userHomePage')
+            }else{
+                navigate('/UserMangment')
+                dispatch(adminLoggedIn(true))
             }
             localStorage.setItem('JwtToken', data.token)        
         }

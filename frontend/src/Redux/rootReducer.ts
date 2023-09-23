@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import adminReducer from "./admin/adminReducer";
+import adminReducer from "./admin/adminAuth";
 import userReducer from "./user/authSlice";
 import dataSlice from "./user/dataSlice";
 

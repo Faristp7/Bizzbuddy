@@ -1,22 +1,25 @@
-import { Route, Routes, Navigate } from "react-router-dom"; 
+import { Route, Routes, Navigate } from "react-router-dom";
 import {
   Login,
   NavigationBar,
   OtpModal,
   SignUp,
   UserHomePage,
+  UserMangment,
 } from "../Components/userComponents/Index";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, userLoggedOut } from "../Redux/user/authSlice";
+import { rootState } from "../Redux/admin/adminAuth";
 import { useEffect } from "react";
 
 export default function UserRouter() {
   const dispatch = useDispatch()
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+  const adminIsLoggedin = useSelector((state : rootState) => state.admin.isAdminLoggedIn)
 
   useEffect(() => {
     const token = localStorage.getItem("JwtToken");
-    if(!token){
+    if (!token) {
       dispatch(userLoggedOut(false))
     }
   })
@@ -29,6 +32,7 @@ export default function UserRouter() {
         <Route path="/otpModal/:phone" element={<OtpModal />} />
         <Route path="/userHomePage" element={isLoggedIn ? <UserHomePage /> : <Navigate to="/" />} />
         <Route path="/navigationBar" element={isLoggedIn ? <NavigationBar /> : <Navigate to="/" />} />
+        <Route path="/UserMangment" element={adminIsLoggedin ? <UserMangment /> : <Navigate to="/" />} />
       </Routes>
     </>
   );
