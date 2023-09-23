@@ -1,6 +1,6 @@
 import Logo from '../../../assets/img/BizBuddy-logos_black.png'
-import { FormEvent, useState } from 'react'
-import { motion } from 'framer-motion'
+import { FormEvent, useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import '../../../App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../../../Redux/user/authSlice'
 
 interface FormData {
-    username: string,
+    email: string,
     password: string
 }
 
@@ -22,9 +22,22 @@ interface googleData {
 
 export default function Login() {
     const [formData, setFormData] = useState<FormData>({
-        username: '',
+        email: '',
         password: '',
     });
+
+    const [error, setError] = useState<string>('')
+    const [showError, setShowError] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (showError) {
+            const timeout = setTimeout(() => {
+                setShowError(false);
+            }, 5000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [showError]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -36,8 +49,10 @@ export default function Login() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-       const {data} = await adminLogin(formData)
-       console.log(data);
+        const { data } = await adminLogin(formData)
+        console.log(data);
+        setError(data.message)
+        setShowError(true)
     };
 
     const navigate = useNavigate()
@@ -83,17 +98,29 @@ export default function Login() {
                             Login
                         </h1>
                     </div>
+                    <AnimatePresence>
+                        {showError && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -100 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -100 }}
+                                className="fixed top-5 right-5 p-2 rounded-lg border-2 border-black text-white"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     <div className='mt-5'>
                         <form onSubmit={handleSubmit} className="">
                             <div className="mb-4">
                                 <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    value={formData.username}
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
                                     onChange={handleChange}
                                     className="mt-1 p-2 w-80 sm:w-80 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-                                    placeholder='Username'
+                                    placeholder='Email Address'
                                     required
                                 />
                             </div>

@@ -4,12 +4,13 @@ import OTPInput from 'react-otp-input';
 import { useState, useEffect } from 'react';
 import { auth } from '../../../fireBase/FireBaseConfig'
 import { RecaptchaVerifier, signInWithPhoneNumber } from '@firebase/auth';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/user/dataSlice';
 import { saveUser } from '../../../Api/userApi';
 import { AnimatePresence, motion } from 'framer-motion';
 import InfoIcon from '../../../assets/icon/icons8-info-30.png'
+import toast from 'react-hot-toast';
 
 export default function OtpModal() {
     const [otp, setOtp] = useState('');
@@ -22,6 +23,7 @@ export default function OtpModal() {
 
     const { phone } = useParams();
     const formData = useSelector((state: RootState) => state.signUpData);
+    const navigate = useNavigate()
 
     const handleChange = (otp: string) => {
         setOtp(otp);
@@ -92,7 +94,19 @@ export default function OtpModal() {
             if (res) {
                 showStatus("Success")
                 const { data } = await saveUser(formData);
-                console.log('User saved:', data);
+
+                if (data.success)
+                    console.log(data.success);
+
+                toast.success('Successfully saved', {
+                    position: 'top-right'
+                })
+                navigate('/')
+
+                toast.error('Try once more', {
+                    position: 'top-right'
+                })
+
             }
         } catch (error) {
             console.error('Error verifying OTP:', error);
