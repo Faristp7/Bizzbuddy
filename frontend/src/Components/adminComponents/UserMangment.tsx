@@ -1,8 +1,32 @@
 import { motion } from "framer-motion";
 import { NavigationBar } from "../userComponents/Index";
 import CountUp from 'react-countup'
+import { useState, useEffect } from "react";
+import { getUserData } from "../../Api/userApi";
+
+interface User {
+  username : string
+}
 
 export default function UserMangment() {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [userData , setUserData] = useState<User[]>([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getUserData()
+        setUserData(response.data)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData()
+  },[])
+
+  const filteredUsers = userData.filter(user =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
       <NavigationBar />
@@ -51,6 +75,45 @@ export default function UserMangment() {
             </CountUp>
           </div>
         </div>
+        <div>
+      <input
+        type="text"
+        placeholder="Search by username"
+        value={searchQuery}
+        onChange={e => setSearchQuery(e.target.value)}
+        className="mb-4 p-2 border rounded-md"
+      />
+      <table className="table-auto w-full">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Active Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredUsers.map(user => (
+            <tr key={user.username}>
+              <td>{user.username}</td>
+              <td>{user.email}</td>
+              <td>{user.phone}</td>
+              <td>{user.active ? 'Active' : 'Inactive'}</td>
+              <td>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="bg-blue-500 text-white p-2 rounded-md"
+                >
+                  Block/Unblock
+                </motion.button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
       </div>
     </div>
   )
