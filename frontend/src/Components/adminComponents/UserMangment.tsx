@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { NavigationBar } from "../userComponents/Index";
 import CountUp from 'react-countup'
 import { useState, useEffect } from "react";
-import { getUserData } from "../../Api/userApi";
+import { blockAndBlock, getUserData } from "../../Api/userApi";
 
 interface User {
   _id: string
@@ -15,6 +15,7 @@ interface User {
 export default function UserMangment() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [userData, setUserData] = useState<User[]>([])
+  const [loading , setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,11 +27,19 @@ export default function UserMangment() {
       }
     }
     fetchData()
-  }, [])
+  }, [loading])
 
   const filteredUsers = userData.filter(user =>
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleUser = async (id: string, activeStatus: boolean) => {
+    setLoading((prevLoading) => !prevLoading)
+    const response = await blockAndBlock({ id, activeStatus })
+    if(response.data.success){
+      setLoading((prevLoading) => !prevLoading)
+    }
+  }
 
   return (
     <div>
@@ -113,13 +122,15 @@ export default function UserMangment() {
                         <motion.button
                           whileTap={{ scale: 0.9 }}
                           className="bg-red-700 text-white px-4 py-1 rounded-lg"
+                          onClick={() => handleUser(user._id, user.activeStatus)}
                         >
                           Block
                         </motion.button>
                       ) : (
                         <motion.button
                           whileTap={{ scale: 0.9 }}
-                          className="bg-green-500 text-white px-2 rounded-lg"
+                          className="bg-green-700 text-white px-2 py-1 rounded-lg"
+                          onClick={() => handleUser(user._id, user.activeStatus)}
                         >
                           Unblock
                         </motion.button>
