@@ -14,8 +14,9 @@ import verification from '../../../assets/icon/verification.png'
 import { useEffect, useState } from 'react'
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-import { useSelector } from 'react-redux'
-import { RootState } from "../../../Redux/user/authSlice"
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, userLoggedOut } from "../../../Redux/user/authSlice"
+import { adminLoggedOut } from "../../../Redux/admin/adminAuth"
 
 export default function NavigationBar() {
   const savedTheme = localStorage.getItem('theme');
@@ -45,9 +46,12 @@ export default function NavigationBar() {
   }
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleLogout = () => {
-    localStorage.removeItem('JwtToken')    
+    localStorage.removeItem('JwtToken')
+    dispatch(userLoggedOut(false))
+    dispatch(adminLoggedOut(false))
     navigate('/')
   }
   return (

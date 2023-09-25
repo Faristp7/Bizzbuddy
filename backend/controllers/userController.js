@@ -91,7 +91,7 @@ export async function roleLogIn(req, res) {
     }
     if (approvedStatus) {
       const token = jwt.sign({ email }, secrectKey, { expiresIn: "1h" });
-      res.json({ token, role });
+      res.json({ token, role }); 
     }
   } catch (error) {
     console.log(error);

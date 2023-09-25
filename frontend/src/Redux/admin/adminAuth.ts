@@ -9,6 +9,8 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     adminLoggedIn: (state, action) => {
+      console.log("Asdminn dispathdasdfasdfsd" , action.payload);
+      
       state.isAdminLoggedIn = action.payload;
     },
     adminLoggedOut: (state, action) => {
