@@ -57,15 +57,15 @@ export default function Login() {
         setError(data.message)
         setLoading(false)
         setShowError(true)
-        if(data.token){
-            if(data.role === 'user'){
+        if (data.token) {
+            if (data.role === 'user') {
                 dispatch(userLoggedIn(true))
                 navigate('/userHomePage')
-            }else{
+            } else {
                 navigate('/UserMangment')
                 dispatch(adminLoggedIn(true))
             }
-            localStorage.setItem('JwtToken', data.token)        
+            localStorage.setItem('JwtToken', data.token)
         }
     };
 
@@ -77,9 +77,15 @@ export default function Login() {
             const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
             const { email, given_name, picture } = credentialResponseDecoded as googleData
             const { data } = await googleSignin({ email, given_name, picture })
-            localStorage.setItem('JwtToken', data.token)
-            dispatch(userLoggedIn(true))
-            navigate('/userHomePage')
+            
+            if (data.err) {
+                setError(data.message)
+                setShowError(true)
+            } else {
+                localStorage.setItem('JwtToken', data.token)
+                dispatch(userLoggedIn(true))
+                navigate('/userHomePage')
+            }
         }
         else {
             console.log("credinitial undefined");

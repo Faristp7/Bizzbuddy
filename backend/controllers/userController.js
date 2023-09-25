@@ -28,24 +28,29 @@ export async function googleSignin(req, res) {
   try {
     const { email, given_name, picture } = req.body;
     const alreadyExistUser = await userModel.findOne({ email });
-    if (alreadyExistUser) {
-      const user = {
-        id: alreadyExistUser.id,
-      };
-
-      jwt.sign({ user }, secrectKey, { expiresIn: "1h" }, (err, token) => {
-        if (err) {
-          return res.json({ message: "Failed to generate token" });
-        }
-        res.json({ token });
-      });
-    } else {
-      const userSchema = new userModel({
-        username: given_name,
-        email: email,
-        profileImage: picture,
-      });
-      await userSchema.save();
+    
+    if(alreadyExistUser.activeStatus){
+      if (alreadyExistUser) {
+        const user = {
+          id: alreadyExistUser.id,
+        };
+  
+        jwt.sign({ user }, secrectKey, { expiresIn: "1h" }, (err, token) => {
+          if (err) {
+            return res.json({ message: "Failed to generate token" });
+          }
+          res.json({ token });
+        });
+      } else {
+        const userSchema = new userModel({
+          username: given_name,
+          email: email,
+          profileImage: picture,
+        });
+        await userSchema.save();
+      }
+    }else{
+      res.json({message : 'Account blocked' , err : true})
     }
   } catch (error) {
     console.log(error);
@@ -111,12 +116,16 @@ async function adminLogIn(email, password) {
 async function userLogin(email, password) {
   try {
     const isUserValid = await userModel.findOne({ email });
-    if (isUserValid) {
-      const verifed = bcrypt.compareSync(password, isUserValid.password);
-      if (verifed) return true;
+    if (!isUserValid.activeStatus) {
       return false;
     } else {
-      return false;
+      if (isUserValid) {
+        const verifed = bcrypt.compareSync(password, isUserValid.password);
+        if (verifed) return true;
+        return false;
+      } else {
+        return false;
+      }
     }
   } catch (error) {
     console.log(error);
