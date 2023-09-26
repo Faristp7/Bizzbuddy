@@ -62,41 +62,49 @@ export default function NavigationBar() {
             <h1 className="hidden md:block uppercase font-bold text-4xl my-3 mt-6">Bizzbuddy</h1>
             <img className="hidden sm:block md:hidden w-10 invert-0 mt-10 dark:invert" src={logo} alt="Logo" />
           </div>
-          <div className="flex flex-row gap-10 md:gap-8 sm:flex-col mt-2 sm:mt-12">
+          <div className="flex flex-row gap-14 md:gap-8 sm:flex-col mt-2 sm:mt-12">
             {login ? (
               <>
                 {/* Home */}
-                <motion.div
-                  className="navationDivIconBar order-1 sm:order-1"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={home} className="navigationBarIcon" alt="home" />
-                  <p className="navigationBarText">Home</p>
-                </motion.div>
+                <Link to={"/userHomePage"}>
+                  <motion.div
+                    className="navationDivIconBar order-1 sm:order-1"
+                    whileTap={{ scale: 1.1 }}>
+                    <img src={home} className="navigationBarIcon" alt="home" />
+                    <p className="navigationBarText">Home</p>
+                  </motion.div>
+                </Link>
 
                 {/* search */}
-                <motion.div
-                  className=
-                  "navationDivIconBar order-2 sm:order-4"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={search} className="navigationBarIcon " alt="home" />
-                  <p className="navigationBarText">Search</p>
-                </motion.div>
+                <Link to={"/userHomePage"}>
+                  <motion.div
+                    className=
+                    "navationDivIconBar order-2 sm:order-4"
+                    whileTap={{ scale: 1.1 }}>
+                    <img src={search} className="navigationBarIcon " alt="home" />
+                    <p className="navigationBarText">Search</p>
+                  </motion.div>
+                </Link>
 
                 {/* create */}
-                <motion.div
-                  className="navationDivIconBar order-3 sm:order-3"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={create} className="navigationBarIcon" alt="home" />
-                  <p className="navigationBarText">Create</p>
-                </motion.div>
+                <Link to={"/userHomePage"}>
+                  <motion.div
+                    className="navationDivIconBar order-3 sm:order-3"
+                    whileTap={{ scale: 1.1 }}>
+                    <img src={create} className="navigationBarIcon" alt="home" />
+                    <p className="navigationBarText">Create</p>
+                  </motion.div>
+                </Link>
 
                 {/* message */}
-                <motion.div
-                  className="navationDivIconBar order-4 sm:order-2"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={message} className="navigationBarIcon " alt="home" />
-                  <p className="navigationBarText">Messages</p>
-                </motion.div>
+                <Link to={"/userHomePage"}>
+                  <motion.div
+                    className="navationDivIconBar order-4 sm:order-2"
+                    whileTap={{ scale: 1.1 }}>
+                    <img src={message} className="navigationBarIcon " alt="home" />
+                    <p className="navigationBarText">Messages</p>
+                  </motion.div>
+                </Link>
 
                 {/* profile */}
                 <Link to={"/userProfile"}>

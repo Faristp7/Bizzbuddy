@@ -1,4 +1,5 @@
 import { NavigationBar } from "../Index";
+import bannerImage from '../../../assets/img/bannerImage.jpg'
 
 export default function Profile() {
   return (
@@ -6,8 +7,12 @@ export default function Profile() {
       <div>
         <NavigationBar />
       </div>
-      <div className="ml-60 flex-grow">
-        <h1 className="text-6xl dark:text-white font-bold text-center">Profile</h1>
+      <div className="mr-2 ml-3 mt-5 sm:ml-20 md:ml-60 flex-grow">
+        <div className="">
+          <div>
+            <img src={bannerImage} className="rounded-md" alt="banner"  />
+          </div>
+        </div>
       </div>
     </div>
   )
