@@ -9,20 +9,10 @@ import { adminLogin, googleSignin } from '../../../Api/userApi'
 import { useDispatch } from 'react-redux'
 import { userLoggedIn } from '../../../Redux/user/authSlice'
 import { Wobble } from "@uiball/loaders"
-
 import { adminLoggedIn } from '../../../Redux/admin/adminAuth'
-interface FormData {
-    email: string,
-    password: string
-}
+import { FormData ,googleData } from '../../../interface/interface'
 
-interface googleData {
-    email: string
-    given_name: string
-    picture: string
-}
-
-export default function Login({ role }) {
+export default function Login() {
     const [formData, setFormData] = useState<FormData>({
         email: '',
         password: '',
@@ -55,8 +45,6 @@ export default function Login({ role }) {
         setLoading(true)
         const { data } = await adminLogin(formData)
 
-
-
         setError(data.message)
         setLoading(false)
         setShowError(true)
@@ -66,9 +54,7 @@ export default function Login({ role }) {
                 dispatch(userLoggedIn(true))
                 navigate('/userHomePage')
             } else {
-
                 localStorage.setItem('adminToken', data.token)
-                console.log("fjfjsdfdatainsediee+++");
                 dispatch(adminLoggedIn(true))
                 navigate('/admin/UserMangment')
             }
@@ -83,7 +69,7 @@ export default function Login({ role }) {
             const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
             const { email, given_name, picture } = credentialResponseDecoded as googleData
             const { data } = await googleSignin({ email, given_name, picture })
-
+            
             if (data.err) {
                 setError(data.message)
                 setShowError(true)
@@ -103,15 +89,13 @@ export default function Login({ role }) {
     };
 
     useEffect(() => {
-        if (role == 'user') {
-            const userToken = localStorage.getItem("JwtToken")
-            if (userToken) navigate('/userHomePage')
-        } else if (role == 'admin') {
-            const adminToken = localStorage.getItem("adminToken")
-            if (adminToken) navigate('/admin/UserMangment')
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        
+        const userToken = localStorage.getItem("JwtToken")
+        const adminToken  = localStorage.getItem("adminToken")
+        if(userToken) navigate('/userHomePage')
+        if(adminToken) navigate('/admin/UserMangment')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     return (
         <div className='flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row'>

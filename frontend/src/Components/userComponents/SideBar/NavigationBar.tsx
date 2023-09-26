@@ -50,6 +50,7 @@ export default function NavigationBar() {
 
   const handleLogout = () => {
     localStorage.removeItem('JwtToken')
+    localStorage.removeItem('adminToken')
     dispatch(userLoggedOut(false))
     dispatch(adminLoggedOut(false))
     navigate('/')

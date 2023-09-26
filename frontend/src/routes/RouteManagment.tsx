@@ -37,7 +37,7 @@ export default function UserRouter() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login role={''} />} />
+        <Route path="/" element={<Login />} />
         {isLoggedIn &&
           <>
             <Route path="/" element={<Navigate to="/userHomePage" />} />
