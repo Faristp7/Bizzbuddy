@@ -62,7 +62,7 @@ export default function NavigationBar() {
             <h1 className="hidden md:block uppercase font-bold text-4xl my-3 mt-6">Bizzbuddy</h1>
             <img className="hidden sm:block md:hidden w-10 invert-0 mt-10 dark:invert" src={logo} alt="Logo" />
           </div>
-          <div className="flex flex-row gap-14 md:gap-8 sm:flex-col mt-2 sm:mt-12">
+          <div className="flex flex-row gap-14 sm:gap-8 md:gap-8 sm:flex-col mt-2 sm:mt-12">
             {login ? (
               <>
                 {/* Home */}
