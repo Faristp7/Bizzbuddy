@@ -6,10 +6,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
 import jwtDecode from 'jwt-decode'
 import { adminLogin, googleSignin } from '../../../Api/userApi'
-import { useDispatch } from 'react-redux'
-import { userLoggedIn } from '../../../Redux/user/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, userLoggedIn } from '../../../Redux/user/authSlice'
 import { Wobble } from "@uiball/loaders"
-import { adminLoggedIn } from '../../../Redux/admin/adminAuth'
+import { adminLoggedIn, rootState } from '../../../Redux/admin/adminAuth'
 import { FormData ,googleData } from '../../../interface/interface'
 
 export default function Login() {
@@ -18,6 +18,8 @@ export default function Login() {
         password: '',
     });
 
+    const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+    const adminIsLoggedin = useSelector((state: rootState) => state.admin.isAdminLoggedIn)
     const [error, setError] = useState<string>('')
     const [showError, setShowError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
@@ -54,7 +56,7 @@ export default function Login() {
                 dispatch(userLoggedIn(true))
                 navigate('/userHomePage')
             } else {
-                localStorage.setItem('adminToken', data.token)
+                localStorage.setItem('JwtToken', data.token)
                 dispatch(adminLoggedIn(true))
                 navigate('/admin/UserMangment')
             }
@@ -90,10 +92,12 @@ export default function Login() {
 
     useEffect(() => {
         
-        const userToken = localStorage.getItem("JwtToken")
-        const adminToken  = localStorage.getItem("adminToken")
-        if(userToken) navigate('/userHomePage')
-        if(adminToken) navigate('/admin/UserMangment')
+        const token = localStorage.getItem("JwtToken")
+        if(token) {
+
+            if(isLoggedIn) navigate('/userHomePage')
+            if(adminIsLoggedin) navigate('/admin/UserMangment')
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 

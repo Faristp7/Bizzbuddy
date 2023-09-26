@@ -13,7 +13,7 @@ import verification from '../../../assets/icon/verification.png'
 
 import { useEffect, useState } from 'react'
 import { motion } from "framer-motion"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, userLoggedOut } from "../../../Redux/user/authSlice"
 import { adminLoggedOut } from "../../../Redux/admin/adminAuth"
@@ -50,7 +50,6 @@ export default function NavigationBar() {
 
   const handleLogout = () => {
     localStorage.removeItem('JwtToken')
-    localStorage.removeItem('adminToken')
     dispatch(userLoggedOut(false))
     dispatch(adminLoggedOut(false))
     navigate('/')
@@ -100,12 +99,14 @@ export default function NavigationBar() {
                 </motion.div>
 
                 {/* profile */}
-                <motion.div
-                  className="navationDivIconBar order-5 sm:order-5"
-                  whileTap={{ scale: 1.1 }}>
-                  <div className="md:ml-4 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={demoData} /></div>
-                  <p className="navigationBarText">Profile</p>
-                </motion.div>
+                <Link to={"/userProfile"}>
+                  <motion.div
+                    className="navationDivIconBar order-5 sm:order-5"
+                    whileTap={{ scale: 1.1 }}>
+                    <div className="md:ml-4 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={demoData} /></div>
+                    <p className="navigationBarText">Profile</p>
+                  </motion.div>
+                </Link>
               </>
             ) :
               <>
