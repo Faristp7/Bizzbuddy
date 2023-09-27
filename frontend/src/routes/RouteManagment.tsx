@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import AdminPage from "./adminPage";
 import UserRoute from "./userRoute";
 
-export default function UserRouter() {
+export default function RootMangament() {
   const dispatch = useDispatch();
 
   useEffect(() => {

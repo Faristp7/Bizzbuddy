@@ -1,3 +1,3 @@
-import UserRouter from './RouteManagment'
+import RootMangament from './RouteManagment'
 
-export {UserRouter}
+export {RootMangament}

@@ -10,10 +10,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, userLoggedIn } from '../../../Redux/user/authSlice'
 import { Wobble } from "@uiball/loaders"
 import { adminLoggedIn, rootState } from '../../../Redux/admin/adminAuth'
-import { FormData ,googleData } from '../../../interface/interface'
+import { loginFormData ,googleData } from '../../../interface/interface'
 
 export default function Login() {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<loginFormData>({
         email: '',
         password: '',
     });

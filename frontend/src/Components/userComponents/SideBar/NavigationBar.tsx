@@ -87,7 +87,7 @@ export default function NavigationBar() {
                 </Link>
 
                 {/* create */}
-                <Link to={"/userHomePage"}>
+                <Link to={"/CreatePost"}>
                   <motion.div
                     className="navationDivIconBar order-3 sm:order-3"
                     whileTap={{ scale: 1.1 }}>

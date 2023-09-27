@@ -7,14 +7,7 @@ import { userSignup } from '../../../Api/userApi'
 import Meter from './Meter'
 import { useDispatch } from 'react-redux'
 import { updateFormData } from '../../../Redux/user/dataSlice'
-
-interface FormData {
-    username: string
-    email: string
-    phone: string
-    password: string,
-    ReenterPassword: string
-}
+import { signUpFormData } from "../../../interface/interface"
 
 function check(password: string): string {
     if (password.length < 4 || !password.trim()) {
@@ -32,7 +25,7 @@ function check(password: string): string {
 
 
 export default function SignUp() {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<signUpFormData>({
         username: '',
         email: '',
         phone: '',
@@ -92,7 +85,7 @@ export default function SignUp() {
 
     return (
         <div className='flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row'>
-            
+
             <div className='hidden lg:block '>
                 <div>
                     <img src={Logo} alt="banner image" style={{ width: '32rem' }} />
@@ -176,7 +169,7 @@ export default function SignUp() {
                                         required
                                     />
                                 </div>
-                                <p className='text-center mt-4 mb-4 text-red-500'>{passwordError ? passwordError  : "\u00a0"}</p>
+                                <p className='text-center mt-4 mb-4 text-red-500'>{passwordError ? passwordError : "\u00a0"}</p>
                                 {showPasswordMeter && (
                                     <motion.div
                                         initial={{ opacity: 0, y: -10 }}

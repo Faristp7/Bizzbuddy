@@ -3,7 +3,7 @@ import NavigationBar from "../../Components/userComponents/SideBar/NavigationBar
 export default function UserHomePage() {
  
   return (
-    <div className="flex dark:bg-slate-950" style={{height:'2000px'}}>
+    <div className="flex dark:bg-slate-950" style={{height:'2000'}}>
       <div>
         <NavigationBar />
       </div>
