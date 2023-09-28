@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ListBusinessProps } from "../../interface/interface";
 import { useRef, useEffect, useState } from "react";
-import closeIcon from '../../assets/icon/close.png'
 import { RegisterBussiness } from '../../interface/interface'
+import "../userComponents/user.css"
+import '../userComponents/user.css'
 
 export default function ListBusiness({ close }: ListBusinessProps) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -54,20 +55,10 @@ export default function ListBusiness({ close }: ListBusinessProps) {
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-10 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50"
       >
-        <div ref={modalRef} className="bg-white dark:bg-slate-900 p-4 rounded-lg">
-          <motion.button
-            onClick={close}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <img src={closeIcon} alt="X" className="darkinvert" />
-          </motion.button>
-          <div className="max-w-md mx-auto mt-8">
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="businessName">
-                  Business Name
-                </label>
+        <div ref={modalRef} className="bg-white  dark:bg-slate-900 p-2 rounded-lg">
+          <div className="max-w-md mx-auto mt-2">
+            <form onSubmit={handleSubmit} className=" rounded px-4 pt-5 pb-2 mb-2 sm:w-96">
+              <div className="mb-5">
                 <input
                   type="text"
                   name="businessName"
@@ -75,28 +66,25 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   placeholder="Business Name"
                   value={formData.businessName}
                   onChange={handleChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                  Description
-                </label>
+              <div className="mb-5">
                 <textarea
                   name="description"
                   id="description"
                   placeholder="Description"
                   value={formData.description}
+                  rows={5}
+                  cols={30}
                   onChange={handleChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
-                  Phone
-                </label>
+              <div className="mb-5">
+
                 <input
                   type="tel"
                   name="phone"
@@ -104,14 +92,12 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   placeholder="Phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                  Email
-                </label>
+              <div className="mb-5">
+
                 <input
                   type="email"
                   name="email"
@@ -119,14 +105,12 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   placeholder="Email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">
-                  Location
-                </label>
+              <div className="mb-5">
+
                 <input
                   type="text"
                   name="location"
@@ -134,14 +118,12 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   placeholder="Location"
                   value={formData.location}
                   onChange={handleChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">
-                  Tags
-                </label>
+              <div className="mb-5">
+
                 <input
                   type="text"
                   name="tags"
@@ -149,16 +131,22 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   placeholder="Tags"
                   value={formData.tags}
                   onChange={handleChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 justify-end">
+                <button
+                  onClick={close}
+                  className="bg-red-800 hover:bg-red-900 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Close
+                </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-blue-900 hover:bg-blue-950 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
                 >
-                  Submit
+                  Add
                 </button>
               </div>
             </form>
