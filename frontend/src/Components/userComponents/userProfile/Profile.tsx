@@ -4,12 +4,19 @@ import "../user.css"
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { motion } from "framer-motion";
+import ListBussinessModal from "../../modals/ListBussinessModal";
+import { useState } from "react";
 
 export default function Profile() {
+  const [isOpen, setIsOpen] = useState<boolean>(true)
  
   const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
   return (
     <div className="flex dark:bg-slate-950" style={{ height: '2000px' }}>
+      {
+       isOpen &&  
+      <ListBussinessModal close={() => setIsOpen(!isOpen)}/>
+      }
       <div>
         <NavigationBar />
       </div>
@@ -73,7 +80,9 @@ export default function Profile() {
             </motion.button>
           </div>
           <div className="grid grid-cols-4">
-            
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+            > MODal Open</button>
           </div>
         </div>
       </div>
