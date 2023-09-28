@@ -1,22 +1,28 @@
-import { NavigationBar } from "../Index";
-import bannerImage from '../../../assets/img/bannerImage.jpg'
 import "../user.css"
+import bannerImage from '../../../assets/img/bannerImage.jpg'
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
+import { NavigationBar } from "../Index";
 import { motion } from "framer-motion";
-import ListBussinessModal from "../../modals/ListBussinessModal";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
+import { Waveform } from "@uiball/loaders"
+const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
 export default function Profile() {
-  const [isOpen, setIsOpen] = useState<boolean>(true)
- 
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
   const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
   return (
     <div className="flex dark:bg-slate-950" style={{ height: '2000px' }}>
-      {
-       isOpen &&  
-      <ListBussinessModal close={() => setIsOpen(!isOpen)}/>
-      }
+      <Suspense fallback={
+        <Waveform
+          size={40}
+          lineWeight={3.5}
+          speed={1}
+          color="black"
+        />}>
+        {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} />}
+      </Suspense>
       <div>
         <NavigationBar />
       </div>
@@ -67,6 +73,7 @@ export default function Profile() {
             <motion.button
               className="bg-blue-900 rounded-md mt-4 px-2 py-1 text-white flex items-center"
               whileTap={{ scale: 0.95 }}
+              onClick={() => setIsOpen(!isOpen)}
             >
               <motion.img
                 src={add}
@@ -80,9 +87,6 @@ export default function Profile() {
             </motion.button>
           </div>
           <div className="grid grid-cols-4">
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-            > MODal Open</button>
           </div>
         </div>
       </div>
