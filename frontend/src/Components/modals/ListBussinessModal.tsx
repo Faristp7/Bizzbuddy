@@ -1,30 +1,55 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ListBusinessProps } from "../../interface/interface";
-import { useRef, useEffect, useState } from "react";
-import { RegisterBussiness } from '../../interface/interface'
+import { useRef, useEffect } from "react";
+// import { RegisterBussiness } from '../../interface/interface'
+import { validationSchema } from "../../validations/validation"
 import "../userComponents/user.css"
 import '../userComponents/user.css'
+import { useFormik } from "formik";
 
 export default function ListBusiness({ close }: ListBusinessProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [formData, setFormData] = useState<RegisterBussiness>({
-    businessName: '',
-    description: '',
-    phone: '',
-    email: '',
-    location: '',
-    tags: '',
-  });
+  // const [formData, setFormData] = useState<RegisterBussiness>({
+  //   businessName: '',
+  //   description: '',
+  //   phone: '',
+  //   email: '',
+  //   location: '',
+  //   tags: '',
+  // });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = e.target as HTMLInputElement;
-    setFormData({ ...formData, [name]: value });
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const { name, value } = e.target as HTMLInputElement;
+  //   setFormData({ ...formData, [name]: value });
+  // };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+  // const formik = useFormik({
+  //   initialValues : formData,
+  //   validationSchema : validationSchema,
+  //   onSubmit:(values) => {
+  //     console.log(values);
+      
+  //   }
+  // })
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   console.log(formData);
+  // };
+
+  const formik = useFormik({
+    initialValues : {
+      businessName: '',
+      description : '',
+      phone : '',
+      email: '',
+      location : '',
+      tags: '',
+    },
+    validationSchema : validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    }
+  })  
 
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -53,45 +78,44 @@ export default function ListBusiness({ close }: ListBusinessProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-10 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50"
-      >
+        className="fixed inset-0 z-10 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50">
         <div ref={modalRef} className="bg-white  dark:bg-slate-900 p-2 rounded-lg">
           <div className="max-w-md mx-auto mt-2">
-            <form onSubmit={handleSubmit} className=" rounded px-4 pt-5 pb-2 mb-2 sm:w-96">
+            <form onSubmit={formik.handleSubmit} className=" rounded px-4 pt-5 pb-2 mb-2 sm:w-96">
               <div className="mb-5">
                 <input
                   type="text"
                   name="businessName"
                   id="businessName"
                   placeholder="Business Name"
-                  value={formData.businessName}
-                  onChange={handleChange}
+                  value={formik.values.businessName}
+                  onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
+                <p>{formik.errors.description}</p>
               </div>
               <div className="mb-5">
                 <textarea
                   name="description"
                   id="description"
                   placeholder="Description"
-                  value={formData.description}
+                  value={formik.values.description}
                   rows={5}
                   cols={30}
-                  onChange={handleChange}
+                  onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
               <div className="mb-5">
-
                 <input
                   type="tel"
                   name="phone"
                   id="phone"
                   placeholder="Phone"
-                  value={formData.phone}
-                  onChange={handleChange}
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
@@ -103,8 +127,8 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   name="email"
                   id="email"
                   placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
@@ -116,8 +140,8 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   name="location"
                   id="location"
                   placeholder="Location"
-                  value={formData.location}
-                  onChange={handleChange}
+                  value={formik.values.location}
+                  onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
@@ -129,13 +153,13 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   name="tags"
                   id="tags"
                   placeholder="Tags"
-                  value={formData.tags}
-                  onChange={handleChange}
+                  value={formik.values.tags}
+                  onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
                   required
                 />
               </div>
-              <div className="flex items-center gap-3 justify-end">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={close}
                   className="bg-red-800 hover:bg-red-900 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
@@ -144,7 +168,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-900 hover:bg-blue-950 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
+                  className="flex-1 bg-blue-900 hover:bg-blue-950 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
                 >
                   Add
                 </button>

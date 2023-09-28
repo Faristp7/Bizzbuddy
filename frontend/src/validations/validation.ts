@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const validationSchema = Yup.object().shape({
+export const validationSchema = Yup.object().shape({
   businessName: Yup.string().required("Enter bussiness name"),
   description: Yup.string().max(50, "description can have 50 words"),
   phone: Yup.string().matches(/^\d{10}$/, "10 numbers needed"),
@@ -9,4 +9,3 @@ const validationSchema = Yup.object().shape({
   tag: Yup.string().required("Tags are required"),
 });
 
-export default validationSchema;
