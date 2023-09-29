@@ -6,6 +6,6 @@ export const validationSchema = Yup.object().shape({
   phone: Yup.string().matches(/^\d{10}$/, "10 numbers needed"),
   email: Yup.string().email("invalid email address"),
   location: Yup.string().min(2 , "location is not valid"),
-  tags: Yup.string().required("Tags are required"),
+  tags: Yup.string().required("Add some tags"),
 });
 

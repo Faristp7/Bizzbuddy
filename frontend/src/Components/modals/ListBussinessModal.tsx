@@ -1,40 +1,77 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ListBusinessProps } from "../../interface/interface";
 import { useRef, useEffect } from "react";
-// import { RegisterBussiness } from '../../interface/interface'
 import { validationSchema } from "../../validations/validation"
 import { useFormik } from "formik";
 import "../userComponents/user.css"
 import { saveBussinessForm } from "../../Api/userApi";
+import { Input, Tag, theme } from 'antd'
+import type { InputRef } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { TweenOneGroup } from 'rc-tween-one'
 
 export default function ListBusiness({ close }: ListBusinessProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  // const [formData, setFormData] = useState<RegisterBussiness>({
-  //   businessName: '',
-  //   description: '',
-  //   phone: '',
-  //   email: '',
-  //   location: '',
-  //   tags: '',
-  // });
+  const { token } = theme.useToken();
+  const [tags, setTags] = useState(["tag1"]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<InputRef>(null);
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   const { name, value } = e.target as HTMLInputElement;
-  //   setFormData({ ...formData, [name]: value });
-  // };
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
 
-  // const formik = useFormik({
-  //   initialValues : formData,
-  //   validationSchema : validationSchema,
-  //   onSubmit:(values) => {
-  //     console.log(values);
+  const handleClose = (removedTag: string) => {
+    const newTags = tags.filter((tag) => tag !== removedTag);
+    console.log(newTags);
+    setTags(newTags);
+  };
 
-  //   }
-  // })
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   console.log(formData);
-  // };
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && tags.indexOf(inputValue) === -1) {
+      setTags([...tags, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue('');
+  };
+
+  const forMap = (tag: string) => {
+    const tagElem = (
+      <Tag
+        closable
+        onClose={(e) => {
+          e.preventDefault();
+          handleClose(tag);
+        }}
+      >
+        {tag}
+      </Tag>
+    );
+    return (
+      <span key={tag} style={{ display: 'inline-block' }}>
+        {tagElem}
+      </span>
+    );
+  };
+
+  const tagChild = tags.map(forMap);
+
+  const tagPlusStyle: React.CSSProperties = {
+    background: token.colorBgContainer,
+    borderStyle: 'dashed',
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -45,11 +82,11 @@ export default function ListBusiness({ close }: ListBusinessProps) {
       location: '',
       tags: '',
     },
-    validationSchema : validationSchema, 
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
         await validationSchema.validate(values, { abortEarly: false })
-        const {data} = await saveBussinessForm(values)
+        const { data } = await saveBussinessForm(values)
         console.log(data);
       } catch (error) {
         console.error(error);
@@ -154,19 +191,42 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                 />
               </div>
               <p className="my-0.5 text-center text-red-700">{formik.errors.location} {"\u00a0"}</p>
-              <div className="">
-                <input
-                  type="text"
-                  name="tags"
-                  id="tags"
-                  placeholder="Tags"
-                  value={formik.values.tags}
-                  onChange={formik.handleChange}
-                  className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline"
-                  required
-                />
+              <div style={{ marginBottom: 16 }}>
+                <TweenOneGroup
+                  enter={{
+                    scale: 0.8,
+                    opacity: 0,
+                    type: 'from',
+                    duration: 100,
+                  }}
+                  onEnd={(e) => {
+                    if (e.type === 'appear' || e.type === 'enter') {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (e.target as any).style = 'display: inline-block';
+                    }
+                  }}
+                  leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
+                  appear={false}
+                >
+                  {tagChild}
+                </TweenOneGroup>
               </div>
-                <p className="my-0.5 text-center text-red-700">{formik.errors.tags} {"\u00a0"}</p>
+              {inputVisible ? (
+                <Input
+                  ref={inputRef}
+                  type="text"
+                  size="small"
+                  style={{ width: 78 }}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onBlur={handleInputConfirm}
+                  onPressEnter={handleInputConfirm}
+                />
+              ) : (
+                <Tag onClick={showInput} style={tagPlusStyle}>
+                  <PlusOutlined /> New Tag
+                </Tag>
+              )}
               <div className="flex items-center gap-2">
                 <button
                   onClick={close}

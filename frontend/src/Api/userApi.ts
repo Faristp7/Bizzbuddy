@@ -8,4 +8,4 @@ export const saveBussinessForm = (values : object) => axiosInstance('JwtToken').
 // admin
 export const adminLogin = (values : object) => axiosInstance('JwtToken').post('/admin/roleLogIn' ,values)  
 export const getUserData = () => axiosInstance('JwtToken').get('/admin/getUserData')  
-export const blockAndBlock = (values : object) => axiosInstance('JwtToken').post('/admin/blockAndBlock' ,values)  
+export const blockAndunBlock = (values : object) => axiosInstance('JwtToken').post('/admin/blockAndBlock' ,values)  

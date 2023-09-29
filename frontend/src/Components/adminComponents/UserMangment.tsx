@@ -2,20 +2,13 @@ import { motion } from "framer-motion";
 import { NavigationBar } from "../userComponents/Index";
 import CountUp from 'react-countup'
 import { useState, useEffect } from "react";
-import { blockAndBlock, getUserData } from "../../Api/userApi";
-
-interface User {
-  _id: string
-  username: string
-  email: string
-  phone: string
-  activeStatus: boolean
-}
+import { blockAndunBlock, getUserData } from "../../Api/userApi";
+import { User } from '../../interface/interface'
 
 export default function UserMangment() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [userData, setUserData] = useState<User[]>([])
-  const [loading , setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,8 +28,8 @@ export default function UserMangment() {
 
   const handleUser = async (id: string, activeStatus: boolean) => {
     setLoading((prevLoading) => !prevLoading)
-    const response = await blockAndBlock({ id, activeStatus })
-    if(response.data.success){
+    const response = await blockAndunBlock({ id, activeStatus })
+    if (response.data.success) {
       setLoading((prevLoading) => !prevLoading)
     }
   }

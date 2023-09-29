@@ -21,11 +21,10 @@ export interface ListBusinessProps {
   close: () => void;
 }
 
-export interface RegisterBussiness {
-  businessName: string;
-  description: string;
-  phone: string;
-  email: string;
-  location: string;
-  tags: string;
+export interface User {
+  _id: string
+  username: string
+  email: string
+  phone: string
+  activeStatus: boolean
 }
