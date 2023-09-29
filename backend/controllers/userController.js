@@ -131,3 +131,11 @@ async function userLogin(email, password) {
     console.log(error);
   }
 }
+
+export async function BussinessForm(req,res) {
+  try {
+    console.log(req.body)
+  } catch (error) {
+    console.log(error);
+  }
+}
