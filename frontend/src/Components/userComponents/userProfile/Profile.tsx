@@ -14,15 +14,6 @@ export default function Profile() {
   const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
   return (
     <div className="flex dark:bg-slate-950" style={{ height: '2000px' }}>
-      <Suspense fallback={
-        <Waveform
-          size={40}
-          lineWeight={3.5}
-          speed={1}
-          color="black"
-        />}>
-        {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} />}
-      </Suspense>
       <div>
         <NavigationBar />
       </div>
@@ -86,7 +77,16 @@ export default function Profile() {
               List Business
             </motion.button>
           </div>
-          <div className="grid grid-cols-4">
+          <div className="flex justify-center">
+            <Suspense fallback={
+              <Waveform
+                size={40}
+                lineWeight={3.5}
+                speed={1}
+                color="black"
+              />}>
+              {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} />}
+            </Suspense>
           </div>
         </div>
       </div>

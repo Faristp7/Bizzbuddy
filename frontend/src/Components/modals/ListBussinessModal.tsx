@@ -1,20 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ListBusinessProps } from "../../interface/interface";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { validationSchema } from "../../validations/validation"
-import { useFormik } from "formik";
-import "../userComponents/user.css"
-import { saveBussinessForm } from "../../Api/userApi";
 import { Input, Tag, theme } from 'antd'
+import { useFormik } from "formik";
 import type { InputRef } from 'antd'
+import { saveBussinessForm } from "../../Api/userApi";
 import { PlusOutlined } from '@ant-design/icons'
-import { useState } from 'react'
 import { TweenOneGroup } from 'rc-tween-one'
+import "../userComponents/user.css"
 
 export default function ListBusiness({ close }: ListBusinessProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const { token } = theme.useToken();
-  const [tags, setTags] = useState(["tag1"]);
+  const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<InputRef>(null);
@@ -191,11 +190,12 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                 />
               </div>
               <p className="my-0.5 text-center text-red-700">{formik.errors.location} {"\u00a0"}</p>
+              {/* <p>{tagChild}</p> */}
               <div style={{ marginBottom: 16 }}>
                 <TweenOneGroup
                   enter={{
                     scale: 0.8,
-                    opacity: 0,
+                    opacity: 1,
                     type: 'from',
                     duration: 100,
                   }}
@@ -208,7 +208,9 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
                   appear={false}
                 >
-                  {tagChild}
+                  {tagChild.map((tagElement, index) => (
+                    <div key={index}>{tagElement}</div>
+                  ))}
                 </TweenOneGroup>
               </div>
               {inputVisible ? (
