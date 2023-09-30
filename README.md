@@ -66,7 +66,8 @@ npm run dev or npm run host
 
 ## Usage
 
-Describe how to use your application once it's installed. Include examples or screenshots if necessary.
+contact https://www.instagram.com/faris_tp_/
+on future updates will come
 
 ## Contributing
 
