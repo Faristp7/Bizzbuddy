@@ -103,7 +103,7 @@ async function adminLogIn(email, password) {
     const isAdminValid = await adminModel.findOne({ email });
     if (isAdminValid) {
       const verifed = bcrypt.compareSync(password, isAdminValid.password);
-      if (verifed) return true;
+      if (verifed) return isAdminValid.id;
       return false;
     } else {
       return false;
@@ -121,7 +121,6 @@ async function userLogin(email, password) {
     } else {
       if (isUserValid) {
         const verifed = bcrypt.compareSync(password, isUserValid.password);
-        console.log(isUserValid.id);
         if (verifed) return isUserValid.id;
         return false;
       } else {
