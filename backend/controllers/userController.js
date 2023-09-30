@@ -1,5 +1,6 @@
 import userModel from "../models/userModel.js";
 import adminModel from "../models/adminModel.js";
+import businessModel from "../models/bussinessModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -28,14 +29,11 @@ export async function googleSignin(req, res) {
   try {
     const { email, given_name, picture } = req.body;
     const alreadyExistUser = await userModel.findOne({ email });
-    
-    if(alreadyExistUser.activeStatus){
+
+    if (alreadyExistUser.activeStatus) {
       if (alreadyExistUser) {
-        const user = {
-          id: alreadyExistUser.id,
-        };
-  
-        jwt.sign({ user }, secrectKey, { expiresIn: "1h" }, (err, token) => {
+        const token = alreadyExistUser.id;
+        jwt.sign({ token }, secrectKey, { expiresIn: "1h" }, (err, token) => {
           if (err) {
             return res.json({ message: "Failed to generate token" });
           }
@@ -49,8 +47,8 @@ export async function googleSignin(req, res) {
         });
         await userSchema.save();
       }
-    }else{
-      res.json({message : 'Account blocked' , err : true})
+    } else {
+      res.json({ message: "Account blocked", err: true });
     }
   } catch (error) {
     console.log(error);
@@ -90,8 +88,10 @@ export async function roleLogIn(req, res) {
       role = "user";
     }
     if (approvedStatus) {
-      const token = jwt.sign({ email }, secrectKey, { expiresIn: "1h" });
-      res.json({ token, role }); 
+      const token = jwt.sign({ approvedStatus }, secrectKey, {
+        expiresIn: "1h",
+      });
+      res.json({ token, role });
     }
   } catch (error) {
     console.log(error);
@@ -121,7 +121,8 @@ async function userLogin(email, password) {
     } else {
       if (isUserValid) {
         const verifed = bcrypt.compareSync(password, isUserValid.password);
-        if (verifed) return true;
+        console.log(isUserValid.id);
+        if (verifed) return isUserValid.id;
         return false;
       } else {
         return false;
@@ -132,9 +133,28 @@ async function userLogin(email, password) {
   }
 }
 
-export async function BussinessForm(req,res) {
+export async function BussinessForm(req, res) {
   try {
-    console.log(req.body)
+    const { values, tags } = req.body;
+    const { businessName, description, phone, email, location } = values;
+    const bussinesSchema = new businessModel({
+      bussinessName: businessName,
+      Description: description,
+      phone,
+      email,
+      location,
+      tags,
+    });
+    await bussinesSchema.save();
+    res.status(200).json("Data saved succefully");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function userProfile(req, res) {
+  try {
+    const userDetails = await userModel.find();
   } catch (error) {
     console.log(error);
   }

@@ -8,7 +8,7 @@ const bussinessSchema = new mongoose.Schema(
     },
     userId: {
       type: String,
-      required: true,
+      required: false,
     },
     Description: {
       type: String,
@@ -23,7 +23,7 @@ const bussinessSchema = new mongoose.Schema(
       type: String,
     },
     tags: {
-      type: String,
+      type: Array,
       required: true,
     },
   },

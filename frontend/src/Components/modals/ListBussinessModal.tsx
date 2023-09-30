@@ -7,7 +7,6 @@ import { useFormik } from "formik";
 import type { InputRef } from 'antd'
 import { saveBussinessForm } from "../../Api/userApi";
 import { PlusOutlined } from '@ant-design/icons'
-import { TweenOneGroup } from 'rc-tween-one'
 import "../userComponents/user.css"
 
 export default function ListBusiness({ close }: ListBusinessProps) {
@@ -26,7 +25,6 @@ export default function ListBusiness({ close }: ListBusinessProps) {
 
   const handleClose = (removedTag: string) => {
     const newTags = tags.filter((tag) => tag !== removedTag);
-    console.log(newTags);
     setTags(newTags);
   };
 
@@ -79,13 +77,12 @@ export default function ListBusiness({ close }: ListBusinessProps) {
       phone: '',
       email: '',
       location: '',
-      tags: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
         await validationSchema.validate(values, { abortEarly: false })
-        const { data } = await saveBussinessForm(values)
+        const { data } = await saveBussinessForm({ values, tags })
         console.log(data);
       } catch (error) {
         console.error(error);
@@ -190,45 +187,25 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                 />
               </div>
               <p className="my-0.5 text-center text-red-700">{formik.errors.location} {"\u00a0"}</p>
-              {/* <p>{tagChild}</p> */}
-              <div style={{ marginBottom: 16 }}>
-                <TweenOneGroup
-                  enter={{
-                    scale: 0.8,
-                    opacity: 1,
-                    type: 'from',
-                    duration: 100,
-                  }}
-                  onEnd={(e) => {
-                    if (e.type === 'appear' || e.type === 'enter') {
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      (e.target as any).style = 'display: inline-block';
-                    }
-                  }}
-                  leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
-                  appear={false}
-                >
-                  {tagChild.map((tagElement, index) => (
-                    <div key={index}>{tagElement}</div>
-                  ))}
-                </TweenOneGroup>
+              <p className="mb-2">{tagChild}</p>
+              <div className="mb-3 dark:text-white">
+                {inputVisible ? (
+                  <Input
+                    ref={inputRef}
+                    type="text"
+                    size="small"
+                    style={{ width: 78 }}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onBlur={handleInputConfirm}
+                    onPressEnter={handleInputConfirm}
+                  />
+                ) : (
+                  <Tag onClick={showInput} style={tagPlusStyle}>
+                    <PlusOutlined /> New Tag
+                  </Tag>
+                )}
               </div>
-              {inputVisible ? (
-                <Input
-                  ref={inputRef}
-                  type="text"
-                  size="small"
-                  style={{ width: 78 }}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  onBlur={handleInputConfirm}
-                  onPressEnter={handleInputConfirm}
-                />
-              ) : (
-                <Tag onClick={showInput} style={tagPlusStyle}>
-                  <PlusOutlined /> New Tag
-                </Tag>
-              )}
               <div className="flex items-center gap-2">
                 <button
                   onClick={close}
