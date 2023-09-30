@@ -4,12 +4,20 @@ import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { NavigationBar } from "../Index";
 import { motion } from "framer-motion";
-import { useState, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Waveform } from "@uiball/loaders"
+import { getUserProfile } from "../../../Api/userApi";
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
 export default function Profile() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  useEffect(() => {
+    (async () => {
+      const response = await getUserProfile()
+      console.log(response);
+    })()
+  }, [])
 
   const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
   return (

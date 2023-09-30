@@ -155,6 +155,7 @@ export async function BussinessForm(req, res) {
 export async function userProfile(req, res) {
   try {
     const userDetails = await userModel.find();
+    res.json(userDetails)
   } catch (error) {
     console.log(error);
   }

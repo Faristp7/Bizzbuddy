@@ -28,3 +28,12 @@ export interface User {
   phone: string
   activeStatus: boolean
 }
+
+export type ProfilerCallbackType = (
+  id: string,
+  phase: "mount" | "update",
+  actualDuration: number,
+  baseDuration: number,
+  startTime: number,
+  commitTime: number,
+) => void;
