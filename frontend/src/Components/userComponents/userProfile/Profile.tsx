@@ -15,7 +15,7 @@ export default function Profile() {
   useEffect(() => {
     (async () => {
       const response = await getUserProfile()
-      console.log(response);
+      console.log(response.data);
     })()
   }, [])
 

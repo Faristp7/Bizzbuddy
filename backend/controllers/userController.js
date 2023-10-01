@@ -77,18 +77,17 @@ export async function roleLogIn(req, res) {
     const secrectKey = process.env.SECRECTKEY;
     let role;
     const { email, password } = req.body;
-    let approvedStatus;
+    let userId;
     if (email === "admin@gmail.com") {
-      approvedStatus = await adminLogIn(email, password);
+      userId = await adminLogIn(email, password);
       role = "admin";
     } else {
-      approvedStatus = await userLogin(email, password);
-      if (!approvedStatus)
-        return res.json({ message: "credential not matching" });
+      userId = await userLogin(email, password);
+      if (!userId) return res.json({ message: "credential not matching" });
       role = "user";
     }
-    if (approvedStatus) {
-      const token = jwt.sign({ approvedStatus }, secrectKey, {
+    if (userId) {
+      const token = jwt.sign({ userId }, secrectKey, {
         expiresIn: "1h",
       });
       res.json({ token, role });
@@ -153,8 +152,12 @@ export async function BussinessForm(req, res) {
 
 export async function userProfile(req, res) {
   try {
+    const token = req.headers.authorization.replace("Bearer","").trim();
+    const secrectKey = process.env.SECRECTKEY;
+    const decodedToken = jwt.verify(token, secrectKey);
+    console.log(decodedToken.userId);
     const userDetails = await userModel.find();
-    res.json(userDetails)
+    res.json(userDetails);
   } catch (error) {
     console.log(error);
   }
