@@ -1,32 +1,44 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: Number,
+    },
+    password: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
+    profileImage: {
+      type: String,
+      default : 'https://photos.app.goo.gl/775Ky9eDSLgW8KiJ6'
+    },
+    bannerImage : {
+      type :String,
+      default : 'https://photos.app.goo.gl/ecD4H5qJoMXPHU7r6'
+    },
+    activeStatus: {
+      type: Boolean,
+      default: true,
+    },
+    bussinessId : {
+      type : Schema.Types.ObjectId,
+      ref: 'Business'
+    }
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: Number,
-  },
-  password: {
-    type: String,
-  },
-  bio: {
-    type: String,
-  },
-  profileImage: {
-    type: String,
-  },
-  activeStatus: {
-    type: Boolean,
-    default: true,
-  },
-},{timestamps : true});
+  { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
   try {
@@ -48,4 +60,4 @@ userSchema.pre("save", async function (next) {
 
 const userModel = mongoose.model("User", userSchema);
 
-export default userModel
+export default userModel;

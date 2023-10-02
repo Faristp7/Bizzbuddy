@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const bussinessSchema = new mongoose.Schema(
+const businessSchema = new mongoose.Schema(
   {
     bussinessName: {
       type: String,
       required: true,
     },
     userId: {
-      type: String,
-      required: false,
+      type: Schema.Types.ObjectId,
+      ref : "User"
     },
     Description: {
       type: String,
@@ -30,5 +30,5 @@ const bussinessSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const bussinessModel = mongoose.model("Bussiness", bussinessSchema);
-export default bussinessModel;
+const businessModel = mongoose.model("Business", businessSchema);
+export default businessModel;

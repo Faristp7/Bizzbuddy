@@ -1,5 +1,6 @@
 import "../user.css"
-import bannerImage from '../../../assets/img/bannerImage.jpg'
+import bannerImage from '../../../assets/img/bannerImage.png'
+import settings from '../../../assets/icon/settings.png'
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { NavigationBar } from "../Index";
@@ -11,15 +12,17 @@ const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
 export default function Profile() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [userData ,setUserData] = useState<any>([])
 
   useEffect(() => {
     (async () => {
-      const response = await getUserProfile()
-      console.log(response.data);
+      const {data} = await getUserProfile()     
+      console.log(data.profileImage);
+      setUserData(data)
     })()
   }, [])
 
-  const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
   return (
     <div className="flex dark:bg-slate-950" style={{ height: '2000px' }}>
       <div>
@@ -30,15 +33,14 @@ export default function Profile() {
           <div className="relative">
             <img src={bannerImage} className="rounded-sm h-40 sm:h-56 w-full" alt="banner" />
             <div className="absolute bottom-0  left-2/4 sm:left-28 transform -translate-x-1/2 translate-y-1/2">
-              <img className="rounded-full h-28 sm:h-36 border-4 border-white dark:border-slate-950" src={demoData} alt="profile" />
+              <img className="rounded-full h-28 w-28 sm:h-36 sm:w-36 border-4 border-white dark:border-slate-950" src={userData.profileImage} alt="profile" />
             </div>
           </div>
           <div className="flex justify-between m-2 sm:ml-48 sm:mt-3 leading-none">
             <div>
-              <h3 className="font-bold text-xl sm:text-2xl">Faris_tp_</h3>
-              <h5 className="font-semibold sm:text-lg text-gray-400">Builder</h5>
+              <h3 className="font-bold text-xl sm:text-2xl">{userData.username}</h3>
             </div>
-            <div>
+            <div className="flex">
               <motion.button
                 className="bg-blue-900 rounded-md m-2 px-3 py-2 text-white flex items-center"
                 whileHover={{ scale: 1.05 }}
@@ -54,6 +56,7 @@ export default function Profile() {
                 />
                 <span className="hidden sm:block ml-1">Edit Profile</span>
               </motion.button>
+              <button><img className="dark:invert" src={settings} alt="settings" /></button>
             </div>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">

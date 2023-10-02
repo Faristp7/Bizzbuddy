@@ -135,16 +135,27 @@ export async function BussinessForm(req, res) {
   try {
     const { values, tags } = req.body;
     const { businessName, description, phone, email, location } = values;
+
+    const token = req.headers.authorization.replace("Bearer", "").trim();
+    const decodedToken = jwt.verify(token, process.env.SECRECTKEY); //extracting token
+
     const bussinesSchema = new businessModel({
       bussinessName: businessName,
       Description: description,
+      userId: decodedToken.userId,
       phone,
       email,
       location,
       tags,
     });
-    await bussinesSchema.save();
-    res.status(200).json("Data saved succefully");
+    const businessCollection = await bussinesSchema.save();
+    if (businessCollection) {
+      await userModel.findOneAndUpdate(
+        { _id: decodedToken.userId },
+        { $set: { bussinessId: businessCollection._id } }
+      );
+      res.status(200).json("Data saved succefully");
+    }
   } catch (error) {
     console.log(error);
   }
@@ -152,11 +163,12 @@ export async function BussinessForm(req, res) {
 
 export async function userProfile(req, res) {
   try {
-    const token = req.headers.authorization.replace("Bearer","").trim();
-    const secrectKey = process.env.SECRECTKEY;
-    const decodedToken = jwt.verify(token, secrectKey);
-    console.log(decodedToken.userId);
-    const userDetails = await userModel.find();
+    const token = req.headers.authorization.replace("Bearer", "").trim();
+    const decodedToken = jwt.verify(token, process.env.SECRECTKEY);
+
+    const userDetails = await userModel
+      .findOne({ _id: decodedToken.userId })
+      .populate("bussinessId");
     res.json(userDetails);
   } catch (error) {
     console.log(error);
