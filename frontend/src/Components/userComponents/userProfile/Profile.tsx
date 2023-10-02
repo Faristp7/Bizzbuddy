@@ -5,7 +5,7 @@ import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { NavigationBar } from "../Index";
 import { motion } from "framer-motion";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useLayoutEffect, lazy, Suspense } from "react";
 import { Waveform } from "@uiball/loaders"
 import { getUserProfile } from "../../../Api/userApi";
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
@@ -13,15 +13,16 @@ const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 export default function Profile() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [userData ,setUserData] = useState<any>([])
+  const [userData, setUserData] = useState<any>([])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async () => {
-      const {data} = await getUserProfile()     
-      console.log(data.profileImage);
+      const { data } = await getUserProfile()
+      console.log(data);
+      
       setUserData(data)
     })()
-  }, [])
+  }, [isOpen])
 
   return (
     <div className="flex dark:bg-slate-950" style={{ height: '2000px' }}>
@@ -72,21 +73,26 @@ export default function Profile() {
                 <p className="rounded-md px-2 py-0.5">service</p>
               </div>
             </div>
-            <motion.button
-              className="bg-blue-900 rounded-md mt-4 px-2 py-1 text-white flex items-center"
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <motion.img
-                src={add}
-                alt="edit"
-                className="w-4 mx-0.5 invert"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-              List Business
-            </motion.button>
+            {
+              userData?.bussinessId?.bussinessName ? "" :
+              (
+              <motion.button
+                className="bg-blue-900 rounded-md mt-4 px-2 py-1 text-white flex items-center"
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <motion.img
+                  src={add}
+                  alt="edit"
+                  className="w-4 mx-0.5 invert"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                List Business
+              </motion.button>
+              )
+            }
           </div>
           <div className="flex justify-center">
             <Suspense fallback={

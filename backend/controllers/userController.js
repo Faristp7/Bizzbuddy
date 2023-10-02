@@ -154,7 +154,7 @@ export async function BussinessForm(req, res) {
         { _id: decodedToken.userId },
         { $set: { bussinessId: businessCollection._id } }
       );
-      res.status(200).json("Data saved succefully");
+      res.status(200).json({message : "Data saved succefully", success : true});
     }
   } catch (error) {
     console.log(error);

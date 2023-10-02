@@ -83,7 +83,10 @@ export default function ListBusiness({ close }: ListBusinessProps) {
       try {
         await validationSchema.validate(values, { abortEarly: false })
         const { data } = await saveBussinessForm({ values, tags })
-        console.log(data);
+        if(data.success)[
+          close()
+        ]
+        
       } catch (error) {
         console.error(error);
       }
@@ -116,7 +119,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        exit={{ opacity: 1 }}
         className="fixed inset-0 z-10 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50">
         <div ref={modalRef} className="bg-white dark:bg-slate-900 p-2 rounded-lg">
           <div className="max-w-md mx-auto mt-2">
