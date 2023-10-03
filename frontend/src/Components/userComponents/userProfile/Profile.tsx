@@ -10,17 +10,19 @@ import { motion } from "framer-motion";
 import { useState, useLayoutEffect, lazy, Suspense } from "react";
 import { Waveform } from "@uiball/loaders"
 import { getUserProfile } from "../../../Api/userApi";
+import EditProfileModal from "../../modals/EditProfileModal"
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
 export default function Profile() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
 
   useLayoutEffect(() => {
     (async () => {
       const { data } = await getUserProfile()
-      console.log(data.profileImage);
+      // console.log(data.username);
       setUserData(data)
     })()
   }, [isOpen])
@@ -47,6 +49,7 @@ export default function Profile() {
                 className="bg-blue-900 rounded-md m-2 px-3 py-2 text-white flex items-center"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setEditModalOpen(!editModalOpen)}
               >
                 <motion.img
                   src={edit}
@@ -65,7 +68,7 @@ export default function Profile() {
             <h1 className="font-bold text-3xl sm:text-6xl text-center">{userData?.bussinessId?.bussinessName}</h1>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">
-            <p className="text-md leading-none">{userData?.bussinessId?.Description}</p>
+            <p className="text-md font-medium leading-none">{userData?.bussinessId?.Description}</p>
             <div className="flex flex-wrap gap-3 text-center mt-4">
               {userData?.bussinessId?.tags.map((item: string, index: number) => (
                 <div className="bg-gray-200 dark:bg-gray-600 rounded-md" key={index}>
@@ -94,11 +97,12 @@ export default function Profile() {
                 )
             }
           </div>
+
           <div className="flex justify-center fixed w-screen">
             <Suspense fallback={
               <Waveform
                 size={40}
-                lineWeight={3.5}
+                lineWeight={3.5}                                         //list business modal open
                 speed={1}
                 color="black"
               />}>
@@ -106,6 +110,17 @@ export default function Profile() {
             </Suspense>
           </div>
 
+          <div className="flex justify-center fixed w-screen">
+            <Suspense fallback={
+              <Waveform
+                size={40}
+                lineWeight={3.5}                                          //edit profile modal open
+                speed={1}
+                color="black"
+              />}>
+              {editModalOpen && <EditProfileModal close={() => setEditModalOpen(!editModalOpen)} />}
+            </Suspense>
+          </div>
 
           <div className="mt-3 ml-1 sm:ml-6 flex gap-5">
             {userData?.bussinessId?.bussinessName && (

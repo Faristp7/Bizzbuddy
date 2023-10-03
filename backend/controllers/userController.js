@@ -32,8 +32,9 @@ export async function googleSignin(req, res) {
 
     if (alreadyExistUser.activeStatus) {
       if (alreadyExistUser) {
-        const token = alreadyExistUser.id;
-        jwt.sign({ token }, secrectKey, { expiresIn: "1h" }, (err, token) => {
+        console.log(alreadyExistUser.id);
+        const userId = alreadyExistUser.id;
+        jwt.sign({ userId }, secrectKey, { expiresIn: "1h" }, (err, token) => {
           if (err) {
             return res.json({ message: "Failed to generate token" });
           }
@@ -165,10 +166,12 @@ export async function userProfile(req, res) {
   try {
     const token = req.headers.authorization.replace("Bearer", "").trim();
     const decodedToken = jwt.verify(token, process.env.SECRECTKEY);
+    console.log(decodedToken.userId);
 
     const userDetails = await userModel
       .findOne({ _id: decodedToken.userId })
       .populate("bussinessId");
+
     res.json(userDetails);
   } catch (error) {
     console.log(error);
