@@ -1,5 +1,6 @@
 import { useEffect, useState, ReactNode } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 interface ErrorBountryProps {
     children: ReactNode
@@ -7,6 +8,7 @@ interface ErrorBountryProps {
 
 const ErrorBountry: React.FC<ErrorBountryProps> = ({ children }) => {
     const [hasError, setHasError] = useState<boolean>(false)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const errorHandler = (errorEvent: ErrorEvent) => {
@@ -18,6 +20,11 @@ const ErrorBountry: React.FC<ErrorBountryProps> = ({ children }) => {
             window.removeEventListener('error', errorHandler);
         };
     }, [])
+
+    const goBack = () => {
+        navigate(-1)
+        window.location.reload()
+    }
 
     if (hasError) {
         return (
@@ -31,7 +38,7 @@ const ErrorBountry: React.FC<ErrorBountryProps> = ({ children }) => {
                 >
                     <h1 className="text-4xl font-bold text-red-500 mb-4">Oops! Something went wrong.</h1>
                     <p className="text-gray-700 text-lg mb-6">We're sorry, but something unexpected happened. Please try again later.</p>
-                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={goBack}>
                         Go back
                     </button>
                 </motion.div>
