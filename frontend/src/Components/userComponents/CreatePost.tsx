@@ -5,19 +5,18 @@ import { useState } from 'react'
 export default function CreatePost() {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [image, setImage] = useState<string | null>(null);
+    // const [image, setImage] = useState<string | null>(null);
     const [tag, setTag] = useState('');
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log('Title:', title);
         console.log('Description:', description);
-        console.log('Image:', image);
+        // console.log('Image:', image);
         console.log('Tag:', tag);
 
         setTitle('')
         setDescription('');
-        setImage(null);
         setTag('');
     };
     return (
@@ -49,7 +48,7 @@ export default function CreatePost() {
                                     required
                                 />
                             </div>
-                            <div>
+                            {/* <div>
                                 <input
                                     type="file"
                                     onChange={(e) => setImage(e.target.files[0])}
@@ -58,7 +57,7 @@ export default function CreatePost() {
                                     accept="image/*"
                                     aria-aria-label="Upload image"
                                 />
-                            </div>
+                            </div> */}
                             <div>
                                 <input
                                     type="text"
