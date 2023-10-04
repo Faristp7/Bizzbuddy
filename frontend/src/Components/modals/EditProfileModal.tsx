@@ -60,7 +60,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
             [e.target.name]: e.target.value,
         });
     };
-    
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -104,7 +104,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                     <Tab.Panels>
                         <Tab.Panel className={"flex flex-col"}>
                             <form onSubmit={handleUserSubmit}>
-                                <div className="relative z-0 w-full mb-6 group mt-3">
+                                <div className="relative z-0 w-full mb-3 group mt-3">
                                     <input
                                         type="text"
                                         name="userName"
@@ -122,7 +122,11 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                                         user name
                                     </label>
                                 </div>
-                                <div className="relative z-0 w-full mb-6 group">
+                                <div>
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload profile</label>
+                                    <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" />
+                                </div>
+                                <div className="relative z-0 w-full mb-6 group mt-3">
                                     <input
                                         type="tel"
                                         name="phone"
@@ -160,7 +164,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                                 </div>
                                 <div className="flex justify-end">
                                     <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
-                                        subimt
+                                        Update
                                     </button>
                                 </div>
                             </form>
@@ -224,7 +228,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                                 </div>
                                 <div className="flex justify-end">
                                     <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
-                                        subimt
+                                        Update
                                     </button>
                                 </div>
                             </form>

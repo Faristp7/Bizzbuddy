@@ -134,9 +134,9 @@ async function userLogin(email, password) {
 
 export async function BussinessForm(req, res) {
   try {
-    const { values, tags } = req.body;
+    const { values, tags, url } = req.body;
     const { businessName, description, phone, email, location } = values;
-
+    console.log(url);
     const token = req.headers.authorization.replace("Bearer", "").trim();
     const decodedToken = jwt.verify(token, process.env.SECRECTKEY); //extracting token
 
@@ -144,6 +144,7 @@ export async function BussinessForm(req, res) {
       bussinessName: businessName,
       Description: description,
       userId: decodedToken.userId,
+      bannerImage: url,
       phone,
       email,
       location,
@@ -155,7 +156,7 @@ export async function BussinessForm(req, res) {
         { _id: decodedToken.userId },
         { $set: { bussinessId: businessCollection._id } }
       );
-      res.status(200).json({message : "Data saved succefully", success : true});
+      res.status(200).json({ message: "Data saved succefully", success: true });
     }
   } catch (error) {
     console.log(error);

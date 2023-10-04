@@ -24,10 +24,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       default : 'https://photos.app.goo.gl/775Ky9eDSLgW8KiJ6'
     },
-    bannerImage : {
-      type :String,
-      default : 'https://photos.app.goo.gl/ecD4H5qJoMXPHU7r6'
-    },
     activeStatus: {
       type: Boolean,
       default: true,

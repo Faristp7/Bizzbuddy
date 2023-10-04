@@ -8,6 +8,8 @@ import type { InputRef } from 'antd'
 import { saveBussinessForm } from "../../Api/userApi";
 import { PlusOutlined } from '@ant-design/icons'
 import "../userComponents/user.css"
+import axios from "axios";
+import { DotPulse } from '@uiball/loaders'
 
 export default function ListBusiness({ close }: ListBusinessProps) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -16,6 +18,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<InputRef>(null);
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (inputVisible) {
@@ -73,6 +76,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
   const formik = useFormik({
     initialValues: {
       businessName: '',
+      bannerImage: null,
       description: '',
       phone: '',
       email: '',
@@ -81,13 +85,27 @@ export default function ListBusiness({ close }: ListBusinessProps) {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        setLoading(true)
+        const presetKey = "p2bwkmow";
+        const cloudName = "dglfnmf0x";
         await validationSchema.validate(values, { abortEarly: false })
-        const { data } = await saveBussinessForm({ values, tags })
-        if(data.success)[
-          close()
-        ]
-        
+        const formData = new FormData()
+        if (values.bannerImage) {
+          formData.append('file', values.bannerImage)
+          formData.append('upload_preset', presetKey)
+          formData.append('cloud_name', cloudName)
+
+          axios.post("https://api.cloudinary.com/v1_1/dglfnmf0x/image/upload", formData,)
+            .then(async (res) => {
+              const url = res.data.secure_url
+              const { data } = await saveBussinessForm({ values, tags, url })
+              if (data.success) {
+                close()
+              }
+            })
+        }
       } catch (error) {
+        setLoading(false)
         console.error(error);
       }
     }
@@ -114,6 +132,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
       close();
     }
   };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -137,6 +156,15 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                 />
               </div>
               <p className="my-0.5 text-center text-red-700">{formik.errors.businessName} {"\u00a0"}</p>
+              <div className="mb-5">
+                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload profile</label>
+                <input
+                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="file_input"
+                  type="file"
+                  // value={formik.values.bannerImage}
+                  onChange={(e) => formik.setFieldValue('bannerImage', e.currentTarget.files?.[0])} />
+              </div>
               <div className="">
                 <textarea
                   name="description"
@@ -209,19 +237,31 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   </Tag>
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={close}
-                  className="bg-red-800 hover:bg-red-900 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Close
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 bg-blue-900 hover:bg-blue-950 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Add
-                </button>
+              <div className="flex items-center justify-end gap-2">
+                <div>
+                  <button
+                    onClick={close}
+                    className="bg-red-800 hover:bg-red-900 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Close
+                  </button>
+                </div>
+                {!loading ?
+                  <button
+                    type="submit"
+                    className="bg-blue-900 hover:bg-blue-950 text-white font-bold py-1.5 px-5 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    List your business
+                  </button>
+                  :
+                  <div className="px-3">
+                    <DotPulse
+                      size={40}
+                      speed={1.3}
+                      color="black"
+                    />
+                  </div>
+                }
               </div>
             </form>
           </div>
