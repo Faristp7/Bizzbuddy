@@ -1,19 +1,24 @@
-import { ListBusinessProps } from "../../interface/interface";
 import { motion } from "framer-motion";
 import { Tab } from "@headlessui/react";
 import { FormEvent, useEffect, useState } from "react";
 import "../userComponents/user.css";
 import closeButton from "../../assets/icon/close.png";
-// import { TextField } from "@mui/material";
+import { userProfileUpdate } from "../../Api/userApi";
 
-export default function EditProfileModal({ close }: ListBusinessProps) {
+interface editprofileModalProps {
+    close : () => void
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    userData : any
+}
+
+export default function EditProfileModal({ close , userData } : editprofileModalProps) {
     const [activeTab, setActiveTab] = useState<number>(0);
+    
     const [updateUser, setUpdateUser] = useState({
-        photo: "",
-        bannerPhoto: "",
-        userName: "",
-        email: "",
-        phone: "",
+        photo: '',
+        userName: userData.username,
+        email: userData.email,
+        phone: userData.phone,
     });
 
     const [updateBusiness, setUpdateBusiness] = useState({
@@ -37,7 +42,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
 
     const handleUserSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(updateUser);
+        await userProfileUpdate(updateUser)
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,9 +77,9 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -100, opacity: 0 }}
-                className="bg-white p-3 rounded-lg dark:bg-slate-900"
+                className="bg-white p-3 px-5 rounded-lg dark:bg-slate-900"
             >
-                <div className="flex justify-end">
+                <div className="flex justify-end mb-3">
                     <button onClick={close}>
                         <img
                             src={closeButton}
@@ -104,7 +109,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                     <Tab.Panels>
                         <Tab.Panel className={"flex flex-col"}>
                             <form onSubmit={handleUserSubmit}>
-                                <div className="relative z-0 w-full mb-3 group mt-3">
+                                <div className="relative z-0 w-full mb-3 group mt-4">
                                     <input
                                         type="text"
                                         name="userName"
@@ -126,7 +131,7 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload profile</label>
                                     <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" />
                                 </div>
-                                <div className="relative z-0 w-full mb-6 group mt-3">
+                                <div className="relative z-0 w-full mb-6 group mt-4">
                                     <input
                                         type="tel"
                                         name="phone"

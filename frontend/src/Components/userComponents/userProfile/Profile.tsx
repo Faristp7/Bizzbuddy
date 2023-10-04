@@ -1,5 +1,4 @@
 import "../user.css"
-import bannerImage from '../../../assets/img/bannerImage.png'
 import settings from '../../../assets/icon/settings.png'
 import location from '../../../assets/icon/location.png'
 import contactUs from '../../../assets/icon/contact-us.png'
@@ -35,7 +34,7 @@ export default function Profile() {
       <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow dark:text-white">
         <div>
           <div className="relative">
-            <img src={bannerImage} className="rounded-sm h-40 sm:h-56 w-full" alt="banner" />
+            <img src={userData?.bussinessId?.bannerImage} className="rounded-sm h-40 sm:h-56 w-full" alt="banner" />
             <div className="absolute bottom-0  left-2/4 sm:left-28 transform -translate-x-1/2 translate-y-1/2">
               <img className="rounded-full h-28 w-28 sm:h-36 sm:w-36 border-4 border-white dark:border-slate-950" src={userData?.profileImage} alt="profile" />
             </div>
@@ -118,7 +117,7 @@ export default function Profile() {
                 speed={1}
                 color="black"
               />}>
-              {editModalOpen && <EditProfileModal close={() => setEditModalOpen(!editModalOpen)} />}
+              {editModalOpen && <EditProfileModal close={() => setEditModalOpen(!editModalOpen)} userData={userData}/>}
             </Suspense>
           </div>
 

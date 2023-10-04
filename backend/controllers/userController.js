@@ -178,3 +178,12 @@ export async function userProfile(req, res) {
     console.log(error);
   }
 }
+
+export async function updateUserData(req,res){
+  try {
+    console.log(req.body);
+    res.json({message : "got it"})
+  } catch (error) {
+    console.log(error);
+  }
+}
