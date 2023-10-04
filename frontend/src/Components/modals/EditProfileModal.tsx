@@ -1,16 +1,66 @@
-import { ListBusinessProps } from '../../interface/interface';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Tab } from '@headlessui/react'
-import { useState } from 'react';
-import '../userComponents/user.css'
+import { ListBusinessProps } from "../../interface/interface";
+import { motion } from "framer-motion";
+import { Tab } from "@headlessui/react";
+import { FormEvent, useEffect, useState } from "react";
+import "../userComponents/user.css";
+import closeButton from "../../assets/icon/close.png";
+// import { TextField } from "@mui/material";
 
 export default function EditProfileModal({ close }: ListBusinessProps) {
-
     const [activeTab, setActiveTab] = useState<number>(0);
+    const [updateUser, setUpdateUser] = useState({
+        photo: "",
+        bannerPhoto: "",
+        userName: "",
+        email: "",
+        phone: "",
+    });
 
-    const handleTabClick = (index: number) => {
-        setActiveTab(index);
+    const [updateBusiness, setUpdateBusiness] = useState({
+        businessName: '',
+        description: '',
+        phone: '',
+        location: '',
+        tags: ''
+    })
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyPress);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleKeyPress = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+            close();
+        }
     };
+
+    const handleUserSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(updateUser);
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUpdateUser({
+            ...updateUser,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    // business
+
+    const handleBusinessSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(updateBusiness);
+    };
+
+    const handleBusinessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUpdateBusiness({
+            ...updateBusiness,
+            [e.target.name]: e.target.value,
+        });
+    };
+    
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -22,51 +72,165 @@ export default function EditProfileModal({ close }: ListBusinessProps) {
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -100, opacity: 0 }}
-                className="bg-white p-3 rounded-lg"
+                className="bg-white p-3 rounded-lg dark:bg-slate-900"
             >
-                <div className='flex justify-end'>
-                    <button onClick={close}>X</button>
+                <div className="flex justify-end">
+                    <button onClick={close}>
+                        <img
+                            src={closeButton}
+                            alt="close"
+                            className="w-6 h-6 dark:invert"
+                        />
+                    </button>
                 </div>
 
-                <AnimatePresence>
-                    <Tab.Group>
-                        <Tab.List className="flex p-4 space-x-4">
-                            <Tab
-                                className={`cursor-pointer px-4 py-2 bg-white border-b-2 border-transparent hover:border-blue-900 transition duration-300 ease-in-out ${activeTab === 0 ? "active bg-blue-900 text-white" : ""
-                                    }`}
-                                onClick={() => handleTabClick(0)}
-                            >
-                                User
-                            </Tab>
-                            <Tab
-                                className={`cursor-pointer px-4 py-2 bg-white border-b-2 border-transparent hover:border-blue-500 transition duration-300 ease-in-out ${activeTab === 1 ? "active bg-blue-500 text-white" : ""
-                                    }`}
-                                onClick={() => handleTabClick(1)}
-                            >
-                                Business
-                            </Tab>
-                        </Tab.List>
-                        <Tab.Panels>
-                            <Tab.Panel>
-                                <motion.div
-                                    className="p-4 shadow-md rounded-md"
-                                    animate={{ opacity: [0, 1] }}
-                                    initial={{ opacity: 0 }}>
-                                    Content 1
-                                </motion.div>
-                            </Tab.Panel>
-                            <Tab.Panel>
-                                <motion.div
-                                    className="p-4 shadow-md rounded-md"
-                                    animate={{ opacity: [0, 1] }}
-                                    initial={{ opacity: 0 }}>
-                                    Content 2
-                                </motion.div>
-                            </Tab.Panel>
-                        </Tab.Panels>
-                    </Tab.Group>
-                </AnimatePresence>
-
+                <Tab.Group>
+                    <Tab.List className={"flex justify-between"}>
+                        <Tab
+                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 0 ? "bg-blue-900 text-white" : "bg-gray-200"
+                                }`}
+                            onClick={() => setActiveTab(0)}
+                        >
+                            user
+                        </Tab>
+                        <Tab
+                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 1 ? "bg-blue-900 text-white" : "bg-gray-200"
+                                }`}
+                            onClick={() => setActiveTab(1)}
+                        >
+                            business
+                        </Tab>
+                    </Tab.List>
+                    <Tab.Panels>
+                        <Tab.Panel className={"flex flex-col"}>
+                            <form onSubmit={handleUserSubmit}>
+                                <div className="relative z-0 w-full mb-6 group mt-3">
+                                    <input
+                                        type="text"
+                                        name="userName"
+                                        value={updateUser.userName}
+                                        onChange={handleChange}
+                                        id="name"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="name"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        user name
+                                    </label>
+                                </div>
+                                <div className="relative z-0 w-full mb-6 group">
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={updateUser.phone}
+                                        onChange={handleChange}
+                                        id="name"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="name"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Phone number
+                                    </label>
+                                </div>
+                                <div className="relative z-0 w-full mb-6 group">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={updateUser.email}
+                                        onChange={handleChange}
+                                        id="email"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="email"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Email address
+                                    </label>
+                                </div>
+                                <div className="flex justify-end">
+                                    <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
+                                        subimt
+                                    </button>
+                                </div>
+                            </form>
+                        </Tab.Panel>
+                        {/* business */}
+                        <Tab.Panel>
+                            <form onSubmit={handleBusinessSubmit}>
+                                <div className="relative z-0 w-full mb-6 group mt-3">
+                                    <input
+                                        type="text"
+                                        name="userName"
+                                        value={updateUser.userName}
+                                        onChange={handleBusinessChange}
+                                        id="name"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="name"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        user name
+                                    </label>
+                                </div>
+                                <div className="relative z-0 w-full mb-6 group">
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={updateUser.phone}
+                                        onChange={handleBusinessChange}
+                                        id="name"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="name"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Phone number
+                                    </label>
+                                </div>
+                                <div className="relative z-0 w-full mb-6 group">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={updateUser.email}
+                                        onChange={handleBusinessChange}
+                                        id="email"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="email"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        Email address
+                                    </label>
+                                </div>
+                                <div className="flex justify-end">
+                                    <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
+                                        subimt
+                                    </button>
+                                </div>
+                            </form>
+                        </Tab.Panel>
+                    </Tab.Panels>
+                </Tab.Group>
             </motion.div>
         </motion.div>
     );
