@@ -1,7 +1,5 @@
 import "../user.css"
 import settings from '../../../assets/icon/settings.png'
-import location from '../../../assets/icon/location.png'
-import contactUs from '../../../assets/icon/contact-us.png'
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { NavigationBar } from "../Index";
@@ -24,7 +22,7 @@ export default function Profile() {
       // console.log(data.username);
       setUserData(data)
     })()
-  }, [isOpen])
+  }, [isOpen ,editModalOpen])
 
   return (
     <div className="flex dark:bg-slate-950">
@@ -126,7 +124,6 @@ export default function Profile() {
               <div>
                 <div className="flex gap-1">
                   <h3 className="font-bold text-md mb-1">Contact Us</h3>
-                  <img src={contactUs} className="w-5 h-5 mt-0.5 dark:invert" alt="contact us" />
                 </div>
                 <div className="ml-2">
                   <p>{userData?.bussinessId?.phone}</p>
@@ -138,7 +135,6 @@ export default function Profile() {
               <div>
                 <div className="flex">
                   <h1 className="font-bold mb-1">location</h1>
-                  <img src={location} className="w-5 h-5 dark:invert" alt="location" />
                 </div>
                 <div className="ml-2">
                   <p>{userData?.bussinessId?.location}</p>

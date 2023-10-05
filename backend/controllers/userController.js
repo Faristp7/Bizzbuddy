@@ -4,6 +4,12 @@ import businessModel from "../models/bussinessModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+function getUserId(Bearer) {
+  const token = Bearer.replace("Bearer", "").trim();
+  const decodedToken = jwt.verify(token, process.env.SECRECTKEY); //extracting token
+  return decodedToken;
+}
+
 export async function signUp(req, res) {
   try {
     const { username, email, phone, password } = req.body;
@@ -32,7 +38,6 @@ export async function googleSignin(req, res) {
 
     if (alreadyExistUser.activeStatus) {
       if (alreadyExistUser) {
-        console.log(alreadyExistUser.id);
         const userId = alreadyExistUser.id;
         jwt.sign({ userId }, secrectKey, { expiresIn: "1h" }, (err, token) => {
           if (err) {
@@ -136,7 +141,6 @@ export async function BussinessForm(req, res) {
   try {
     const { values, tags, url } = req.body;
     const { businessName, description, phone, email, location } = values;
-    console.log(url);
     const token = req.headers.authorization.replace("Bearer", "").trim();
     const decodedToken = jwt.verify(token, process.env.SECRECTKEY); //extracting token
 
@@ -165,9 +169,7 @@ export async function BussinessForm(req, res) {
 
 export async function userProfile(req, res) {
   try {
-    const token = req.headers.authorization.replace("Bearer", "").trim();
-    const decodedToken = jwt.verify(token, process.env.SECRECTKEY);
-    console.log(decodedToken.userId);
+    const decodedToken = getUserId(req.headers.authorization);
 
     const userDetails = await userModel
       .findOne({ _id: decodedToken.userId })
@@ -179,10 +181,23 @@ export async function userProfile(req, res) {
   }
 }
 
-export async function updateUserData(req,res){
+export async function updateUserData(req, res) {
   try {
-    console.log(req.body);
-    res.json({message : "got it"})
+    const { values, url } = req.body;
+
+    const id = getUserId(req.headers.authorization);
+    await userModel.updateOne(
+      { _id: id.userId },
+      {
+        $set: {
+          email: values.email,
+          phone: values.phone,
+          username: values.username,
+          ...(url ? { profileImage: url } : {}),
+        },
+      }
+    );
+    res.json({ success : true });
   } catch (error) {
     console.log(error);
   }

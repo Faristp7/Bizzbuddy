@@ -7,6 +7,7 @@ import { userProfileUpdate } from "../../Api/userApi";
 import { editUserProfileValidationSchema } from '../../validations/validation'
 import { useFormik } from 'formik'
 import axios from "axios";
+import { Ring } from '@uiball/loaders'
 
 interface editprofileModalProps {
     close: () => void
@@ -16,40 +17,43 @@ interface editprofileModalProps {
 
 export default function EditProfileModal({ close, userData }: editprofileModalProps) {
     const [activeTab, setActiveTab] = useState<number>(0);
-
-    // const [updateUser, setUpdateUser] = useState({
-    //     userName: userData.username,
-    //     photo: null,
-    //     email: userData.email,
-    //     phone: userData.phone,
-    // });
+    const [loading, setLoading] = useState<boolean>(false)
 
     const formik = useFormik({
         initialValues: {
             username: userData.username,
-            photo: null,
+            Profilephoto: null,
             email: userData.email,
             phone: userData.phone
         },
         validationSchema: editUserProfileValidationSchema,
         onSubmit: async (values) => {
             try {
+                setLoading(true)
                 const presetKey = "p2bwkmow";
                 const cloudName = "dglfnmf0x";
                 await editUserProfileValidationSchema.validate(values, { abortEarly: false })
                 const formData = new FormData()
-                if (values.photo) {
-                    formData.append('file', values.photo)
+                if (values.Profilephoto) {
+                    formData.append('file', values.Profilephoto)
                     formData.append('upload_preset', presetKey)
                     formData.append('cloud_name', cloudName)
                     axios.post("https://api.cloudinary.com/v1_1/dglfnmf0x/image/upload", formData,)
                         .then(async (res) => {
-                            console.log(res);
-                            const { data } = await userProfileUpdate(values)
-                            console.log(data);
+                            const url = res.data.secure_url
+                            const { data } = await userProfileUpdate({ values, url })
+                            if (data.success) {
+                                close()
+                            }
                         }).catch((err) => {
                             console.log(err);
                         })
+                }
+                else {
+                    const { data } = await userProfileUpdate({ values })
+                    if (data.success) {
+                        close()
+                    }
                 }
             } catch (error) {
                 console.log(error);
@@ -129,14 +133,14 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                 <Tab.Group>
                     <Tab.List className={"flex justify-between"}>
                         <Tab
-                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 0 ? "bg-blue-900 text-white" : "bg-gray-200"
+                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 0 ? "bg-blue-900 text-white" : "bg-gray-300 dark:bg-gray-500"
                                 }`}
                             onClick={() => setActiveTab(0)}
                         >
                             user
                         </Tab>
                         <Tab
-                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 1 ? "bg-blue-900 text-white" : "bg-gray-200"
+                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 1 ? "bg-blue-900 text-white" : "bg-gray-300 dark:bg-gray-500"
                                 }`}
                             onClick={() => setActiveTab(1)}
                         >
@@ -166,14 +170,14 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                     </label>
                                 </div>
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">
-                                        {formik.errors.photo && typeof formik.errors.photo === 'string' ? (
-                                            <span className="text-red-500">{formik.errors.photo}</span>) : 'Upload Profile'}
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="Profilephoto">
+                                        {formik.errors.Profilephoto && typeof formik.errors.Profilephoto === 'string' ? (
+                                            <span className="text-red-500">{formik.errors.Profilephoto}</span>) : 'Upload Profile'}
                                     </label>
                                     <input
                                         className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                        id="file_input" type="file" name="photo" accept="image/jpeg , image/png"
-                                        onChange={formik.handleChange} />
+                                        id="Profilephoto" type="file" name="Profilephoto" accept="image/jpeg , image/png"
+                                        onChange={(e) => formik.setFieldValue('Profilephoto', e.currentTarget.files?.[0])} />
                                 </div>
                                 <div className="relative z-0 w-full mb-6 group mt-4">
                                     <input
@@ -214,8 +218,15 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                     </label>
                                 </div>
                                 <div className="flex justify-end">
-                                    <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
+                                    <button className="flex justify-center gap-3 bg-blue-900 rounded-lg flex-1 py-1 text-white " type="submit">
                                         Update
+                                        {loading &&
+                                            <Ring
+                                                size={19}
+                                                lineWeight={5}
+                                                speed={2}
+                                                color="white"
+                                            />}
                                     </button>
                                 </div>
                             </form>
