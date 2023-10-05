@@ -3,7 +3,7 @@ import { Tab } from "@headlessui/react";
 import { useEffect, useState, useRef } from "react";
 import "../userComponents/user.css";
 import closeButton from "../../assets/icon/close.png";
-import { userProfileUpdate } from "../../Api/userApi";
+import { updateBusinessData, userProfileUpdate } from "../../Api/userApi";
 import { editUserProfileValidationSchema, validationSchema } from '../../validations/validation'
 import { useFormik } from 'formik'
 import axios from "axios";
@@ -18,13 +18,16 @@ interface editprofileModalProps {
     userData: any
 }
 
+const presetKey = "p2bwkmow";
+const cloudName = "dglfnmf0x";
+
 export default function EditProfileModal({ close, userData }: editprofileModalProps) {
     const [activeTab, setActiveTab] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false)
     const [inputVisible, setInputVisible] = useState(false);
     const { token } = theme.useToken();
     const inputRef = useRef<InputRef>(null);
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>(userData.bussinessId.tags);
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
@@ -90,8 +93,6 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
         onSubmit: async (values) => {
             try {
                 setLoading(true)
-                const presetKey = "p2bwkmow";
-                const cloudName = "dglfnmf0x";
                 await editUserProfileValidationSchema.validate(values, { abortEarly: false })
                 const formData = new FormData()
                 if (values.Profilephoto) {
@@ -132,13 +133,35 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
-            {
-                try {
-                    console.log(values);
-                } catch (error) {
-                    console.log(error);
-
+            try {
+                setLoading(true)
+                const businessId = userData?.bussinessId?._id
+                await validationSchema.validate(values, { abortEarly: false })
+                const formData = new FormData()
+                if (values.bannerImage) {
+                    formData.append('file', values.bannerImage)
+                    formData.append('upload_preset', presetKey)
+                    formData.append('cloud_name', cloudName)
+                    axios.post("https://api.cloudinary.com/v1_1/dglfnmf0x/image/upload", formData,)
+                        .then(async (res) => {
+                            const url = res.data.secure_url
+                            const { data } = await updateBusinessData({ values, url, tags, businessId })
+                            if (data.success) {
+                                close()
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                        })
                 }
+                else {
+                    const { data } = await updateBusinessData({ values, tags, businessId })
+                    if (data.success) {
+                        close()
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+
             }
         }
     })
@@ -153,33 +176,6 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
             close();
         }
     };
-
-    // const handleUserSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     const { data } = await userProfileUpdate(updateUser)
-    //     console.log(data);
-    // };
-
-    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setUpdateUser({
-    //         ...updateUser,
-    //         [e.target.name]: e.target.value,
-    //     });
-    // };
-
-    // business
-
-    // const handleBusinessSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     console.log(updateBusiness);
-    // };
-
-    // const handleBusinessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setUpdateBusiness({
-    //         ...updateBusiness,
-    //         [e.target.name]: e.target.value,
-    //     });
-    // };
 
     return (
         <motion.div
@@ -413,7 +409,7 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                             <span className="text-red-500">{businessFormik.errors.location}</span>) : 'location'}
                                     </label>
                                 </div>
-                                <p className="mb-2">{tagChild}</p>
+                                <p className="mb-2 w-72">{tagChild}</p>
                                 <div className="mb-3 dark:text-white">
                                     {inputVisible ? (
                                         <Input
@@ -433,8 +429,15 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                     )}
                                 </div>
                                 <div className="flex justify-end">
-                                    <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
+                                    <button className="flex justify-center bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
                                         Update
+                                        {loading &&
+                                            <Ring
+                                                size={19}
+                                                lineWeight={5}
+                                                speed={2}
+                                                color="white"
+                                            />}
                                     </button>
                                 </div>
                             </form>

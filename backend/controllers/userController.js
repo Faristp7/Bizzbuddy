@@ -197,7 +197,29 @@ export async function updateUserData(req, res) {
         },
       }
     );
-    res.json({ success : true });
+    res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateBusinessData(req, res) {
+  try {
+    const { values, tags, url, businessId } = req.body;
+    await businessModel.updateOne(
+      { _id: businessId },
+      {
+        $set: {
+          bussinessName: values.businessName,
+          ...(url ? { bannerImage: url } : {}),
+          Description: values.description,
+          phone: values.phone,
+          email: values.email,
+          tags: values.tags,
+        },
+      }
+    );
+    res.json({ success: true });
   } catch (error) {
     console.log(error);
   }

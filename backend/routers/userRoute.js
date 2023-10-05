@@ -1,6 +1,7 @@
 import express from "express";
 import {
   BussinessForm,
+  updateBusinessData,
   googleSignin,
   saveUser,
   signUp,
@@ -16,8 +17,9 @@ router.post("/googleSignin", googleSignin);
 router.post("/saveUser", saveUser);
 router.post("/saveBussinessForm", BussinessForm);
 
-router.patch("/updateUserData", updateUserData);   //update user Data
-
 router.get("/getUserProfile", verifyToken, userProfile);
+
+router.patch("/updateUserData", verifyToken, updateUserData); //update user Data
+router.patch("/updateBusinessData" , verifyToken ,updateBusinessData) //update business Data
 
 export default router;
