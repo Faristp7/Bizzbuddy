@@ -4,12 +4,12 @@ import { useRef, useEffect, useState } from "react";
 import { validationSchema } from "../../validations/validation"
 import { Input, Tag, theme } from 'antd'
 import { useFormik } from "formik";
-import type { InputRef } from 'antd'
+import { DotPulse } from '@uiball/loaders'
 import { saveBussinessForm } from "../../Api/userApi";
 import { PlusOutlined } from '@ant-design/icons'
+import type { InputRef } from 'antd'
 import "../userComponents/user.css"
 import axios from "axios";
-import { DotPulse } from '@uiball/loaders'
 
 export default function ListBusiness({ close }: ListBusinessProps) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -86,8 +86,8 @@ export default function ListBusiness({ close }: ListBusinessProps) {
     onSubmit: async (values) => {
       try {
         setLoading(true)
-        const presetKey = "p2bwkmow";
-        const cloudName = "dglfnmf0x";
+          const presetKey = "p2bwkmow";
+          const cloudName = "dglfnmf0x";
         await validationSchema.validate(values, { abortEarly: false })
         const formData = new FormData()
         if (values.bannerImage) {
@@ -156,15 +156,17 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                 />
               </div>
               <p className="my-0.5 text-center text-red-700">{formik.errors.businessName} {"\u00a0"}</p>
-              <div className="mb-5">
+              <div className="mb-0.5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload profile</label>
                 <input
                   className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="file_input"
                   type="file"
+                  accept="image/jpeg , image/png"
                   // value={formik.values.bannerImage}
                   onChange={(e) => formik.setFieldValue('bannerImage', e.currentTarget.files?.[0])} />
               </div>
+              <p className="mb-0.5 text-center text-red-700">{formik.errors.bannerImage} {"\u00a0"}</p>
               <div className="">
                 <textarea
                   name="description"
