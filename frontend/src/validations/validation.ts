@@ -7,28 +7,34 @@ export const validationSchema = Yup.object().shape({
     .min(2, "too short"),
   description: Yup.string()
     .max(50, "description can have 50 words")
-    .min(2, "add more words"),
+    .min(5, "add more words"),
   phone: Yup.string().matches(/^\d{10}$/, "10 numbers needed"),
   email: Yup.string().email("invalid email address"),
   location: Yup.string().min(2, "location is not valid").trim(),
-  bannerImage: Yup.mixed()
+  bannerImage: Yup.mixed().nullable()
     .test("fileSize", "file size is to large ", (value) => {
+      if(value === null){
+        return true
+      }
       if (value instanceof File && value.size) {
         return value.size <= 10000000; //10 MB
       }
-      return true;
+      return false;
     })
     .test("fileType", "Unsupported file format", (value) => {
+      if(value === null){
+        return true
+      }
       if (value instanceof File && value.type) {
         return ["Image/jpeg", "image/png"].includes(value.type.toLowerCase());
       }
-      return true;
+      return false;
     }),
 });
 
 export const editUserProfileValidationSchema = Yup.object().shape({
   username: Yup.string()
-    .required("Enter you username")
+    .required("Enter your username")
     .min(2, "Too short")
     .max(9, "Too long")
     .trim(),

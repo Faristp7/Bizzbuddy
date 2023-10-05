@@ -1,13 +1,16 @@
 import { motion } from "framer-motion";
 import { Tab } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "../userComponents/user.css";
 import closeButton from "../../assets/icon/close.png";
 import { userProfileUpdate } from "../../Api/userApi";
-import { editUserProfileValidationSchema } from '../../validations/validation'
+import { editUserProfileValidationSchema, validationSchema } from '../../validations/validation'
 import { useFormik } from 'formik'
 import axios from "axios";
 import { Ring } from '@uiball/loaders'
+import { Input, Tag, theme } from 'antd'
+import type { InputRef } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 
 interface editprofileModalProps {
     close: () => void
@@ -18,7 +21,64 @@ interface editprofileModalProps {
 export default function EditProfileModal({ close, userData }: editprofileModalProps) {
     const [activeTab, setActiveTab] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false)
+    const [inputVisible, setInputVisible] = useState(false);
+    const { token } = theme.useToken();
+    const inputRef = useRef<InputRef>(null);
+    const [tags, setTags] = useState<string[]>([]);
+    const [inputValue, setInputValue] = useState('');
 
+    useEffect(() => {
+        if (inputVisible) {
+            inputRef.current?.focus();
+        }
+    }, [inputVisible]);
+
+    const handleClose = (removedTag: string) => {
+        const newTags = tags.filter((tag) => tag !== removedTag);
+        setTags(newTags);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
+
+    const handleInputConfirm = () => {
+        if (inputValue && tags.indexOf(inputValue) === -1) {
+            setTags([...tags, inputValue]);
+        }
+        setInputVisible(false);
+        setInputValue('');
+    };
+
+    const showInput = () => {
+        setInputVisible(true);
+    };
+
+    const forMap = (tag: string) => {
+        const tagElem = (
+            <Tag
+                closable
+                onClose={(e) => {
+                    e.preventDefault();
+                    handleClose(tag);
+                }}
+            >
+                {tag}
+            </Tag>
+        );
+        return (
+            <span key={tag} style={{ display: 'inline-block' }}>
+                {tagElem}
+            </span>
+        );
+    };
+
+    const tagChild = tags.map(forMap);
+
+    const tagPlusStyle: React.CSSProperties = {
+        background: token.colorBgContainer,
+        borderStyle: 'dashed',
+    };
     const formik = useFormik({
         initialValues: {
             username: userData.username,
@@ -61,13 +121,27 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
         }
     })
 
-    // const [updateBusiness, setUpdateBusiness] = useState({
-    //     businessName: '',
-    //     description: '',
-    //     phone: '',
-    //     location: '',
-    //     tags: ''
-    // })
+    const businessFormik = useFormik({
+        initialValues: {
+            businessName: userData?.bussinessId.bussinessName,
+            bannerImage: null,
+            description: userData?.bussinessId.Description,
+            phone: userData?.bussinessId.phone,
+            email: userData?.bussinessId.email,
+            location: userData?.bussinessId.location,
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            {
+                try {
+                    console.log(values);
+                } catch (error) {
+                    console.log(error);
+
+                }
+            }
+        }
+    })
 
     useEffect(() => {
         document.addEventListener("keydown", handleKeyPress);
@@ -233,14 +307,14 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                         </Tab.Panel>
                         {/* business */}
                         <Tab.Panel>
-                            {/* <form onSubmit={handleBusinessSubmit}>
-                                <div className="relative z-0 w-full mb-6 group mt-3">
+                            <form onSubmit={businessFormik.handleSubmit}>
+                                <div className="relative z-0 w-full mb-2 group mt-3">
                                     <input
                                         type="text"
-                                        name="username"
-                                        value={formik.values.username}
-                                        onChange={handleBusinessChange}
-                                        id="username"
+                                        name="businessName"
+                                        value={businessFormik.values.businessName}
+                                        onChange={businessFormik.handleChange}
+                                        id="businessName"
                                         className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                         placeholder=" "
                                         required
@@ -249,33 +323,64 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                         htmlFor="name"
                                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                                     >
-                                        user name
+                                        {businessFormik.errors.businessName && typeof businessFormik.errors.businessName === 'string' ? (
+                                            <span className="text-red-500">{businessFormik.errors.businessName}</span>) : 'business name'}
                                     </label>
                                 </div>
-                                <div className="relative z-0 w-full mb-6 group">
+                                <div>
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="Profilephoto">
+                                        {businessFormik.errors.bannerImage && typeof businessFormik.errors.bannerImage === 'string' ? (
+                                            <span className="text-red-500">{businessFormik.errors.bannerImage}</span>) : 'Upload Profile'}
+                                    </label>
+                                    <input
+                                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                        id="bannerImage" type="file" name="bannerImage" accept="image/jpeg , image/png"
+                                        onChange={(e) => businessFormik.setFieldValue('bannerImage', e.currentTarget.files?.[0])} />
+                                </div>
+                                <div className="relative z-0 w-full mb-3 group mt-3">
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        value={businessFormik.values.description}
+                                        onChange={businessFormik.handleChange}
+                                        id="description"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="description"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        {businessFormik.errors.description && typeof businessFormik.errors.description === 'string' ? (
+                                            <span className="text-red-500">{businessFormik.errors.description}</span>) : 'description'}
+                                    </label>
+                                </div>
+                                <div className="relative z-0 w-full mb-4 group">
                                     <input
                                         type="tel"
                                         name="phone"
-                                        value={formik.phone}
-                                        onChange={handleBusinessChange}
-                                        id="name"
+                                        value={businessFormik.values.phone}
+                                        onChange={businessFormik.handleChange}
+                                        id="phone"
                                         className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                         placeholder=" "
                                         required
                                     />
                                     <label
-                                        htmlFor="name"
+                                        htmlFor="phone"
                                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                                     >
-                                        Phone number
+                                        {businessFormik.errors.phone && typeof businessFormik.errors.phone === 'string' ? (
+                                            <span className="text-red-500">{businessFormik.errors.phone}</span>) : 'Phone number'}
                                     </label>
                                 </div>
                                 <div className="relative z-0 w-full mb-6 group">
                                     <input
                                         type="email"
                                         name="email"
-                                        value={updateUser.email}
-                                        onChange={handleBusinessChange}
+                                        value={businessFormik.values.email}
+                                        onChange={businessFormik.handleChange}
                                         id="email"
                                         className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                         placeholder=" "
@@ -285,15 +390,54 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                         htmlFor="email"
                                         className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                                     >
-                                        Email address
+                                        {businessFormik.errors.email && typeof businessFormik.errors.email === 'string' ? (
+                                            <span className="text-red-500">{businessFormik.errors.email}</span>) : 'Email address'}
                                     </label>
+                                </div>
+                                <div className="relative z-0 w-full mb-4 group">
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        value={businessFormik.values.location}
+                                        onChange={businessFormik.handleChange}
+                                        id="location"
+                                        className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                        placeholder=" "
+                                        required
+                                    />
+                                    <label
+                                        htmlFor="location"
+                                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    >
+                                        {businessFormik.errors.location && typeof businessFormik.errors.location === 'string' ? (
+                                            <span className="text-red-500">{businessFormik.errors.location}</span>) : 'location'}
+                                    </label>
+                                </div>
+                                <p className="mb-2">{tagChild}</p>
+                                <div className="mb-3 dark:text-white">
+                                    {inputVisible ? (
+                                        <Input
+                                            ref={inputRef}
+                                            type="text"
+                                            size="small"
+                                            style={{ width: 78 }}
+                                            value={inputValue}
+                                            onChange={handleInputChange}
+                                            onBlur={handleInputConfirm}
+                                            onPressEnter={handleInputConfirm}
+                                        />
+                                    ) : (
+                                        <Tag onClick={showInput} style={tagPlusStyle}>
+                                            <PlusOutlined /> New Tag
+                                        </Tag>
+                                    )}
                                 </div>
                                 <div className="flex justify-end">
                                     <button className="bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
                                         Update
                                     </button>
                                 </div>
-                            </form> */}
+                            </form>
                         </Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>

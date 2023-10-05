@@ -144,12 +144,12 @@ export default function Profile() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 my-5">
-            <div className="bg-red-300 h-80 rounded-lg">1</div>
-            <div className="bg-red-400 h-80 rounded-lg">1</div>
-            <div className="bg-red-500 h-80 rounded-lg">1</div>
-            <div className="bg-red-300 h-80 rounded-lg">1</div>
-            <div className="bg-red-400 h-80 rounded-lg">1</div>
-            <div className="bg-red-500 h-80 rounded-lg">1</div>
+            <div className="bg-gray-300 h-80 rounded-lg">1</div>
+            <div className="bg-gray-400 h-80 rounded-lg">1</div>
+            <div className="bg-gray-500 h-80 rounded-lg">1</div>
+            <div className="bg-gray-300 h-80 rounded-lg">1</div>
+            <div className="bg-gray-400 h-80 rounded-lg">1</div>
+            <div className="bg-gray-500 h-80 rounded-lg">1</div>
           </div>
         </div>
       </div>
