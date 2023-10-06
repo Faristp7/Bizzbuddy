@@ -22,13 +22,14 @@ const presetKey = "p2bwkmow";
 const cloudName = "dglfnmf0x";
 
 export default function EditProfileModal({ close, userData }: editprofileModalProps) {
+    const initalTags = userData?.bussinessId?.tags || [];
     const [activeTab, setActiveTab] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false)
     const [inputVisible, setInputVisible] = useState(false);
     const { token } = theme.useToken();
     const inputRef = useRef<InputRef>(null);
-    const [tags, setTags] = useState<string[]>(userData.bussinessId.tags);
     const [inputValue, setInputValue] = useState('');
+    const [tags, setTags] = useState<string[]>(initalTags);
 
     useEffect(() => {
         if (inputVisible) {
@@ -124,12 +125,12 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
 
     const businessFormik = useFormik({
         initialValues: {
-            businessName: userData?.bussinessId.bussinessName,
+            businessName: userData?.bussinessId?.bussinessName ?? '',
             bannerImage: null,
-            description: userData?.bussinessId.Description,
-            phone: userData?.bussinessId.phone,
-            email: userData?.bussinessId.email,
-            location: userData?.bussinessId.location,
+            description: userData?.bussinessId?.Description ?? '',
+            phone: userData?.bussinessId?.phone ?? '',
+            email: userData?.bussinessId?.email ?? '',
+            location: userData?.bussinessId?.location ?? '',
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -209,13 +210,15 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                         >
                             user
                         </Tab>
-                        <Tab
-                            className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 1 ? "bg-blue-900 text-white" : "bg-gray-300 dark:bg-gray-500"
-                                }`}
-                            onClick={() => setActiveTab(1)}
-                        >
-                            business
-                        </Tab>
+                        {businessFormik.values.businessName &&
+                            <Tab
+                                className={`flex-1 rounded-md py-1 px-2 m-1 duration-300 ${activeTab === 1 ? "bg-blue-900 text-white" : "bg-gray-300 dark:bg-gray-500"
+                                    }`}
+                                onClick={() => setActiveTab(1)}
+                            >
+                                business
+                            </Tab>
+                        }
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel className={"flex flex-col"}>
@@ -429,7 +432,7 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                                     )}
                                 </div>
                                 <div className="flex justify-end">
-                                    <button className="flex justify-center bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
+                                    <button className="flex justify-center gap-3 bg-blue-900 rounded-lg flex-1 py-1 text-white" type="submit">
                                         Update
                                         {loading &&
                                             <Ring

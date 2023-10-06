@@ -29,7 +29,7 @@ const businessSchema = new mongoose.Schema(
     },
     tags: {
       type: Array,
-      required: true,
+      default:[],
     },
   },
   { timestamps: true }

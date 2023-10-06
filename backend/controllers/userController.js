@@ -206,6 +206,7 @@ export async function updateUserData(req, res) {
 export async function updateBusinessData(req, res) {
   try {
     const { values, tags, url, businessId } = req.body;
+    
     await businessModel.updateOne(
       { _id: businessId },
       {
@@ -215,7 +216,7 @@ export async function updateBusinessData(req, res) {
           Description: values.description,
           phone: values.phone,
           email: values.email,
-          tags: values.tags,
+          tags: tags,
         },
       }
     );
