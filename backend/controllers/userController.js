@@ -36,8 +36,8 @@ export async function googleSignin(req, res) {
     const { email, given_name, picture } = req.body;
     const alreadyExistUser = await userModel.findOne({ email });
 
-    if (alreadyExistUser.activeStatus) {
-      if (alreadyExistUser) {
+    if (alreadyExistUser) {
+      if (alreadyExistUser.activeStatus) {
         const userId = alreadyExistUser.id;
         jwt.sign({ userId }, secrectKey, { expiresIn: "1h" }, (err, token) => {
           if (err) {
@@ -46,15 +46,23 @@ export async function googleSignin(req, res) {
           res.json({ token });
         });
       } else {
-        const userSchema = new userModel({
-          username: given_name,
-          email: email,
-          profileImage: picture,
-        });
-        await userSchema.save();
+        res.json({ message: "Account blocked", err: true });
       }
     } else {
-      res.json({ message: "Account blocked", err: true });
+      // if user not found Create new user
+      const userSchema = new userModel({
+        username: given_name,
+        email: email,
+        profileImage: picture,
+      });
+      await userSchema.save();
+      const userId = userSchema.id;
+      jwt.sign({ userId }, secrectKey, { expiresIn: "1h" }, (err, token) => {
+        if (err) {
+          return res.json({ message: "failed to generate token", err: true });
+        }
+        res.json({token})
+      });
     }
   } catch (error) {
     console.log(error);
@@ -206,7 +214,7 @@ export async function updateUserData(req, res) {
 export async function updateBusinessData(req, res) {
   try {
     const { values, tags, url, businessId } = req.body;
-    
+
     await businessModel.updateOne(
       { _id: businessId },
       {

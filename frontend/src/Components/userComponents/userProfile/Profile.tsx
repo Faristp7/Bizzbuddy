@@ -27,7 +27,7 @@ export default function Profile() {
     controls.start({
       opacity: 1,
       x: 0,
-      transition: { duration: 1.5, ease: "easeOut" },
+      transition: { duration: 3.5, ease: "easeOut" },
     })
 
     controls.start({
