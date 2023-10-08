@@ -39,7 +39,7 @@ export async function googleSignin(req, res) {
     if (alreadyExistUser) {
       if (alreadyExistUser.activeStatus) {
         const userId = alreadyExistUser.id;
-        jwt.sign({ userId }, secrectKey, { expiresIn: "1h" }, (err, token) => {
+        jwt.sign({ userId }, secrectKey, { expiresIn: "6h" }, (err, token) => {
           if (err) {
             return res.json({ message: "Failed to generate token" });
           }
@@ -57,7 +57,7 @@ export async function googleSignin(req, res) {
       });
       await userSchema.save();
       const userId = userSchema.id;
-      jwt.sign({ userId }, secrectKey, { expiresIn: "1h" }, (err, token) => {
+      jwt.sign({ userId }, secrectKey, { expiresIn: "6h" }, (err, token) => {
         if (err) {
           return res.json({ message: "failed to generate token", err: true });
         }
@@ -102,7 +102,7 @@ export async function roleLogIn(req, res) {
     }
     if (userId) {
       const token = jwt.sign({ userId }, secrectKey, {
-        expiresIn: "1h",
+        expiresIn: "6h",
       });
       res.json({ token, role });
     }

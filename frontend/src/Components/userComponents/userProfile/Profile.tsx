@@ -1,5 +1,7 @@
 import "../user.css"
 import settings from '../../../assets/icon/settings.png'
+import sun from '../../../assets/icon/sun.png'
+import moon from '../../../assets/icon/moon.png'
 import logout from '../../../assets/icon/logout.png'
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
@@ -19,6 +21,8 @@ export default function Profile() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openSettings, setOpenSettings] = useState<boolean>(false)
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
+  const savedTheme = localStorage.getItem('theme');
+  const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
 
@@ -51,6 +55,27 @@ export default function Profile() {
     dispatch(userLoggedOut(false))
     dispatch(adminLoggedOut(false))
     navigate('/')
+  }
+
+  useEffect(() => {
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === true) {
+      document.documentElement.classList.add('dark');
+    } else if (theme === false) {
+      document.documentElement.classList.remove('dark');
+    } else {
+      if (prefersDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, [theme]);
+
+  function handleTheme() {
+    const newTheme = !theme;
+    setTheme(newTheme);
+    localStorage.setItem('theme', JSON.stringify(newTheme));
   }
 
   return (
@@ -93,7 +118,7 @@ export default function Profile() {
                 />
                 <span className="hidden sm:block ml-1">Edit Profile</span>
               </motion.button>
-              <div className="relative">
+              <div className="relative block sm:hidden">
                 <button onClick={() => setOpenSettings(!openSettings)}>
                   <motion.img
                     className={`dark:invert duration-300 ${openSettings ? 'rotate-90' : ''}`} src={settings} alt="settings" />
@@ -104,12 +129,21 @@ export default function Profile() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.5 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute right-2 mt-3 rounded-md  py-1 border border-blue-900 w-24 bg-white z-10 dark:bg-slate-800">
+                    className="absolute right-2 mt-3 rounded-md  py-1 border border-gray-900 w-28 bg-white z-10 dark:bg-slate-800">
                     <div
-                      className="flex justify-center items-center gap-1 cursor-pointer px-2 hover:bg-gray-200 duration-200 dark:hover:bg-gray-700"
+                      className="flex justify-center items-center gap-2 cursor-pointer px-2 hover:bg-gray-200 duration-200 dark:hover:bg-gray-700"
                       onClick={handleLogout}>
-                      <img src={logout} className="w-5 dark:invert" alt="logout" loading="lazy" />
-                      <p className="truncate font-semibold">logout</p>
+                      <img src={logout} className="w-5 dark:invert" alt="logout" />
+                      <p className="truncate text-lg font-semibold">Logout</p>
+                    </div>
+                    <div
+                      className="mt-1 flex justify-center items-center gap-2 cursor-pointer px-2 hover:bg-gray-200 duration-200 dark:hover:bg-gray-700"
+                      onClick={handleTheme}>
+                      {theme ?
+                        <img src={sun} alt="theme" className="w-5 dark:invert" />
+                        :
+                        <img src={moon} alt="theme" className="w-5 dark:invert" />}
+                      <p className="truncate text-lg font-semibold">Theme</p>
                     </div>
                   </motion.div>
                 }
