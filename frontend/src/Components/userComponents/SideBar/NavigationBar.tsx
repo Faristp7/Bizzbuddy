@@ -54,9 +54,10 @@ export default function NavigationBar() {
     dispatch(adminLoggedOut(false))
     navigate('/')
   }
+  
   return (
     <div className="">
-      <div className="border-t-2 sm:border-r-2 sm:border-t-0 fixed left-0 bottom-2 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white bg-white dark:bg-slate-950 duration-300">
+      <div className="border-t-2 sm:border-r-2 sm:border-t-0 fixed left-0 bottom-0 pb-2 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white bg-white dark:bg-slate-950 duration-300">
         <div className="px-3">
           <div className="">
             <h1 className="hidden md:block uppercase font-bold text-4xl my-3 mt-6">Bizzbuddy</h1>

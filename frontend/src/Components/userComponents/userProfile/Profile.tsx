@@ -1,5 +1,6 @@
 import "../user.css"
 import settings from '../../../assets/icon/settings.png'
+import logout from '../../../assets/icon/logout.png'
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { NavigationBar } from "../Index";
@@ -7,14 +8,20 @@ import { motion, useAnimation } from "framer-motion";
 import { useState, useLayoutEffect, lazy, Suspense, useEffect } from "react";
 import { Waveform } from "@uiball/loaders"
 import { getUserProfile } from "../../../Api/userApi";
+import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { userLoggedOut } from "../../../Redux/user/authSlice"
+import { adminLoggedOut } from "../../../Redux/admin/adminAuth"
 const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
 export default function Profile() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [openSettings, setOpenSettings] = useState<boolean>(false)
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
+
   const controls = useAnimation()
   useLayoutEffect(() => {
     (async () => {
@@ -35,6 +42,17 @@ export default function Profile() {
       transition: { duration: 0.5, yoyo: Infinity },
     })
   })
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleLogout = () => {
+    localStorage.removeItem('JwtToken')
+    dispatch(userLoggedOut(false))
+    dispatch(adminLoggedOut(false))
+    navigate('/')
+  }
+
   return (
     <div className="flex dark:bg-slate-950">
       <div>
@@ -75,7 +93,27 @@ export default function Profile() {
                 />
                 <span className="hidden sm:block ml-1">Edit Profile</span>
               </motion.button>
-              <button><img className="dark:invert" src={settings} alt="settings" /></button>
+              <div className="relative">
+                <button onClick={() => setOpenSettings(!openSettings)}>
+                  <motion.img
+                    className={`dark:invert duration-300 ${openSettings ? 'rotate-90' : ''}`} src={settings} alt="settings" />
+                </button>
+                {openSettings &&
+                  <motion.div
+                    initial={{ opacity: 0, y: -20, scale: 0.5 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute right-2 mt-3 rounded-md  py-1 border border-blue-900 w-24 bg-white z-10 dark:bg-slate-800">
+                    <div
+                      className="flex justify-center items-center gap-1 cursor-pointer px-2 hover:bg-gray-200 duration-200 dark:hover:bg-gray-700"
+                      onClick={handleLogout}>
+                      <img src={logout} className="w-5 dark:invert" alt="logout" loading="lazy" />
+                      <p className="truncate font-semibold">logout</p>
+                    </div>
+                  </motion.div>
+                }
+              </div>
             </div>
           </div>
           <div className="flex justify-center">

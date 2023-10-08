@@ -173,8 +173,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
                   id="description"
                   placeholder="Description"
                   value={formik.values.description}
-                  rows={5}
-                  cols={30}
+                  rows={4}
                   onChange={formik.handleChange}
                   className="bussinessForm dark:text-white focus:outline-none focus:shadow-outline resize-none"
                   required

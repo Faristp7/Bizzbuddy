@@ -22,16 +22,17 @@ const userSchema = new mongoose.Schema(
     },
     profileImage: {
       type: String,
-      default : 'https://photos.app.goo.gl/775Ky9eDSLgW8KiJ6'
+      default:
+        "https://lh3.googleusercontent.com/pw/ADCreHfCGxjp-YU9hZn8Mza2BWQLIoQza0mRF1dQ8Lo7H7h8xEPcZSZqH70tqeeiuRqaQwnuBqtR56r3M43UpA1b5HRANUvHdhsQe97J5Y_UT_Kk5UYeiWCGSo8LLr0WgNTFuYjpJV0qSPt6vB2wbuIfD6nt=w400-h400-s-no?authuser=0",
     },
     activeStatus: {
       type: Boolean,
       default: true,
     },
-    bussinessId : {
-      type : Schema.Types.ObjectId,
-      ref: 'Business'
-    }
+    bussinessId: {
+      type: Schema.Types.ObjectId,
+      ref: "Business",
+    },
   },
   { timestamps: true }
 );
