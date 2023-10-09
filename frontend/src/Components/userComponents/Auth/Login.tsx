@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, userLoggedIn } from '../../../Redux/user/authSlice'
 import { Wobble } from "@uiball/loaders"
 import { adminLoggedIn, rootState } from '../../../Redux/admin/adminAuth'
-import { loginFormData ,googleData } from '../../../interface/interface'
+import { loginFormData, googleData } from '../../../interface/interface'
+import { getUserInfo } from '../../../Redux/user/userInfo'
 
 export default function Login() {
     const [formData, setFormData] = useState<loginFormData>({
@@ -46,6 +47,7 @@ export default function Login() {
         e.preventDefault();
         setLoading(true)
         const { data } = await adminLogin(formData)
+        dispatch(getUserInfo(data.userId))
 
         setError(data.message)
         setLoading(false)
@@ -71,7 +73,7 @@ export default function Login() {
             const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
             const { email, given_name, picture } = credentialResponseDecoded as googleData
             const { data } = await googleSignin({ email, given_name, picture })
-            
+
             if (data.err) {
                 setError(data.message)
                 setShowError(true)
@@ -91,15 +93,14 @@ export default function Login() {
     };
 
     useEffect(() => {
-        
-        const token = localStorage.getItem("JwtToken")
-        if(token) {
 
-            if(isLoggedIn) navigate('/userHomePage')
-            if(adminIsLoggedin) navigate('/admin/UserMangment')
+        const token = localStorage.getItem("JwtToken")
+        if (token) {
+            if (isLoggedIn) navigate('/userHomePage')
+            if (adminIsLoggedin) navigate('/admin/UserMangment')
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <div className='flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row'>

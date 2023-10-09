@@ -61,7 +61,7 @@ export async function googleSignin(req, res) {
         if (err) {
           return res.json({ message: "failed to generate token", err: true });
         }
-        res.json({token})
+        res.json({ token });
       });
     }
   } catch (error) {
@@ -104,7 +104,7 @@ export async function roleLogIn(req, res) {
       const token = jwt.sign({ userId }, secrectKey, {
         expiresIn: "6h",
       });
-      res.json({ token, role });
+      res.json({ token, role , userId });
     }
   } catch (error) {
     console.log(error);
@@ -128,13 +128,16 @@ async function adminLogIn(email, password) {
 
 async function userLogin(email, password) {
   try {
-    const isUserValid = await userModel.findOne({ email });
+    const isUserValid = await userModel.findOne({ email }).populate('bussinessId');
+
     if (!isUserValid.activeStatus) {
       return false;
     } else {
       if (isUserValid) {
         const verifed = bcrypt.compareSync(password, isUserValid.password);
-        if (verifed) return isUserValid.id;
+        const userInfo = {...isUserValid.toObject()}
+        delete userInfo.password
+        if (verifed) return userInfo;
         return false;
       } else {
         return false;

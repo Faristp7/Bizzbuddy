@@ -11,10 +11,11 @@ export const validationSchema = Yup.object().shape({
   phone: Yup.string().matches(/^\d{10}$/, "10 numbers needed"),
   email: Yup.string().email("invalid email address"),
   location: Yup.string().min(2, "location is not valid").trim(),
-  bannerImage: Yup.mixed().nullable()
+  bannerImage: Yup.mixed()
+    .nullable()
     .test("fileSize", "file size is to large ", (value) => {
-      if(value === null){
-        return true
+      if (value === null) {
+        return true;
       }
       if (value instanceof File && value.size) {
         return value.size <= 10000000; //10 MB
@@ -22,8 +23,8 @@ export const validationSchema = Yup.object().shape({
       return false;
     })
     .test("fileType", "Unsupported file format", (value) => {
-      if(value === null){
-        return true
+      if (value === null) {
+        return true;
       }
       if (value instanceof File && value.type) {
         return ["Image/jpeg", "image/png"].includes(value.type.toLowerCase());
@@ -43,6 +44,31 @@ export const editUserProfileValidationSchema = Yup.object().shape({
     .matches(/^\d{10}$/, "10 numbers needed")
     .required("Enter your phone number"),
   Profilephoto: Yup.mixed()
+    .nullable()
+    .test("fileSize", "file size is to large ", (value) => {
+      if (value === null) return true;
+      if (value instanceof File && value.size) {
+        return value.size <= 10000000; //10 MB
+      }
+      return false;
+    })
+    .test("fileType", "Unsupported file format", (value) => {
+      if (value === null) return true;
+      if (value instanceof File && value.type) {
+        return ["image/jpeg", "image/png"].includes(value.type.toLowerCase());
+      }
+      return false;
+    }),
+});
+
+export const createPostValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .max(50, "Title must be at most 50 characters long")
+    .required(),
+  description: Yup.string()
+    .max(100, "Description must be at most 100 characters long")
+    .required(),
+  image: Yup.mixed()
     .nullable()
     .test("fileSize", "file size is to large ", (value) => {
       if (value === null) return true;
