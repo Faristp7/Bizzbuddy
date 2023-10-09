@@ -11,6 +11,8 @@ import { Ring } from '@uiball/loaders'
 import { Input, Tag, theme } from 'antd'
 import type { InputRef } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { useDispatch } from "react-redux";
+import { getUserInfo } from "../../Redux/user/userInfo";
 
 interface editprofileModalProps {
     close: () => void
@@ -30,6 +32,8 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
     const inputRef = useRef<InputRef>(null);
     const [inputValue, setInputValue] = useState('');
     const [tags, setTags] = useState<string[]>(initalTags);
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (inputVisible) {
@@ -104,6 +108,7 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                         .then(async (res) => {
                             const url = res.data.secure_url
                             const { data } = await userProfileUpdate({ values, url })
+                            dispatch(getUserInfo(data.userData))
                             if (data.success) {
                                 close()
                             }
@@ -113,6 +118,7 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
                 }
                 else {
                     const { data } = await userProfileUpdate({ values })
+                    dispatch(getUserInfo(data.userData))
                     if (data.success) {
                         close()
                     }

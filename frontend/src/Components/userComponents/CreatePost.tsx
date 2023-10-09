@@ -2,15 +2,15 @@ import "./user.css";
 import { NavigationBar } from "./Index";
 import { createPostValidationSchema } from '../../validations/validation'
 import { useFormik } from "formik";
-import { DragEvent, useCallback } from "react";
+import { DragEvent, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/user/userInfo";
 
-
 export default function CreatePost() {
-    const userInfo = useSelector((state : RootState) => state.userInformation)
-    
+    const [letterCount, setLetterCount] = useState<number>(0)
+    const userInfo = useSelector((state: RootState) => state.userInformation)
+
     const formik = useFormik({
         initialValues: {
             title: '',
@@ -38,8 +38,7 @@ export default function CreatePost() {
 
     return (
         <div
-            className="flex dark:bg-slate-950 duration-300"
-            style={{ height: "2000px" }}
+            className="flex dark:bg-slate-950 duration-300 min-h-screen"
         >
             <div>
                 <NavigationBar />
@@ -47,28 +46,37 @@ export default function CreatePost() {
             <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow dark:text-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-center mt-5">
                     <div className="px-2 sm:px-16">
-                        <h1 className="font-bold text-4xl">Create Post</h1>
+                        <h1 className="font-extrabold leading-none tracking-tight text-gray-900 text-5xl dark:text-white">Create Post</h1>
                         <form onSubmit={formik.handleSubmit}>
                             <div className="relative mt-10 mb-5">
                                 <input
                                     type="text"
-                                    id="floating_outlined"
+                                    id="title"
+                                    name="title"
                                     className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                     placeholder=" "
+                                    value={formik.values.title}
+                                    onChange={formik.handleChange}
                                 />
                                 <label
-                                    htmlFor="floating_outlined"
+                                    htmlFor="title"
                                     className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-950 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
                                 >
-                                    Title
+                                    {formik.errors.title ? <span className="text-red-600">{formik.errors.title}</span> : 'Title'}
                                 </label>
                             </div>
                             <div className="relative">
                                 <textarea
                                     id="message" rows={6}
+                                    name="description"
+                                    value={formik.values.description}
+                                    onChange={(e) => {
+                                        formik.handleChange(e)
+                                        setLetterCount(e.target.value.length)
+                                    }}
                                     className="block mb-5 p-2.5 w-full resize-none text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here...">
                                 </textarea>
-                                <div className="absolute bottom-1 right-2 text-gray-500 text-sm">100</div>
+                                <div className="absolute bottom-1 right-2 text-gray-500 text-sm">{letterCount}/100</div>
                             </div>
                             <div className="relative">
                                 <label htmlFor="file_input"
@@ -82,7 +90,14 @@ export default function CreatePost() {
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.3 }}>
-                                        <p>Drag & Drop or Click to Upload Image</p>
+                                        <p>{formik.values.image ? (
+                                            <img src={URL.createObjectURL(formik.values.image)}
+                                                alt="selected"
+                                                className="object-cover h-44 overflow-hidden" />
+                                        ) : (
+                                            "Drag & Drop or Click to Upload Image"
+                                        )}
+                                        </p>
                                     </motion.div>
                                 </label>
                                 <input
@@ -90,12 +105,14 @@ export default function CreatePost() {
                                     type="file"
                                     accept="iamge/jpeg , image/png"
                                     className="hidden"
+                                    name="image"
                                     onChange={(e) => {
                                         formik.setFieldValue('image', e.target.files?.[0])
                                     }} />
+                                <p className="py-3 text-red-500">{formik.errors.image}</p>
                             </div>
                             <button type="submit"
-                                className="bg-blue-950 hover:bg-blue-900 text-white rounded-lg py-2 px-5 mt-5 focus:outline-none transition duration-300 ease-in-out"
+                                className="bg-blue-950 hover:bg-blue-900 text-white rounded-lg py-2 px-5 focus:outline-none transition duration-300 ease-in-out"
                             ><motion.div
                                 whileHover={{ scale: 1.08 }}
                                 whileTap={{ scale: 0.95 }}>
@@ -104,7 +121,19 @@ export default function CreatePost() {
                         </form>
                     </div>
                     <div className="hidden sm:block">
-                        <h1 className="font-bold text-4xl">Preview Post</h1>
+                        <h1 className="font-extrabold mb-10 leading-none tracking-tight text-gray-900 text-5xl dark:text-white">Preview Post</h1>
+                        <div className="px-2 sm:px-16">
+                            <div className="flex justify-between">
+                                <div className="flex gap-5">
+                                    <img
+                                        src={userInfo.profileImage} alt="profile"
+                                        className="w-7 h-7 rounded-full border  border-black dark:border-white" />
+                                    <p className="text-lg">{userInfo.username}</p>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -16,13 +16,14 @@ import { motion } from "framer-motion"
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, userLoggedOut } from "../../../Redux/user/authSlice"
+import { RootState as userinfo } from "../../../Redux/user/userInfo";
 import { adminLoggedOut } from "../../../Redux/admin/adminAuth"
 
 export default function NavigationBar() {
   const savedTheme = localStorage.getItem('theme');
   const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false);
   const login = useSelector((state: RootState) => state.user.isLoggedIn)
-  const demoData = 'https://lh3.googleusercontent.com/a/ACg8ocKkAceSJBcHV9mDZaFyM2OvbhjQJXAdA3ZGzOba1g-pBQpo=s96-c'
+  const userInfo = useSelector((state: userinfo) => state.userInformation)
 
   useEffect(() => {
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -54,7 +55,7 @@ export default function NavigationBar() {
     dispatch(adminLoggedOut(false))
     navigate('/')
   }
-  
+
   return (
     <div className="">
       <div className="border-t-2 sm:border-r-2 sm:border-t-0 fixed left-0 bottom-0 pb-2 w-full sm:w-auto sm:left-0 sm:top-0 sm:h-screen  dark:text-white bg-white dark:bg-slate-950 duration-300">
@@ -112,7 +113,7 @@ export default function NavigationBar() {
                   <motion.div
                     className="navationDivIconBar order-5 sm:order-5"
                     whileTap={{ scale: 1.1 }}>
-                    <div className="md:ml-4 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={demoData} /></div>
+                    <div className="md:ml-4 sm:mt-0.5"><img className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border border-black dark:border-white" src={userInfo.profileImage} /></div>
                     <p className="navigationBarText">Profile</p>
                   </motion.div>
                 </Link>

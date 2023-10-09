@@ -104,7 +104,7 @@ export async function roleLogIn(req, res) {
       const token = jwt.sign({ userId }, secrectKey, {
         expiresIn: "6h",
       });
-      res.json({ token, role , userId });
+      res.json({ token, role, userId });
     }
   } catch (error) {
     console.log(error);
@@ -128,15 +128,15 @@ async function adminLogIn(email, password) {
 
 async function userLogin(email, password) {
   try {
-    const isUserValid = await userModel.findOne({ email }).populate('bussinessId');
+    const isUserValid = await userModel.findOne({ email });
 
     if (!isUserValid.activeStatus) {
       return false;
     } else {
       if (isUserValid) {
         const verifed = bcrypt.compareSync(password, isUserValid.password);
-        const userInfo = {...isUserValid.toObject()}
-        delete userInfo.password
+        const userInfo = { ...isUserValid.toObject() };
+        delete userInfo.password;
         if (verifed) return userInfo;
         return false;
       } else {
@@ -197,7 +197,7 @@ export async function updateUserData(req, res) {
     const { values, url } = req.body;
 
     const id = getUserId(req.headers.authorization);
-    await userModel.updateOne(
+    const updatedData = await userModel.findOneAndUpdate(
       { _id: id.userId },
       {
         $set: {
@@ -206,9 +206,13 @@ export async function updateUserData(req, res) {
           username: values.username,
           ...(url ? { profileImage: url } : {}),
         },
-      }
+      },
+      { new: true }
     );
-    res.json({ success: true });
+    const userData = { ...updatedData.toObject() };
+    delete userData.password;
+
+    res.json({ success: true, userData });
   } catch (error) {
     console.log(error);
   }

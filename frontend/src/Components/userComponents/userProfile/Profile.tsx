@@ -7,7 +7,7 @@ import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
 import { NavigationBar } from "../Index";
 import { motion, useAnimation } from "framer-motion";
-import { useState, useLayoutEffect, lazy, Suspense, useEffect } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
 import { Waveform } from "@uiball/loaders"
 import { getUserProfile } from "../../../Api/userApi";
 import { useNavigate } from "react-router-dom"
@@ -27,7 +27,7 @@ export default function Profile() {
   const [userData, setUserData] = useState<any>([])
 
   const controls = useAnimation()
-  useLayoutEffect(() => {
+  useEffect(() => {
     (async () => {
       const { data } = await getUserProfile()
       setUserData(data)
@@ -38,7 +38,7 @@ export default function Profile() {
     controls.start({
       opacity: 1,
       x: 0,
-      transition: { duration: 3.5, ease: "easeOut" },
+      transition: { duration: 1.5, ease: "easeOut" },
     })
 
     controls.start({
@@ -212,31 +212,34 @@ export default function Profile() {
               {editModalOpen && <EditProfileModal close={() => setEditModalOpen(!editModalOpen)} userData={userData} />}
             </Suspense>
           </div>
-
-          <div className="mt-3 ml-1 sm:ml-6 flex gap-5">
-            {userData?.bussinessId?.bussinessName && (
-              <div>
-                <div className="flex gap-1">
-                  <h3 className="font-bold text-md mb-1">Contact Us</h3>
+          <div className="flex justify-between">
+            <div className="mt-3 ml-1 sm:ml-6 flex gap-1 sm:gap-5 flex-col sm:flex-row ">
+              {userData?.bussinessId?.bussinessName && (
+                <div>
+                  <div className="flex gap-1">
+                    <h3 className="font-bold text-md mb-1 hidden sm:block">Contact Us</h3>
+                  </div>
+                  <div className="ml-2">
+                    <p>{userData?.bussinessId?.phone}</p>
+                    <p>{userData?.bussinessId?.email}</p>
+                  </div>
                 </div>
-                <div className="ml-2">
-                  <p>{userData?.bussinessId?.phone}</p>
-                  <p>{userData?.bussinessId?.email}</p>
+              )}
+              {userData?.bussinessId?.location && (
+                <div>
+                  <div className="flex">
+                    <h1 className="font-bold mb-1 hidden sm:block">location</h1>
+                  </div>
+                  <div className="ml-2">
+                    <p>{userData?.bussinessId?.location}</p>
+                  </div>
                 </div>
-              </div>
-            )}
-            {userData?.bussinessId?.location && (
-              <div>
-                <div className="flex">
-                  <h1 className="font-bold mb-1">location</h1>
-                </div>
-                <div className="ml-2">
-                  <p>{userData?.bussinessId?.location}</p>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
+            <div className="px-10">
+              <h6>Followers</h6>
+            </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 my-5">
             <div className="bg-gray-300 h-80 rounded-lg">1</div>
             <div className="bg-gray-400 h-80 rounded-lg">1</div>

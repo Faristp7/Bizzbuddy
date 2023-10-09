@@ -48,7 +48,6 @@ export default function Login() {
         setLoading(true)
         const { data } = await adminLogin(formData)
         dispatch(getUserInfo(data.userId))
-
         setError(data.message)
         setLoading(false)
         setShowError(true)
