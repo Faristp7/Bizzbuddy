@@ -1,4 +1,6 @@
 import "./user.css";
+import verticalMenu from '../../assets/icon/menu-vertical-50.png'
+import like from '../../assets/icon/like-Light.png'
 import { NavigationBar } from "./Index";
 import { createPostValidationSchema } from '../../validations/validation'
 import { useFormik } from "formik";
@@ -67,7 +69,7 @@ export default function CreatePost() {
                             </div>
                             <div className="relative">
                                 <textarea
-                                    id="message" rows={6}
+                                    id="message" rows={8}
                                     name="description"
                                     value={formik.values.description}
                                     onChange={(e) => {
@@ -76,7 +78,7 @@ export default function CreatePost() {
                                     }}
                                     className="block mb-5 p-2.5 w-full resize-none text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here...">
                                 </textarea>
-                                <div className="absolute bottom-1 right-2 text-gray-500 text-sm">{letterCount}/100</div>
+                                <div className="absolute bottom-1 right-2 text-gray-500 text-sm">{letterCount}/600</div>
                             </div>
                             <div className="relative">
                                 <label htmlFor="file_input"
@@ -93,7 +95,7 @@ export default function CreatePost() {
                                         <p>{formik.values.image ? (
                                             <img src={URL.createObjectURL(formik.values.image)}
                                                 alt="selected"
-                                                className="object-cover h-44 overflow-hidden" />
+                                                className="object-cover h-44 w-auto overflow-hidden" />
                                         ) : (
                                             "Drag & Drop or Click to Upload Image"
                                         )}
@@ -124,13 +126,36 @@ export default function CreatePost() {
                         <h1 className="font-extrabold mb-10 leading-none tracking-tight text-gray-900 text-5xl dark:text-white">Preview Post</h1>
                         <div className="px-2 sm:px-16">
                             <div className="flex justify-between">
-                                <div className="flex gap-5">
+                                <div className="flex gap-4">
                                     <img
                                         src={userInfo.profileImage} alt="profile"
                                         className="w-7 h-7 rounded-full border  border-black dark:border-white" />
                                     <p className="text-lg">{userInfo.username}</p>
                                 </div>
                                 <div>
+                                    <img src={verticalMenu} className="w-5" alt="menu" />
+                                </div>
+                            </div>
+                            <div className="text-left">
+                                <h6
+                                    className="text-2xl font-extrabold tracking-tight leading-snug text-gray-900 mt-4 dark:text-white">
+                                    {formik.values.title}</h6>
+                                <p className="font-medium mt-3 text-gray-700 dark:text-gray-400">{formik.values.description}</p>
+                            </div>
+                            <div className="mt-4 flex justify-center">
+                                {formik.values.image && (
+                                    <img
+                                        src={URL.createObjectURL(formik.values.image)}
+                                        className="object-cover h-64 w-full rounded-md" />
+                                )}
+                            </div>
+                            <div className="flex justify-between mt-3">
+                                <div className="flex gap-2">
+                                    <img src={like} alt="like"  className="w-6 dark:invert"/>
+                                    <p>1</p>
+                                </div>
+                                <div>
+                                    <p className="underline text-gray-500 text-sm">Add comment</p>
                                 </div>
                             </div>
                         </div>

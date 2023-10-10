@@ -236,8 +236,9 @@ export default function Profile() {
                 </div>
               )}
             </div>
-            <div className="px-10">
-              <h6>Followers</h6>
+            <div className="px-6">
+              <h6 className="text-lg font-bold">0 Followers</h6>
+              <h6 className="text-lg font-bold">0 Following</h6>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 my-5">
