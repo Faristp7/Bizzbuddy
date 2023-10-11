@@ -72,6 +72,7 @@ export default function Login() {
             const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
             const { email, given_name, picture } = credentialResponseDecoded as googleData
             const { data } = await googleSignin({ email, given_name, picture })
+            console.log(data);
 
             if (data.err) {
                 setError(data.message)

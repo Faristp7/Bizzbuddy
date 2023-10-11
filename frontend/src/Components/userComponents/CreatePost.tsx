@@ -4,14 +4,24 @@ import like from '../../assets/icon/like-Light.png'
 import { NavigationBar } from "./Index";
 import { createPostValidationSchema } from '../../validations/validation'
 import { useFormik } from "formik";
-import { DragEvent, useCallback,  useState } from "react";
+import { DragEvent, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/user/userInfo";
+import { createPost } from "../../Api/userApi";
+import axios from "axios";
+import { Ring } from '@uiball/loaders'
+import { useNavigate } from "react-router-dom";
 
 export default function CreatePost() {
     const [letterCount, setLetterCount] = useState<number>(0)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [buttonText, setbuttonText] = useState<string>('Post')
     const userInfo = useSelector((state: RootState) => state.userInformation)
+
+    const navigate = useNavigate()
+    const presetKey = "p2bwkmow";
+    const cloudName = "dglfnmf0x";
 
     const formik = useFormik({
         initialValues: {
@@ -22,7 +32,31 @@ export default function CreatePost() {
         validationSchema: createPostValidationSchema,
         onSubmit: async (values) => {
             try {
-                console.log(values);
+                setLoading(true)
+                const formData = new FormData()
+                if (values.image) {
+                    formData.append('file', values.image)
+                    formData.append('upload_preset', presetKey)
+                    formData.append('cloud_name', cloudName)
+                    setbuttonText("Uploading")
+                    axios.post("https://api.cloudinary.com/v1_1/dglfnmf0x/image/upload", formData)
+                        .then(async (res) => {
+                            const url = res.data.secure_url
+                            setbuttonText("Publishing")
+                            await createPost({ url, values }).then(({ data }) => {
+                                if (data.status) {
+                                    setLoading(false)
+                                    setbuttonText('Posted')
+                                    setTimeout(() => {
+                                        navigate('/userProfile')
+                                    }, 3000);
+                                }
+                            })
+                        }).catch((err) => {
+                            console.log(err);
+                        });
+                }
+
             } catch (error) {
                 console.log(error);
             }
@@ -113,13 +147,20 @@ export default function CreatePost() {
                                     }} />
                                 <p className="py-3 text-red-500">{formik.errors.image}</p>
                             </div>
-                            <button type="submit"
-                                className="bg-blue-950 hover:bg-blue-900 text-white rounded-lg py-2 px-5 focus:outline-none transition duration-300 ease-in-out"
-                            ><motion.div
-                                whileHover={{ scale: 1.08 }}
-                                whileTap={{ scale: 0.95 }}>
-                                    Post
-                                </motion.div></button>
+                            <div className="flex justify-center">
+                                <button type="submit"
+                                    className="flex gap-3 text-lg bg-blue-950 hover:bg-blue-900 text-white rounded-lg py-2 px-5 focus:outline-none transition duration-300 ease-in-out ">
+                                    {buttonText}
+                                    {loading &&
+                                        <Ring
+                                            size={25}
+                                            lineWeight={5}
+                                            speed={2}
+                                            color="white"
+                                        />
+                                    }
+                                </button>
+                            </div>
                         </form>
                     </div>
                     <div className="hidden sm:block">
@@ -151,7 +192,7 @@ export default function CreatePost() {
                             </div>
                             <div className="flex justify-between mt-3">
                                 <div className="flex gap-2">
-                                    <img src={like} alt="like"  className="w-6 dark:invert"/>
+                                    <img src={like} alt="like" className="w-6 dark:invert" />
                                     <p>1</p>
                                 </div>
                                 <div>

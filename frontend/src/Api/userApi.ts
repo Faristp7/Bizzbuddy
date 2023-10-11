@@ -1,6 +1,6 @@
 import axiosInstance from "../axios/axios";
 
-//                                       /- user -\
+                                        //- user -\\
 
 export const getUserProfile = () => axiosInstance('JwtToken').get('/getUserProfile')
 
@@ -11,8 +11,9 @@ export const userSignup = (values : object) => axiosInstance('JwtToken').post('/
 export const googleSignin = (values : object) => axiosInstance('JwtToken').post('/googleSignin', values)
 export const saveUser = (values : object) => axiosInstance('JwtToken').post('/saveUser', values)
 export const saveBussinessForm = (values : object) => axiosInstance('JwtToken').post('/saveBussinessForm', values)
+export const createPost = (values : object) => axiosInstance('JwtToken').post('/createPost', values)
 
-//                                        /- admin -\
+                                          //- admin -\\
 
 export const getUserData = () => axiosInstance('JwtToken').get('/admin/getUserData') 
  

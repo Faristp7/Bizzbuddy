@@ -246,15 +246,17 @@ export async function updateBusinessData(req, res) {
 export async function createPost(req, res) {
   try {
     const userId = getUserId(req.headers.authorization);
-    const { photo, title, description } = req.body;
+    const { values , url } = req.body;
 
     const postSchema = new postModel({
-      title,
-      image: photo,
-      description,
+      title : values.title,
+      image: url,
+      description : values.description,
+      userId : userId.Token
     });
     await postSchema.save();
-    res.json({ photo });
+    res.status(200).json({ message : 'posted successful' , status : true});
+
   } catch (error) {
     console.log(error);
   }
