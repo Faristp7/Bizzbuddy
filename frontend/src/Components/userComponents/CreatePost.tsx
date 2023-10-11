@@ -4,7 +4,7 @@ import like from '../../assets/icon/like-Light.png'
 import { NavigationBar } from "./Index";
 import { createPostValidationSchema } from '../../validations/validation'
 import { useFormik } from "formik";
-import { DragEvent, useCallback, useState } from "react";
+import { DragEvent, useCallback,  useState } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/user/userInfo";

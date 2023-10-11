@@ -29,7 +29,7 @@ export default function Profile() {
   const controls = useAnimation()
   useEffect(() => {
     (async () => {
-      const { data } = await getUserProfile()
+      const { data } = await getUserProfile()      
       setUserData(data)
     })()
   }, [isOpen, editModalOpen])
@@ -99,7 +99,7 @@ export default function Profile() {
           </div>
           <div className="flex justify-between m-2 sm:ml-48 sm:mt-3 leading-none">
             <div className="">
-              <h3 className="font-semibold text-xl sm:text-3xl">{userData.username}</h3>
+              <h3 className="font-semibold text-xl sm:text-3xl">{userData?.username}</h3>
             </div>
             <div className="flex items-center">
               <motion.button

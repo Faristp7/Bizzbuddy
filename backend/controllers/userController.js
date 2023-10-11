@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import adminModel from "../models/adminModel.js";
 import businessModel from "../models/bussinessModel.js";
+import postModel from "../models/postModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -56,8 +57,9 @@ export async function googleSignin(req, res) {
         profileImage: picture,
       });
       await userSchema.save();
-      const userId = userSchema.id;
-      jwt.sign({ userId }, secrectKey, { expiresIn: "6h" }, (err, token) => {
+      
+      const Token = userSchema.id;
+      jwt.sign({ Token }, secrectKey, { expiresIn: "6h" }, (err, token) => {
         if (err) {
           return res.json({ message: "failed to generate token", err: true });
         }
@@ -101,7 +103,8 @@ export async function roleLogIn(req, res) {
       role = "user";
     }
     if (userId) {
-      const token = jwt.sign({ userId }, secrectKey, {
+      const Token = userId._id;
+      const token = jwt.sign({ Token }, secrectKey, {
         expiresIn: "6h",
       });
       res.json({ token, role, userId });
@@ -183,9 +186,8 @@ export async function userProfile(req, res) {
     const decodedToken = getUserId(req.headers.authorization);
 
     const userDetails = await userModel
-      .findOne({ _id: decodedToken.userId })
+      .findOne({ _id: decodedToken.Token })
       .populate("bussinessId");
-
     res.json(userDetails);
   } catch (error) {
     console.log(error);
@@ -236,6 +238,23 @@ export async function updateBusinessData(req, res) {
       }
     );
     res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function createPost(req, res) {
+  try {
+    const userId = getUserId(req.headers.authorization);
+    const { photo, title, description } = req.body;
+
+    const postSchema = new postModel({
+      title,
+      image: photo,
+      description,
+    });
+    await postSchema.save();
+    res.json({ photo });
   } catch (error) {
     console.log(error);
   }

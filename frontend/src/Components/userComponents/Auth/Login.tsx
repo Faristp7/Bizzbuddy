@@ -92,7 +92,6 @@ export default function Login() {
     };
 
     useEffect(() => {
-
         const token = localStorage.getItem("JwtToken")
         if (token) {
             if (isLoggedIn) navigate('/userHomePage')
