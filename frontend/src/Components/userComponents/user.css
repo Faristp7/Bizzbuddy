@@ -22,3 +22,6 @@ body {
   @apply appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight dark:bg-slate-900
 }
 
+.filterButton{
+  @apply rounded-md px-3 py-1 mt-1 mx-1 transition-colors duration-300 ease-in-out
+}

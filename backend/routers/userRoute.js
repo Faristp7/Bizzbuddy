@@ -8,6 +8,8 @@ import {
   updateUserData,
   userProfile,
   createPost,
+  getUserPost,
+  searchTag,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -19,7 +21,9 @@ router.post("/saveUser", saveUser);
 router.post("/saveBussinessForm", BussinessForm);
 router.post("/createPost", verifyToken, createPost);
 
+router.get("/search", verifyToken, searchTag);
 router.get("/getUserProfile", verifyToken, userProfile);
+router.get("/getUserPost", verifyToken, getUserPost);
 
 router.patch("/updateUserData", verifyToken, updateUserData); //update user Data
 router.patch("/updateBusinessData", verifyToken, updateBusinessData); //update business Data

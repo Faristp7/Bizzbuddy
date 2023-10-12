@@ -78,7 +78,7 @@ export default function NavigationBar() {
                 </Link>
 
                 {/* search */}
-                <Link to={"/userHomePage"}>
+                <Link to={"/Search"}>
                   <motion.div
                     className=
                     "navationDivIconBar order-2 sm:order-4"

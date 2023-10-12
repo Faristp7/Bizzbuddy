@@ -63,10 +63,10 @@ export const editUserProfileValidationSchema = Yup.object().shape({
 
 export const createPostValidationSchema = Yup.object().shape({  
   title: Yup.string()
-    .max(60, "Title must be at most 60 characters long")
+    .max(80, "Title must be at most 80 characters long")
     .required(),
   description: Yup.string()
-    .max(600, "Description must be at most 100 characters long")
+    .max(800, "Description must be at most 800 characters long")
     .required(),
   image: Yup.mixed()
     .nullable()

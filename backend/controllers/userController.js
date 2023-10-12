@@ -261,3 +261,22 @@ export async function createPost(req, res) {
     console.log(error);
   }
 }
+
+export async function getUserPost(req,res) {
+  try {
+    const post = await postModel.find()
+    res.json({post})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function searchTag(req,res) {
+  try {
+    const {values} = req.body
+    console.log(values);
+    res.json(values)
+  } catch (error) {
+    console.log(error);
+  }
+}

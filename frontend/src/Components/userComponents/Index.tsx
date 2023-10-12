@@ -5,8 +5,19 @@ import UserHomePage from "./UserHomePage";
 import NavigationBar from "./SideBar/NavigationBar";
 import Profile from "./userProfile/Profile";
 import CreatePost from "./CreatePost";
+import Search from "./search/Search";
 
 // admin
 import UserMangment from "../adminComponents/UserMangment";
 
-export { Login, SignUp, OtpModal, UserHomePage ,NavigationBar ,UserMangment , Profile , CreatePost};
+export {
+  Login,
+  SignUp,
+  OtpModal,
+  UserHomePage,
+  NavigationBar,
+  UserMangment,
+  Profile,
+  CreatePost,
+  Search,
+};
