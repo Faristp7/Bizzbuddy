@@ -23,5 +23,5 @@ body {
 }
 
 .filterButton{
-  @apply rounded-md px-3 py-1 mt-1 mx-1 transition-colors duration-300 ease-in-out
+  @apply rounded-md px-2 py-1 mt-1.5 mx-1 transition-colors duration-300 ease-in-out
 }

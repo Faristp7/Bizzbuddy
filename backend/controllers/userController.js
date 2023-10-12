@@ -57,7 +57,7 @@ export async function googleSignin(req, res) {
         profileImage: picture,
       });
       await userSchema.save();
-      
+
       const Token = userSchema.id;
       jwt.sign({ Token }, secrectKey, { expiresIn: "6h" }, (err, token) => {
         if (err) {
@@ -246,36 +246,41 @@ export async function updateBusinessData(req, res) {
 export async function createPost(req, res) {
   try {
     const userId = getUserId(req.headers.authorization);
-    const { values , url } = req.body;
+    const { values, url } = req.body;
 
     const postSchema = new postModel({
-      title : values.title,
+      title: values.title,
       image: url,
-      description : values.description,
-      userId : userId.Token
+      description: values.description,
+      userId: userId.Token,
     });
     await postSchema.save();
-    res.status(200).json({ message : 'posted successful' , status : true});
-
+    res.status(200).json({ message: "posted successful", status: true });
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function getUserPost(req,res) {
+export async function getUserPost(req, res) {
   try {
-    const post = await postModel.find()
-    res.json({post})
+    const post = await postModel.find();
+    res.json({ post });
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function searchTag(req,res) {
+export async function searchAccount(req, res) {            // search for accounts
   try {
-    const {values} = req.body
-    console.log(values);
-    res.json(values)
+    const { data } = req.query;
+    if (!data) return res.json({userInfo : "No matching userName found"})
+
+      const regexPattern = new RegExp(`^${data}`, 'i');      
+      const AccountData = await userModel.find({
+        username: { $regex: regexPattern },
+      });
+  
+      res.status(200).json({userInfo : AccountData});    
   } catch (error) {
     console.log(error);
   }
