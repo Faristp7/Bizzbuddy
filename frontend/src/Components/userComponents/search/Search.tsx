@@ -1,9 +1,10 @@
 import { RefObject, Suspense, lazy, useEffect, useRef, useState } from "react";
+import { searchAccount, searchBusiness, searchTags } from "../../../Api/userApi";
 import { NavigationBar } from "../Index";
 import '../user.css'
-import { searchAccount, searchTags } from "../../../Api/userApi";
 const Account = lazy(() => import('./Account'))
 const Tag = lazy(() => import('./Tag'))
+const Business = lazy(() => import('./Business'))
 
 export default function Search() {
   const searchInputRef: RefObject<HTMLInputElement> = useRef(null)
@@ -31,8 +32,12 @@ export default function Search() {
         break
       case 'Tags':
         response = await searchTags(searchData)
-        APIdata = response?.data?.userInfo || []        
-        console.log(APIdata);
+        APIdata = response?.data?.userInfo || []
+        setLoading(false)
+        break
+      case 'Business':
+        response = await searchBusiness(searchData)
+        APIdata = response?.data?.userInfo || []
         setLoading(false)
         break
       default:
@@ -117,6 +122,9 @@ export default function Search() {
           </Suspense>
           <Suspense fallback={<div>loading...</div>}>
             <Tag datas={filteredData} pending={loading} />
+          </Suspense>
+          <Suspense fallback={<div>loading...</div>}>
+            <Business datas={filteredData} pending={loading} />
           </Suspense>
         </div>
       </div>
