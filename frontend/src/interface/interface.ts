@@ -42,6 +42,10 @@ export interface AccountProps {
   datas?: {
     username: string;
     profileImage: string;
+    bussinessName: string;
+    userId: {
+      profileImage: string;
+    };
   }[];
   pending: boolean;
 }

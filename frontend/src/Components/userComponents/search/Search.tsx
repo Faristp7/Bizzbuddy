@@ -1,13 +1,14 @@
 import { RefObject, Suspense, lazy, useEffect, useRef, useState } from "react";
 import { NavigationBar } from "../Index";
 import '../user.css'
-import { searchAccount } from "../../../Api/userApi";
+import { searchAccount, searchTags } from "../../../Api/userApi";
 const Account = lazy(() => import('./Account'))
+const Tag = lazy(() => import('./Tag'))
 
 export default function Search() {
   const searchInputRef: RefObject<HTMLInputElement> = useRef(null)
   const [searchData, setSearchData] = useState<string>('')
-  const [loading , setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [activeFilter, setActiveFilter] = useState<string>("Accounts")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [filteredData, setFilteredData] = useState<any>([])
@@ -27,7 +28,13 @@ export default function Search() {
         response = await searchAccount(searchData)
         APIdata = response?.data?.userInfo || []
         setLoading(false)
-        break;
+        break
+      case 'Tags':
+        response = await searchTags(searchData)
+        APIdata = response?.data?.userInfo || []        
+        console.log(APIdata);
+        setLoading(false)
+        break
       default:
         break
     }
@@ -106,7 +113,10 @@ export default function Search() {
         </div>
         <div>
           <Suspense fallback={<div>loading...</div>}>
-            <Account datas={filteredData} pending={loading}/>
+            <Account datas={filteredData} pending={loading} />
+          </Suspense>
+          <Suspense fallback={<div>loading...</div>}>
+            <Tag datas={filteredData} pending={loading} />
           </Suspense>
         </div>
       </div>

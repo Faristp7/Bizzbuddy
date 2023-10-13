@@ -4,6 +4,7 @@ import axiosInstance from "../axios/axios";
 
 export const getUserProfile = () => axiosInstance('JwtToken').get('/getUserProfile')
 export const searchAccount = (data : string) => axiosInstance('JwtToken').get('/searchAccount',{params : {data : data}})      
+export const searchTags = (data : string) => axiosInstance('JwtToken').get('/searchTags',{params : {data : data}})      
 
 export const userProfileUpdate = (values : object) => axiosInstance('JwtToken').patch('/updateUserData' , values)
 export const updateBusinessData = (values : object) => axiosInstance('JwtToken').patch('/updateBusinessData',values)

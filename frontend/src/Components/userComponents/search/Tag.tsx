@@ -1,7 +1,7 @@
 import { AccountProps } from "../../../interface/interface";
 import { AnimatePresence, motion } from "framer-motion";
 
-const Account: React.FC<AccountProps> = ({ datas = [], pending }) => {
+const Tag: React.FC<AccountProps> = ({ datas = [], pending }) => {
   return (
     <div className="mt-5 ml-2">
       <div>
@@ -17,9 +17,9 @@ const Account: React.FC<AccountProps> = ({ datas = [], pending }) => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="flex gap-3">
-                <img src={data.profileImage} className="rounded-full my-3 w-9 h-9" alt="image" />
+                <img src={data?.userId?.profileImage} className="rounded-full my-3 w-9 h-9" alt="image" />
                 <p className="font-medium text-xl mt-4 cursor-pointer">
-                  {data.username}
+                  {data.bussinessName}
                 </p>
               </motion.div>
             ))
@@ -36,4 +36,4 @@ const Account: React.FC<AccountProps> = ({ datas = [], pending }) => {
   );
 };
 
-export default Account;
+export default Tag;
