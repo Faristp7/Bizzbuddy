@@ -29,7 +29,7 @@ export default function Profile() {
   const controls = useAnimation()
   useEffect(() => {
     (async () => {
-      const { data } = await getUserProfile()      
+      const { data } = await getUserProfile()
       setUserData(data)
     })()
   }, [isOpen, editModalOpen])
@@ -79,19 +79,16 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex dark:bg-slate-950">
+    <div className="flex min-h-screen dark:bg-slate-950">
       <div>
         <NavigationBar />
       </div>
-      <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow dark:text-white">
+      <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow  dark:text-white">
         <div>
           <div className="relative">
-            <motion.img
+            <img
               src={userData?.bussinessId?.bannerImage}
               className="rounded-sm h-40 sm:h-56 w-full" alt="banner"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
               loading="lazy" />
             <div className="absolute bottom-0  left-2/4 sm:left-28 transform -translate-x-1/2 translate-y-1/2">
               <img className="rounded-full h-28 w-28 sm:h-36 sm:w-36 border-4 border-white dark:border-slate-950" src={userData?.profileImage} alt="profile" loading="lazy" />
@@ -241,14 +238,7 @@ export default function Profile() {
               <h6 className="text-lg font-bold">0 Following</h6>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 my-5">
-            <div className="bg-gray-300 h-80 rounded-lg">1</div>
-            <div className="bg-gray-400 h-80 rounded-lg">1</div>
-            <div className="bg-gray-500 h-80 rounded-lg">1</div>
-            <div className="bg-gray-300 h-80 rounded-lg">1</div>
-            <div className="bg-gray-400 h-80 rounded-lg">1</div>
-            <div className="bg-gray-500 h-80 rounded-lg">1</div>
-          </div>
+          
         </div>
       </div>
     </div>

@@ -10,6 +10,8 @@ import {
   createPost,
   getUserPost,
   searchAccount,
+  searchTags,
+  searchBusiness,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -23,9 +25,11 @@ router.post("/createPost", verifyToken, createPost);
 
 router.get("/getUserProfile", verifyToken, userProfile);
 router.get("/getUserPost", verifyToken, getUserPost);
-router.get("/searchAccount", verifyToken, searchAccount);
+router.get("/searchAccount", verifyToken, searchAccount);             //search user accounts
+router.get("/searchTags", verifyToken ,searchTags);                   //search tags
+router.get("/searchBusiness", verifyToken ,searchBusiness);           //search tags
 
-router.patch("/updateUserData", verifyToken, updateUserData); //update user Data
+router.patch("/updateUserData", verifyToken, updateUserData);         //update user Data
 router.patch("/updateBusinessData", verifyToken, updateBusinessData); //update business Data
 
 export default router;

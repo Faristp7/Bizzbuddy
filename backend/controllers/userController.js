@@ -270,17 +270,52 @@ export async function getUserPost(req, res) {
   }
 }
 
-export async function searchAccount(req, res) {            // search for accounts
+// search for accounts
+export async function searchAccount(req, res) {
   try {
     const { data } = req.query;
-    if (!data) return res.json({userInfo : "No matching userName found"})
+    if (!data) return res.json({ userInfo: "No matching userName found" });
 
-      const regexPattern = new RegExp(`^${data}`, 'i');      
-      const AccountData = await userModel.find({
-        username: { $regex: regexPattern },
-      });
-  
-      res.status(200).json({userInfo : AccountData});    
+    const regexPattern = new RegExp(`^${data}`, "i");
+    const AccountData = await userModel.find({
+      username: { $regex: regexPattern },
+    });
+
+    res.status(200).json({ userInfo: AccountData });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//search for tags
+export async function searchTags(req, res) {
+  try {
+    const { data } = req.query;
+    if (!data) return res.json({ userInfo: "No matching userName found" });
+
+    const regexPattern = new RegExp(`^${data}`, "i");
+    const AccountData = await businessModel.find({
+      tags: { $regex: regexPattern },
+    }).populate('userId');
+
+    res.status(200).json({ userInfo: AccountData });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//search for business
+export async function searchBusiness(req, res) {
+  try {
+    const { data } = req.query;
+    if (!data) return res.json({ userInfo: "No matching userName found" });
+
+    const regexPattern = new RegExp(`^${data}`, "i");
+    const AccountData = await businessModel.find({
+      bussinessName: { $regex: regexPattern },
+    }).populate('userId');
+
+    res.status(200).json({ userInfo: AccountData });
   } catch (error) {
     console.log(error);
   }

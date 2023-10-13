@@ -10,7 +10,7 @@ const Business: React.FC<AccountProps> = ({ datas = [], pending }) => {
           datas.map((data, index) => (
             <div key={index} className="flex gap-3">
               <img
-                src={data.userId.profileImage}
+                src={data?.userId?.profileImage}
                 className="rounded-full my-3 w-9 h-9"
                 alt="image"
               />

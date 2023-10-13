@@ -22,7 +22,7 @@ const Account: React.FC<AccountProps> = ({ datas = [], pending }) => {
         ) : (
           <div
             key="no-match"
-            className="flex justify-center min-h-screen items-center sm:items-start sm:justify-start"
+            className="flex justify-center items-center sm:items-start sm:justify-start"
           >
             No matching usernames found
           </div>
