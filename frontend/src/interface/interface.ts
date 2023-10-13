@@ -22,11 +22,11 @@ export interface ListBusinessProps {
 }
 
 export interface User {
-  _id: string
-  username: string
-  email: string
-  phone: string
-  activeStatus: boolean
+  _id: string;
+  username: string;
+  email: string;
+  phone: string;
+  activeStatus: boolean;
 }
 
 export type ProfilerCallbackType = (
@@ -35,5 +35,13 @@ export type ProfilerCallbackType = (
   actualDuration: number,
   baseDuration: number,
   startTime: number,
-  commitTime: number,
+  commitTime: number
 ) => void;
+
+export interface AccountProps {
+  datas?: {
+    username: string;
+    profileImage: string;
+  }[];
+  pending: boolean;
+}

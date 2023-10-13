@@ -2,12 +2,12 @@ import { RefObject, Suspense, lazy, useEffect, useRef, useState } from "react";
 import { NavigationBar } from "../Index";
 import '../user.css'
 import { searchAccount } from "../../../Api/userApi";
-import { motion } from "framer-motion";
 const Account = lazy(() => import('./Account'))
 
 export default function Search() {
   const searchInputRef: RefObject<HTMLInputElement> = useRef(null)
   const [searchData, setSearchData] = useState<string>('')
+  const [loading , setLoading] = useState<boolean>(false)
   const [activeFilter, setActiveFilter] = useState<string>("Accounts")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [filteredData, setFilteredData] = useState<any>([])
@@ -19,12 +19,14 @@ export default function Search() {
   }, [activeFilter, searchData])
 
   const fetchData = async () => {
+    setLoading(true)
     let APIdata
     let response
     switch (activeFilter) {
       case 'Accounts':
         response = await searchAccount(searchData)
         APIdata = response?.data?.userInfo || []
+        setLoading(false)
         break;
       default:
         break
@@ -82,12 +84,6 @@ export default function Search() {
                 placeholder="Search Acounts, Tags, Businesses..."
                 required
               />
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                className="text-white absolute right-2.5 bottom-2.5 bg-blue-900 hover:bg-blue-800 focus:outline-none  font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-900 dark:hover:bg-blue-700 "
-              >
-                Search
-              </motion.button>
             </div>
           </div>
           <div className="text-center">
@@ -110,7 +106,7 @@ export default function Search() {
         </div>
         <div>
           <Suspense fallback={<div>loading...</div>}>
-            <Account datas={filteredData} />
+            <Account datas={filteredData} pending={loading}/>
           </Suspense>
         </div>
       </div>
