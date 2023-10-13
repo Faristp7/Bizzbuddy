@@ -40,6 +40,7 @@ export type ProfilerCallbackType = (
 
 export interface AccountProps {
   datas?: {
+    _id : string
     username: string;
     profileImage: string;
     bussinessName: string;

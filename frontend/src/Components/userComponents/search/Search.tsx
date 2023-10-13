@@ -1,10 +1,10 @@
-import { RefObject, Suspense, lazy, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { searchAccount, searchBusiness, searchTags } from "../../../Api/userApi";
 import { NavigationBar } from "../Index";
 import '../user.css'
-const Account = lazy(() => import('./Account'))
-const Tag = lazy(() => import('./Tag'))
-const Business = lazy(() => import('./Business'))
+import Tag from './Tag'
+import Business from './Business'
+import Account from './Account'
 
 export default function Search() {
   const searchInputRef: RefObject<HTMLInputElement> = useRef(null)
@@ -27,22 +27,21 @@ export default function Search() {
     switch (activeFilter) {
       case 'Accounts':
         response = await searchAccount(searchData)
-        APIdata = response?.data?.userInfo || []
         setLoading(false)
         break
       case 'Tags':
         response = await searchTags(searchData)
-        APIdata = response?.data?.userInfo || []
         setLoading(false)
         break
       case 'Business':
         response = await searchBusiness(searchData)
-        APIdata = response?.data?.userInfo || []
         setLoading(false)
         break
       default:
         break
     }
+    // eslint-disable-next-line prefer-const
+    APIdata = response?.data?.userInfo || []
     setFilteredData(APIdata)
   }
 
@@ -117,15 +116,18 @@ export default function Search() {
           </div>
         </div>
         <div>
-          <Suspense fallback={<div>loading...</div>}>
-            <Account datas={filteredData} pending={loading} />
-          </Suspense>
-          <Suspense fallback={<div>loading...</div>}>
-            <Tag datas={filteredData} pending={loading} />
-          </Suspense>
-          <Suspense fallback={<div>loading...</div>}>
-            <Business datas={filteredData} pending={loading} />
-          </Suspense>
+          {
+            activeFilter === 'Accounts' &&
+              <Account datas={filteredData} pending={loading} />
+          }
+          {
+            activeFilter === 'Tags' &&
+              <Tag datas={filteredData} pending={loading} />
+          }
+          {
+            activeFilter === 'Business' &&
+              <Business datas={filteredData} pending={loading} />
+          }
         </div>
       </div>
     </div>
