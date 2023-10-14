@@ -9,12 +9,12 @@ import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLECLIENTID}>
-          <App />
-        </GoogleOAuthProvider>
-      </PersistGate>
-    </Provider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLECLIENTID}>
+            <App />
+          </GoogleOAuthProvider>
+        </PersistGate>
+      </Provider>
   </React.StrictMode>
 );

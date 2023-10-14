@@ -3,6 +3,7 @@ import axiosInstance from "../axios/axios";
                                         //- user -\\
 
 export const getUserProfile = () => axiosInstance('JwtToken').get('/getUserProfile')
+export const getProfilePost = () => axiosInstance('JwtToken').get('/getProfilePost')
 export const searchAccount = (data : string) => axiosInstance('JwtToken').get('/searchAccount',{params : {data : data}})      
 export const searchTags = (data : string) => axiosInstance('JwtToken').get('/searchTags',{params : {data : data}})      
 export const searchBusiness = (data : string) => axiosInstance('JwtToken').get('/searchBusiness',{params : {data : data}})      

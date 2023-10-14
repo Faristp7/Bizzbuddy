@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { userLoggedOut } from "../../../Redux/user/authSlice"
 import { adminLoggedOut } from "../../../Redux/admin/adminAuth"
+import PostCollection from "../PostCollection"
 const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
@@ -238,7 +239,9 @@ export default function Profile() {
               <h6 className="text-lg font-bold">0 Following</h6>
             </div>
           </div>
-          
+          <div className="mt-5">
+            <PostCollection role={"user"}/>
+          </div>
         </div>
       </div>
     </div>

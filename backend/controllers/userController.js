@@ -270,6 +270,16 @@ export async function getUserPost(req, res) {
   }
 }
 
+export async function getProfilePost(req,res) {
+  try {
+    const id = getUserId(req.headers.authorization);
+    const post = await postModel.find({userId : id.Token})
+    res.json({post})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // search for accounts
 export async function searchAccount(req, res) {
   try {

@@ -50,3 +50,7 @@ export interface AccountProps {
   }[];
   pending: boolean;
 }
+
+export interface PostCollectionProps {
+  role :string
+}
