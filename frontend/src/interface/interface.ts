@@ -40,7 +40,7 @@ export type ProfilerCallbackType = (
 
 export interface AccountProps {
   datas?: {
-    _id : string
+    _id: string;
     username: string;
     profileImage: string;
     bussinessName: string;
@@ -52,5 +52,12 @@ export interface AccountProps {
 }
 
 export interface PostCollectionProps {
-  role :string
+  role: string;
+}
+
+export interface PropsData {
+  _id: string;
+  title: string;
+  description: string;
+  image: string;
 }
