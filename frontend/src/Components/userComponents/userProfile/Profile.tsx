@@ -240,7 +240,7 @@ export default function Profile() {
             </div>
           </div>
           <div className="mt-5">
-            <PostCollection role={"user"}/>
+            <PostCollection role={"user"} />
           </div>
         </div>
       </div>

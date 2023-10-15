@@ -6,6 +6,7 @@ import equal from "../../assets/icon/equal.png";
 import grid from "../../assets/icon/grid.png";
 import InfiniteScroll from 'react-infinite-scroll-component'
 import "./user.css";
+import { Ring } from '@uiball/loaders'
 
 export default function PostCollection({ role }: PostCollectionProps) {
   const [datas, setData] = useState<PropsData[]>([]);
@@ -18,7 +19,13 @@ export default function PostCollection({ role }: PostCollectionProps) {
     if (role === "user") {
       const response = await getProfilePost(pageNumber);
       const newData = response.data.post
-      setData((prevData) => [...prevData, ...newData])
+      setData((prevData) => {
+        const uniqueNewData = newData.filter(
+          (newItem: PropsData) => !prevData.some((existingItem) => existingItem._id === newItem._id)
+        );
+        return [...prevData, ...uniqueNewData];
+      });
+
       setHasMore(newData.length > 0)
     }
   }
@@ -51,32 +58,41 @@ export default function PostCollection({ role }: PostCollectionProps) {
           />
         </div>
       </div>
-      <div className={`grid grid-cols-1 md:${Grid} gap-3 mb-12 sm:mb-5`}>
+      <div>
         <InfiniteScroll
           dataLength={datas.length}
           next={fetchMoreData}
           hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          endMessage={<p>content over</p>}>
-          {datas &&
-            datas.map((item) => (
-              <motion.div
-                layoutId={item._id}
-                key={item._id}
-                onClick={() => setSelectedId(item._id)}
-                className="cursor-pointer p-2 border mb-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900"
-              >
-                <motion.h5 className="font-bold text-3xl dark:text-white">
-                  {item.title}
-                </motion.h5>
-                <motion.p className="text-lg font-medium my-2 text-gray-900 dark:text-white">
-                  {item.description}
-                </motion.p>
-                <div className="flex items-center justify-center h-96">
-                  <img src={item.image} alt="post" className="w-auto h-full" />
-                </div>
-              </motion.div>
-            ))}
+          loader={<div className="flex items-center justify-center h-screen">
+            <Ring
+              size={40}
+              lineWeight={5}
+              speed={2}
+              color="black"
+            />
+          </div>}
+          endMessage={<p className="text-center text-lg mb-5">Content over</p>}>
+          <div className={`grid grid-cols-1 md:${Grid} gap-3 mb-12 sm:mb-5`}>
+            {datas &&
+              datas.map((item) => (
+                <motion.div
+                  layoutId={item._id}
+                  key={item._id}
+                  onClick={() => setSelectedId(item._id)}
+                  className="cursor-pointer p-2 border mb-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900"
+                >
+                  <motion.h5 className="font-bold text-3xl dark:text-white">
+                    {item.title}
+                  </motion.h5>
+                  <motion.p className="text-lg font-medium my-2 text-gray-900 dark:text-white">
+                    {item.description}
+                  </motion.p>
+                  <div className="flex items-center justify-center h-96">
+                    <img src={item.image} alt="post" className="w-auto h-full" />
+                  </div>
+                </motion.div>
+              ))}
+          </div>
         </InfiniteScroll>
 
         <AnimatePresence>
