@@ -270,11 +270,23 @@ export async function getUserPost(req, res) {
   }
 }
 
-export async function getProfilePost(req,res) {
+export async function getProfilePost(req, res) {
   try {
     const id = getUserId(req.headers.authorization);
-    const post = await postModel.find({userId : id.Token})
-    res.json({post})
+    const { page } = req.params;
+    const pageSize = 2;
+    const skip = (page - 1) * pageSize;
+    const post = await postModel
+      .find({ userId: id.Token })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize)
+      .exec();
+
+    if (post.length === 0)
+      return res.json({ error: true, message: "no post found" });
+
+    res.json({ post });
   } catch (error) {
     console.log(error);
   }
@@ -304,9 +316,11 @@ export async function searchTags(req, res) {
     if (!data) return res.json({ userInfo: "No matching userName found" });
 
     const regexPattern = new RegExp(`^${data}`, "i");
-    const AccountData = await businessModel.find({
-      tags: { $regex: regexPattern },
-    }).populate('userId');
+    const AccountData = await businessModel
+      .find({
+        tags: { $regex: regexPattern },
+      })
+      .populate("userId");
 
     res.status(200).json({ userInfo: AccountData });
   } catch (error) {
@@ -321,9 +335,11 @@ export async function searchBusiness(req, res) {
     if (!data) return res.json({ userInfo: "No matching userName found" });
 
     const regexPattern = new RegExp(`^${data}`, "i");
-    const AccountData = await businessModel.find({
-      bussinessName: { $regex: regexPattern },
-    }).populate('userId');
+    const AccountData = await businessModel
+      .find({
+        bussinessName: { $regex: regexPattern },
+      })
+      .populate("userId");
 
     res.status(200).json({ userInfo: AccountData });
   } catch (error) {

@@ -26,7 +26,7 @@ router.post("/createPost", verifyToken, createPost);
 
 router.get("/getUserProfile", verifyToken, userProfile);
 router.get("/getUserPost", verifyToken, getUserPost);
-router.get('/getProfilePost',verifyToken,getProfilePost);
+router.get('/getProfilePost/:page',verifyToken,getProfilePost);
 router.get("/searchAccount", verifyToken, searchAccount);             //search user accounts
 router.get("/searchTags", verifyToken ,searchTags);                   //search tags
 router.get("/searchBusiness", verifyToken ,searchBusiness);           //search tags
