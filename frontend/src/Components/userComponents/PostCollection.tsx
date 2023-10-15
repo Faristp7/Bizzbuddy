@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import equal from "../../assets/icon/equal.png";
 import grid from "../../assets/icon/grid.png";
+import InfiniteScroll from 'react-infinite-scroll-component'
 import "./user.css";
 
 export default function PostCollection({ role }: PostCollectionProps) {
@@ -11,38 +12,24 @@ export default function PostCollection({ role }: PostCollectionProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [Grid, setGrid] = useState<string>("grid-cols-2");
   const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true)
 
   const fetchData = async (pageNumber: number) => {
     if (role === "user") {
-      const { data } = await getProfilePost(pageNumber);
-      setData((prevData) => {
-        const newData = data.post.filter(
-          (post: PropsData) =>
-            !prevData.some((existingPost) => existingPost._id === post._id)
-        );
-        return [...prevData, ...newData];
-      });
-      setPage(pageNumber);
+      const response = await getProfilePost(pageNumber);
+      const newData = response.data.post
+      setData((prevData) => [...prevData, ...newData])
+      setHasMore(newData.length > 0)
     }
-  };
+  }
+
+  const fetchMoreData = () => {
+    fetchData(page + 1)
+    setPage(page + 1)
+  }
 
   useEffect(() => {
     fetchData(page);
-
-    const HandleScroll = () => {
-      if (
-        window.innerHeight + window.screenY >=
-        document.body.offsetHeight - 500
-      ) {
-        fetchData(page + 1);
-      }
-    };
-    window.addEventListener("scroll", HandleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", HandleScroll);
-    };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -65,25 +52,32 @@ export default function PostCollection({ role }: PostCollectionProps) {
         </div>
       </div>
       <div className={`grid grid-cols-1 md:${Grid} gap-3 mb-12 sm:mb-5`}>
-        {datas &&
-          datas.map((item) => (
-            <motion.div
-              layoutId={item._id}
-              key={item._id}
-              onClick={() => setSelectedId(item._id)}
-              className="cursor-pointer p-2 border mb-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              <motion.h5 className="font-bold text-3xl dark:text-white">
-                {item.title}
-              </motion.h5>
-              <motion.p className="text-lg font-medium my-2 text-gray-900 dark:text-white">
-                {item.description}
-              </motion.p>
-              <div className="flex items-center justify-center h-96">
-                <img src={item.image} alt="post" className="w-auto h-full" />
-              </div>
-            </motion.div>
-          ))}
+        <InfiniteScroll
+          dataLength={datas.length}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
+          endMessage={<p>content over</p>}>
+          {datas &&
+            datas.map((item) => (
+              <motion.div
+                layoutId={item._id}
+                key={item._id}
+                onClick={() => setSelectedId(item._id)}
+                className="cursor-pointer p-2 border mb-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                <motion.h5 className="font-bold text-3xl dark:text-white">
+                  {item.title}
+                </motion.h5>
+                <motion.p className="text-lg font-medium my-2 text-gray-900 dark:text-white">
+                  {item.description}
+                </motion.p>
+                <div className="flex items-center justify-center h-96">
+                  <img src={item.image} alt="post" className="w-auto h-full" />
+                </div>
+              </motion.div>
+            ))}
+        </InfiniteScroll>
 
         <AnimatePresence>
           {selectedId && (

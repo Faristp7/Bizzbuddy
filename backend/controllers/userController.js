@@ -274,6 +274,7 @@ export async function getProfilePost(req, res) {
   try {
     const id = getUserId(req.headers.authorization);
     const { page } = req.params;
+    console.log(page);
     const pageSize = 2;
     const skip = (page - 1) * pageSize;
     const post = await postModel
@@ -283,8 +284,8 @@ export async function getProfilePost(req, res) {
       .limit(pageSize)
       .exec();
 
-    if (post.length === 0)
-      return res.json({ error: true, message: "no post found" });
+    // if (post.length === 0)
+    //   return res.json({ error: true, message: "no post found" });
 
     res.json({ post });
   } catch (error) {

@@ -6,6 +6,7 @@ import NavigationBar from "./SideBar/NavigationBar";
 import Profile from "./userProfile/Profile";
 import CreatePost from "./CreatePost";
 import Search from "./search/Search";
+import PostCollection from "./PostCollection";
 
 // admin
 import UserMangment from "../adminComponents/UserMangment";
@@ -20,4 +21,5 @@ export {
   Profile,
   CreatePost,
   Search,
+  PostCollection,
 };
