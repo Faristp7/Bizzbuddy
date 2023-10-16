@@ -220,6 +220,24 @@ export async function updateUserData(req, res) {
   }
 }
 
+export async function createPost(req, res) {
+  try {
+    const userId = getUserId(req.headers.authorization);
+    const { values, url } = req.body;
+
+    const postSchema = new postModel({
+      title: values.title,
+      image: url,
+      description: values.description,
+      userId: userId.Token,
+    });
+    await postSchema.save();
+    res.status(200).json({ message: "posted successful", status: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function updateBusinessData(req, res) {
   try {
     const { values, tags, url, businessId } = req.body;
@@ -243,27 +261,15 @@ export async function updateBusinessData(req, res) {
   }
 }
 
-export async function createPost(req, res) {
+export async function editUserPost(req, res) {
   try {
-    const userId = getUserId(req.headers.authorization);
-    const { values, url } = req.body;
+    const { values, id } = req.body;
 
-    const postSchema = new postModel({
-      title: values.title,
-      image: url,
-      description: values.description,
-      userId: userId.Token,
-    });
-    await postSchema.save();
-    res.status(200).json({ message: "posted successful", status: true });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function editUserPost(req,res){
-  try {
-    console.log(req.body);
+    await postModel.updateOne(
+      { _id: id },
+      { $set: { title: values.title, description: values.description } }
+    );
+    res.status(200).json({success : true})
   } catch (error) {
     console.log(error);
   }
@@ -294,7 +300,7 @@ export async function getProfilePost(req, res) {
     // if (post.length === 0)
     //   return res.json({ error: true, message: "no post found" });
 
-    res.json({ post });
+    res.status(200).json({ post });
   } catch (error) {
     console.log(error);
   }

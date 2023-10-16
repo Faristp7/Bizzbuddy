@@ -1,5 +1,5 @@
 import { PostCollectionProps, PropsData } from "../../interface/interface";
-import { getProfilePost } from "../../Api/userApi";
+import { editUserPost, getProfilePost } from "../../Api/userApi";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import equal from "../../assets/icon/equal.png";
@@ -12,6 +12,7 @@ import "./user.css";
 import { Ring } from "@uiball/loaders";
 import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
+import { useNavigate } from "react-router-dom";
 
 export default function PostCollection({ role }: PostCollectionProps) {
   const [datas, setData] = useState<PropsData[]>([]);
@@ -22,7 +23,9 @@ export default function PostCollection({ role }: PostCollectionProps) {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isEditing, setisEditing] = useState<boolean>(false);
 
-  const fetchData = async (pageNumber: number) => {
+  const navigate = useNavigate()
+  
+  const fetchData = async (pageNumber: number) => {    
     if (role === "user") {
       const response = await getProfilePost(pageNumber);
       const newData = response.data.post;
@@ -33,7 +36,6 @@ export default function PostCollection({ role }: PostCollectionProps) {
         );
         return [...prevData, ...uniqueNewData];
       });
-
       setHasMore(newData.length > 0);
     }
   };
@@ -50,14 +52,18 @@ export default function PostCollection({ role }: PostCollectionProps) {
     },
     validationSchema: editPostValidationSchema,
     onSubmit: async (values) => {
-      console.log(values);
+      const id = selectedPost?._id
+      const {data} = await editUserPost({values , id})
+      if(data.success){
+        navigate('/userHomePage')
+      }
     },
   });
 
   useEffect(() => {
     fetchData(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page,isEditing]);
 
   useEffect(() => {
     if (selectedPost) {
@@ -153,9 +159,11 @@ export default function PostCollection({ role }: PostCollectionProps) {
                             }}
                           />
                         </div>
-                        <h5 className="font-bold text-center text-3xl dark:text-white">
+                        <h5 className="font-bold  text-3xl dark:text-white">
                           {!isEditing ? (
-                            item.title
+                            <span className="text-center">
+                              {item.title}
+                            </span>
                           ) : (
                             <div className="relative z-0 w-full mb-2 group mt-3">
                               <input
@@ -184,18 +192,19 @@ export default function PostCollection({ role }: PostCollectionProps) {
                             </div>
                           )}
                         </h5>
-                        <p className="text-lg font-medium my-2 text-gray-900 dark:text-white">
+                        <div className="text-lg font-medium my-2 text-gray-900 dark:text-white">
                           {!isEditing ? (
                             item.description
                           ) : (
                             <div className="relative z-0 w-full mb-3 group mt-3">
-                              <input
-                                type="text"
+                              <textarea
+                                // type="text"
                                 name="description"
                                 value={formik.values.description}
                                 onChange={formik.handleChange}
+                                rows={10}
                                 id="description"
-                                className="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                className="block resize-none py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                 placeholder=" "
                                 required
                               />
@@ -215,15 +224,19 @@ export default function PostCollection({ role }: PostCollectionProps) {
                               </label>
                             </div>
                           )}
-                        </p>
+                        </div>
                         <div className="flex justify-end">
                           <img
                             src={!isEditing ? pencil : tick}
                             className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert"
                             alt="edit"
                             onClick={() => {
-                              setisEditing(true);
-                              setSelcetedPost(item);
+                              if (!isEditing) {
+                                setisEditing(true)
+                                setSelcetedPost(item)
+                              } else {
+                                formik.handleSubmit()
+                              }
                             }}
                           />
                         </div>

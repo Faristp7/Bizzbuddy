@@ -16,6 +16,7 @@ export const googleSignin = (values : object) => axiosInstance('JwtToken').post(
 export const saveUser = (values : object) => axiosInstance('JwtToken').post('/saveUser', values)
 export const saveBussinessForm = (values : object) => axiosInstance('JwtToken').post('/saveBussinessForm', values)
 export const createPost = (values : object) => axiosInstance('JwtToken').post('/createPost', values)
+export const editUserPost = (values : object) => axiosInstance('JwtToken').post('/editUserPost', values)
 
                                          //- admin -\\
 
