@@ -261,6 +261,14 @@ export async function createPost(req, res) {
   }
 }
 
+export async function editUserPost(req,res){
+  try {
+    console.log(req.body);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getUserPost(req, res) {
   try {
     const post = await postModel.find();
@@ -274,7 +282,6 @@ export async function getProfilePost(req, res) {
   try {
     const id = getUserId(req.headers.authorization);
     const { page } = req.params;
-    console.log(page);
     const pageSize = 2;
     const skip = (page - 1) * pageSize;
     const post = await postModel
