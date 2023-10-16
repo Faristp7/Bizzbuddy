@@ -269,7 +269,19 @@ export async function editUserPost(req, res) {
       { _id: id },
       { $set: { title: values.title, description: values.description } }
     );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deletePost(req, res) {
+  try {
+    const id = req.params.id;
+
+    await postModel.findByIdAndDelete({_id : id})
     res.status(200).json({success : true})
+    console.log(id);
   } catch (error) {
     console.log(error);
   }

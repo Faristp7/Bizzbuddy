@@ -1,5 +1,5 @@
 import { PostCollectionProps, PropsData } from "../../interface/interface";
-import { editUserPost, getProfilePost } from "../../Api/userApi";
+import { deletePost, editUserPost, getProfilePost } from "../../Api/userApi";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import equal from "../../assets/icon/equal.png";
@@ -7,6 +7,7 @@ import grid from "../../assets/icon/grid.png";
 import close from "../../assets/icon/close.png";
 import tick from "../../assets/icon/tick.png";
 import pencil from "../../assets/icon/pencil.png";
+import deleteIcon from "../../assets/icon/delete.png";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./user.css";
 import { Ring } from "@uiball/loaders";
@@ -24,8 +25,8 @@ export default function PostCollection({ role }: PostCollectionProps) {
   const [isEditing, setisEditing] = useState<boolean>(false);
 
   const navigate = useNavigate()
-  
-  const fetchData = async (pageNumber: number) => {    
+
+  const fetchData = async (pageNumber: number) => {
     if (role === "user") {
       const response = await getProfilePost(pageNumber);
       const newData = response.data.post;
@@ -53,17 +54,24 @@ export default function PostCollection({ role }: PostCollectionProps) {
     validationSchema: editPostValidationSchema,
     onSubmit: async (values) => {
       const id = selectedPost?._id
-      const {data} = await editUserPost({values , id})
-      if(data.success){
+      const { data } = await editUserPost({ values, id })
+      if (data.success) {
         navigate('/userHomePage')
       }
     },
   });
 
+  const deleteUserPost = async (id: string) => {
+    const { data } = await deletePost(id)
+    if (data.success) {
+      navigate('/userHomePage')
+    }
+  }
+
   useEffect(() => {
     fetchData(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page,isEditing]);
+  }, [page, isEditing]);
 
   useEffect(() => {
     if (selectedPost) {
@@ -225,7 +233,8 @@ export default function PostCollection({ role }: PostCollectionProps) {
                             </div>
                           )}
                         </div>
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-3">
+                          <img src={deleteIcon} onClick={() => deleteUserPost(item._id)} className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert" alt="Delete" />
                           <img
                             src={!isEditing ? pencil : tick}
                             className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert"
