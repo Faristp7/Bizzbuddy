@@ -220,6 +220,18 @@ export async function updateUserData(req, res) {
   }
 }
 
+export async function getAnotherUserProfile(req, res) {
+  try {
+    const id = req.params.id;
+    const userDetails = await userModel
+      .findOne({ _id: id })
+      .populate("bussinessId");
+    res.json(userDetails);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function createPost(req, res) {
   try {
     const userId = getUserId(req.headers.authorization);
@@ -279,8 +291,8 @@ export async function deletePost(req, res) {
   try {
     const id = req.params.id;
 
-    await postModel.findByIdAndDelete({_id : id})
-    res.status(200).json({success : true})
+    await postModel.findByIdAndDelete({ _id: id });
+    res.status(200).json({ success: true });
     console.log(id);
   } catch (error) {
     console.log(error);

@@ -1,6 +1,7 @@
 import { AccountProps } from "../../../interface/interface";
 
 const Business: React.FC<AccountProps> = ({ datas = [], pending }) => {  
+
   return (
     <div className="mt-5 ml-2">
       <div>

@@ -9,7 +9,7 @@ import { NavigationBar } from "../Index";
 import { motion, useAnimation } from "framer-motion";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Waveform } from "@uiball/loaders"
-import { getUserProfile } from "../../../Api/userApi";
+import { getAnotherUserProfile, getUserProfile } from "../../../Api/userApi";
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { userLoggedOut } from "../../../Redux/user/authSlice"
@@ -18,7 +18,7 @@ import PostCollection from "../PostCollection"
 const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
-export default function Profile() {
+export default function Profile({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openSettings, setOpenSettings] = useState<boolean>(false)
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
@@ -26,13 +26,29 @@ export default function Profile() {
   const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
+  const [guestUser, setGuestUser] = useState<boolean>(false)
 
   const controls = useAnimation()
+
+  const profileData = async () => {
+    const { data } = await getUserProfile()
+    setUserData(data)
+  }
+
+  const getGuesUserProfile = async (userId: string) => {
+    const { data } = await getAnotherUserProfile(userId)
+    setUserData(data)
+    setGuestUser(true)
+  }
+
   useEffect(() => {
-    (async () => {
-      const { data } = await getUserProfile()
-      setUserData(data)
-    })()
+    if (!userId) {
+      profileData()
+    }
+    else {
+      getGuesUserProfile(userId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, editModalOpen])
 
   useEffect(() => {
@@ -100,22 +116,33 @@ export default function Profile() {
               <h3 className="font-semibold text-xl sm:text-3xl">{userData?.username}</h3>
             </div>
             <div className="flex items-center">
-              <motion.button
-                className="bg-blue-900 rounded-md m-2 px-3 py-2 text-white flex items-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setEditModalOpen(!editModalOpen)}
-              >
-                <motion.img
-                  src={edit}
-                  alt="edit"
-                  className="w-5 mx-0.5 invert"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <span className="hidden sm:block ml-1">Edit Profile</span>
-              </motion.button>
+              {
+                guestUser ? (
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center">
+                    Follow
+                  </motion.button>
+                ) : (
+
+                  <motion.button
+                    className="bg-blue-900 rounded-md m-2 px-3 py-2 text-white flex items-center"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setEditModalOpen(!editModalOpen)}
+                  >
+                    <motion.img
+                      src={edit}
+                      alt="edit"
+                      className="w-5 mx-0.5 invert"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <span className="hidden sm:block ml-1">Edit Profile</span>
+                  </motion.button>
+                )
+              }
               <div className="relative block sm:hidden">
                 <button onClick={() => setOpenSettings(!openSettings)}>
                   <motion.img
@@ -166,7 +193,7 @@ export default function Profile() {
               ))}
             </div>
             {
-              userData?.bussinessId?.bussinessName ? "" :
+              userData?.bussinessId?.bussinessName || guestUser ? "" :
                 (
                   <motion.button
                     className="bg-blue-900 rounded-md mt-4 px-2 py-1 text-white flex items-center"

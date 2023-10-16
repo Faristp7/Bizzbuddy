@@ -4,6 +4,7 @@ import axiosInstance from "../axios/axios";
 
 export const getUserProfile = () => axiosInstance('JwtToken').get('/getUserProfile')
 export const getProfilePost = (page: number) => axiosInstance('JwtToken').get(`/getProfilePost/${page}`)
+export const getAnotherUserProfile = (id: string) => axiosInstance('JwtToken').get(`/getAnotherUserProfile/${id}`)
 export const searchAccount = (data: string) => axiosInstance('JwtToken').get('/searchAccount', { params: { data: data } })
 export const searchTags = (data: string) => axiosInstance('JwtToken').get('/searchTags', { params: { data: data } })
 export const searchBusiness = (data: string) => axiosInstance('JwtToken').get('/searchBusiness', { params: { data: data } })
