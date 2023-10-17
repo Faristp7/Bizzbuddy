@@ -1,5 +1,6 @@
 import NavigationBar from "../../Components/userComponents/SideBar/NavigationBar"
 import { PostCollection } from './Index'
+import './user.css'
 
 export default function UserHomePage() {
 
@@ -11,7 +12,7 @@ export default function UserHomePage() {
       <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow  dark:text-white">
         <div>
           <div>
-            <PostCollection role="user" userIdForPost="" guestUser />
+            <PostCollection role="homePage" userIdForPost="" guestUser />
           </div>
         </div>
       </div>

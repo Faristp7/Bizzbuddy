@@ -120,11 +120,11 @@ export default function Profile({ userId }: { userId: string }) {
             <div className="flex items-center">
               {
                 guestUser ? (
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center">
-                    Follow
-                  </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center">
+                      Follow
+                    </motion.button>
                 ) : (
 
                   <motion.button

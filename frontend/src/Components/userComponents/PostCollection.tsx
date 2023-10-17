@@ -39,6 +39,9 @@ export default function PostCollection({ role, userIdForPost, guestUser }: PostC
       });
       setHasMore(newData.length > 0);
     }
+    else{
+      console.log(role , userIdForPost , guestUser);
+    }
   };
 
   const fetchMoreData = () => {

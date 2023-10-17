@@ -132,7 +132,7 @@ export default function Search() {
           }
           {
             activeFilter === 'Business' &&
-            <Business datas={filteredData} pending={loading} />
+            <Business datas={filteredData} pending={loading} setUserId={setUserId}/>
           }
         </div>
       </div>
