@@ -18,13 +18,13 @@ import PostCollection from "../PostCollection"
 const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
+const savedTheme = localStorage.getItem('theme');
+
 export default function Profile({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openSettings, setOpenSettings] = useState<boolean>(false)
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
-  const savedTheme = localStorage.getItem('theme');
-  const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false); // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
   const [guestUser, setGuestUser] = useState<boolean>(false)
 
@@ -267,7 +267,7 @@ export default function Profile({ userId }: { userId: string }) {
             </div>
           </div>
           <div className="mt-5">
-            <PostCollection role={"user"} />
+            <PostCollection role={"user"} userIdForPost={userId} guestUser={guestUser}/>
           </div>
         </div>
       </div>

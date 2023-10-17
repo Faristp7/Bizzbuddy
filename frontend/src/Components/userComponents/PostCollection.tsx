@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
 import { useNavigate } from "react-router-dom";
 
-export default function PostCollection({ role }: PostCollectionProps) {
+export default function PostCollection({ role, userIdForPost, guestUser }: PostCollectionProps) {
   const [datas, setData] = useState<PropsData[]>([]);
   const [selectedPost, setSelcetedPost] = useState<PropsData | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -28,8 +28,8 @@ export default function PostCollection({ role }: PostCollectionProps) {
 
   const fetchData = async (pageNumber: number) => {
     if (role === "user") {
-      const response = await getProfilePost(pageNumber);
-      const newData = response.data.post;
+      const response = await getProfilePost(userIdForPost, pageNumber);
+      const newData = response?.data?.post;
       setData((prevData) => {
         const uniqueNewData = newData.filter(
           (newItem: PropsData) =>
@@ -233,22 +233,24 @@ export default function PostCollection({ role }: PostCollectionProps) {
                             </div>
                           )}
                         </div>
-                        <div className="flex justify-end gap-3">
-                          <img src={deleteIcon} onClick={() => deleteUserPost(item._id)} className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert" alt="Delete" />
-                          <img
-                            src={!isEditing ? pencil : tick}
-                            className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert"
-                            alt="edit"
-                            onClick={() => {
-                              if (!isEditing) {
-                                setisEditing(true)
-                                setSelcetedPost(item)
-                              } else {
-                                formik.handleSubmit()
-                              }
-                            }}
-                          />
-                        </div>
+                        {!guestUser &&
+                          <div className="flex justify-end gap-3">
+                            <img src={deleteIcon} onClick={() => deleteUserPost(item._id)} className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert" alt="Delete" />
+                            <img
+                              src={!isEditing ? pencil : tick}
+                              className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert"
+                              alt="edit"
+                              onClick={() => {
+                                if (!isEditing) {
+                                  setisEditing(true)
+                                  setSelcetedPost(item)
+                                } else {
+                                  formik.handleSubmit()
+                                }
+                              }}
+                            />
+                          </div>
+                        }
                       </div>
                     );
                   }

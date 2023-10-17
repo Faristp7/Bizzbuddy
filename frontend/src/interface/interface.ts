@@ -51,10 +51,10 @@ export interface AccountProps {
   pending: boolean;
 }
 
-
-
 export interface PostCollectionProps {
   role: string;
+  userIdForPost: string;
+  guestUser: boolean;
 }
 
 export interface PropsData {

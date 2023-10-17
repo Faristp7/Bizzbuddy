@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { searchAccount, searchBusiness, searchTags } from "../../../Api/userApi";
-import { NavigationBar ,Profile} from "../Index";
+import { NavigationBar, Profile } from "../Index";
 import '../user.css'
 import Tag from './Tag'
 import Business from './Business'
@@ -13,7 +13,7 @@ export default function Search() {
   const [activeFilter, setActiveFilter] = useState<string>("Accounts")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [filteredData, setFilteredData] = useState<any>([])
-  const [userId , setUserId] = useState<string | null>("")
+  const [userId, setUserId] = useState<string | null>("")
 
   useEffect(() => {
     if (searchData.length > 0)
@@ -54,9 +54,9 @@ export default function Search() {
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter)
   }
-  if(userId){
+  if (userId) {
     return (
-      <Profile userId = {userId}/>
+      <Profile userId={userId} />
     )
   }
   return (
@@ -124,15 +124,15 @@ export default function Search() {
         <div>
           {
             activeFilter === 'Accounts' &&
-              <Account datas={filteredData} pending={loading} setUserId={setUserId} />
+            <Account datas={filteredData} pending={loading} setUserId={setUserId} />
           }
           {
             activeFilter === 'Tags' &&
-              <Tag datas={filteredData} pending={loading} />
+            <Tag datas={filteredData} pending={loading} />
           }
           {
             activeFilter === 'Business' &&
-              <Business datas={filteredData} pending={loading} />
+            <Business datas={filteredData} pending={loading} />
           }
         </div>
       </div>

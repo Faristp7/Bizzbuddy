@@ -310,19 +310,16 @@ export async function getUserPost(req, res) {
 
 export async function getProfilePost(req, res) {
   try {
-    const id = getUserId(req.headers.authorization);
-    const { page } = req.params;
+    const { page, userId } = req.params;
+    console.log(page , "page");
     const pageSize = 2;
     const skip = (page - 1) * pageSize;
     const post = await postModel
-      .find({ userId: id.Token })
+      .find({ userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageSize)
       .exec();
-
-    // if (post.length === 0)
-    //   return res.json({ error: true, message: "no post found" });
 
     res.status(200).json({ post });
   } catch (error) {
