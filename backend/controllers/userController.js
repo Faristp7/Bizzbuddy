@@ -299,10 +299,26 @@ export async function deletePost(req, res) {
   }
 }
 
-export async function getUserPost(req, res) {
+export async function getHomePagePost(req, res) {
   try {
-    const post = await postModel.find();
-    res.json({ post });
+    const { page, filter } = req.query;
+
+    const sortOption = {};
+    if (filter === "Oldest") {
+      sortOption.createdAt = 1;
+    } else if (filter === "Newest") {
+      sortOption.createdAt = -1;
+    }
+
+    const pageSize = 2;
+    const skip = (page - 1) * pageSize;
+    const post = await postModel
+      .find()
+      .sort(sortOption)
+      .skip(skip)
+      .limit(pageSize)
+      .exec();
+    res.status(200).json({ post });
   } catch (error) {
     console.log(error);
   }
@@ -311,7 +327,6 @@ export async function getUserPost(req, res) {
 export async function getProfilePost(req, res) {
   try {
     const { page, userId } = req.params;
-    console.log(page , "page");
     const pageSize = 2;
     const skip = (page - 1) * pageSize;
     const post = await postModel

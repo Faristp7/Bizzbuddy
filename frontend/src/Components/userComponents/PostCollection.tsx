@@ -1,5 +1,5 @@
 import { PostCollectionProps, PropsData } from "../../interface/interface";
-import { deletePost, editUserPost, getProfilePost } from "../../Api/userApi";
+import { deletePost, editUserPost, getHomePagePost, getProfilePost } from "../../Api/userApi";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import equal from "../../assets/icon/equal.png";
@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
 import { useNavigate } from "react-router-dom";
 
-export default function PostCollection({ role, userIdForPost, guestUser }: PostCollectionProps) {
+export default function PostCollection({ role, userIdForPost, guestUser, selectedFilter }: PostCollectionProps) {
   const [datas, setData] = useState<PropsData[]>([]);
   const [selectedPost, setSelcetedPost] = useState<PropsData | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -27,22 +27,31 @@ export default function PostCollection({ role, userIdForPost, guestUser }: PostC
   const navigate = useNavigate()
 
   const fetchData = async (pageNumber: number) => {
+    let response;
     if (role === "user") {
-      const response = await getProfilePost(userIdForPost, pageNumber);
-      const newData = response?.data?.post;
-      setData((prevData) => {
-        const uniqueNewData = newData.filter(
-          (newItem: PropsData) =>
-            !prevData.some((existingItem) => existingItem._id === newItem._id)
-        );
-        return [...prevData, ...uniqueNewData];
-      });
-      setHasMore(newData.length > 0);
+      response = await getProfilePost(userIdForPost, pageNumber);
+    } else {
+      const queryParams = new URLSearchParams()
+      if (pageNumber) queryParams.append('page', pageNumber.toString())
+      if (selectedFilter) queryParams.append("filter", selectedFilter)
+      response = await getHomePagePost(queryParams);
     }
-    else{
-      console.log(role , userIdForPost , guestUser);
-    }
+    const newData = response?.data?.post;
+    setData((prevData) => {
+      const uniqueNewData = newData.filter(
+        (newItem: PropsData) =>
+          !prevData.some((existingItem) => existingItem._id === newItem._id)
+      );
+      return [...prevData, ...uniqueNewData];
+    });
+    setHasMore(newData.length > 0);
   };
+
+  useEffect(() => {
+    fetchData(1)
+    setData([])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilter])
 
   const fetchMoreData = () => {
     fetchData(page + 1);
@@ -209,7 +218,6 @@ export default function PostCollection({ role, userIdForPost, guestUser }: PostC
                           ) : (
                             <div className="relative z-0 w-full mb-3 group mt-3">
                               <textarea
-                                // type="text"
                                 name="description"
                                 value={formik.values.description}
                                 onChange={formik.handleChange}

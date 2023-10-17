@@ -46,7 +46,7 @@ export interface AccountProps {
     bussinessName: string;
     userId: {
       profileImage: string;
-      _id : string
+      _id: string;
     };
   }[];
   pending: boolean;
@@ -56,6 +56,7 @@ export interface PostCollectionProps {
   role: string;
   userIdForPost: string;
   guestUser: boolean;
+  selectedFilter: string;
 }
 
 export interface PropsData {
