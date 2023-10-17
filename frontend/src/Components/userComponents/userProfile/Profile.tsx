@@ -270,7 +270,7 @@ export default function Profile({ userId }: { userId: string }) {
           </div>
           <div className="mt-5">'
             {postId &&
-              <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} />
+              <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} selectedFilter=""/>
             }
           </div>
         </div>
