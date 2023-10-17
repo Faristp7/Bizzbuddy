@@ -1,6 +1,15 @@
+import { useEffect, useState } from "react";
 import { AccountProps } from "../../../interface/interface";
+type SetUserIdFunction = (userId: string) => void
 
-const Tag: React.FC<AccountProps> = ({ datas = [], pending }) => {
+const Tag: React.FC<AccountProps & { setUserId: SetUserIdFunction }> = ({ datas = [], pending, setUserId }) => {
+  const [accountId, setAccountId] = useState<string>('')
+
+  useEffect(() => {
+    setUserId(accountId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountId])
+
   return (
     <div className="mt-5 ml-2">
       <div>
@@ -8,7 +17,7 @@ const Tag: React.FC<AccountProps> = ({ datas = [], pending }) => {
           ""
         ) : datas.length > 0 ? (
           datas.map((data, index) => (
-            <div key={index} className="flex gap-3">
+            <div key={index} className="flex gap-3" onClick={() => setAccountId(data.userId._id)}>
               <img
                 src={data?.userId?.profileImage}
                 className="rounded-full my-3 w-9 h-9"

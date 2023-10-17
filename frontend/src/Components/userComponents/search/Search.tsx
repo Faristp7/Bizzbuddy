@@ -128,11 +128,11 @@ export default function Search() {
           }
           {
             activeFilter === 'Tags' &&
-            <Tag datas={filteredData} pending={loading} />
+            <Tag datas={filteredData} pending={loading} setUserId={setUserId} />
           }
           {
             activeFilter === 'Business' &&
-            <Business datas={filteredData} pending={loading} setUserId={setUserId}/>
+            <Business datas={filteredData} pending={loading} setUserId={setUserId} />
           }
         </div>
       </div>
