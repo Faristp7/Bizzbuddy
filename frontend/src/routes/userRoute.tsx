@@ -9,7 +9,7 @@ export default function UserRoute() {
             <Routes>
                 <Route element={<PrivateRoute role="user" redirect={"/"} />}>
                     <Route path="/userHomePage" element={<UserHomePage />} />
-                    <Route path="/userProfile" element={<Profile />} />
+                    <Route path="/userProfile" element={<Profile userId=""/>} />
                     <Route path="/CreatePost" element={<CreatePost />} />
                     <Route path="/Search" element={<Search />} />
                 </Route>

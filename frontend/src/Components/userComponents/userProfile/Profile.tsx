@@ -27,11 +27,12 @@ export default function Profile({ userId }: { userId: string }) {
   const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false); // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
   const [guestUser, setGuestUser] = useState<boolean>(false)
-
+  const [postId, setPostId] = useState<string>('')
   const controls = useAnimation()
 
   const profileData = async () => {
     const { data } = await getUserProfile()
+    setPostId(data._id)
     setUserData(data)
   }
 
@@ -47,6 +48,7 @@ export default function Profile({ userId }: { userId: string }) {
     }
     else {
       getGuesUserProfile(userId)
+      setPostId(userId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, editModalOpen])
@@ -266,8 +268,10 @@ export default function Profile({ userId }: { userId: string }) {
               <h6 className="text-lg font-bold">0 Following</h6>
             </div>
           </div>
-          <div className="mt-5">
-            <PostCollection role={"user"} userIdForPost={userId} guestUser={guestUser}/>
+          <div className="mt-5">'
+            {postId &&
+              <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} />
+            }
           </div>
         </div>
       </div>
