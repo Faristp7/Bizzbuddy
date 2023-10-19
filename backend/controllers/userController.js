@@ -155,13 +155,12 @@ export async function BussinessForm(req, res) {
   try {
     const { values, tags, url } = req.body;
     const { businessName, description, phone, email, location } = values;
-    const token = req.headers.authorization.replace("Bearer", "").trim();
-    const decodedToken = jwt.verify(token, process.env.SECRECTKEY); //extracting token
+    const id = getUserId(req.headers.authorization)
 
     const bussinesSchema = new businessModel({
       bussinessName: businessName,
       Description: description,
-      userId: decodedToken.userId,
+      userId: id.Token,
       bannerImage: url,
       phone,
       email,
@@ -171,7 +170,7 @@ export async function BussinessForm(req, res) {
     const businessCollection = await bussinesSchema.save();
     if (businessCollection) {
       await userModel.findOneAndUpdate(
-        { _id: decodedToken.userId },
+        { _id: id.Token },
         { $set: { bussinessId: businessCollection._id } }
       );
       res.status(200).json({ message: "Data saved succefully", success: true });
@@ -197,10 +196,9 @@ export async function userProfile(req, res) {
 export async function updateUserData(req, res) {
   try {
     const { values, url } = req.body;
-
     const id = getUserId(req.headers.authorization);
     const updatedData = await userModel.findOneAndUpdate(
-      { _id: id.userId },
+      { _id: id.Token },
       {
         $set: {
           email: values.email,
@@ -213,8 +211,7 @@ export async function updateUserData(req, res) {
     );
     const userData = { ...updatedData.toObject() };
     delete userData.password;
-
-    res.json({ success: true, userData });
+    res.json({ success: true, updatedData });
   } catch (error) {
     console.log(error);
   }

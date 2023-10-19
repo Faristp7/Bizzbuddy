@@ -17,8 +17,8 @@ export default function ListBusiness({ close }: ListBusinessProps) {
   const [tags, setTags] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const inputRef = useRef<InputRef>(null);
   const [loading, setLoading] = useState<boolean>(false)
+  const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
     if (inputVisible) {
@@ -85,12 +85,12 @@ export default function ListBusiness({ close }: ListBusinessProps) {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        setLoading(true)
-          const presetKey = "p2bwkmow";
-          const cloudName = "dglfnmf0x";
+        const presetKey = "p2bwkmow";
+        const cloudName = "dglfnmf0x";
         await validationSchema.validate(values, { abortEarly: false })
         const formData = new FormData()
         if (values.bannerImage) {
+          setLoading(true)
           formData.append('file', values.bannerImage)
           formData.append('upload_preset', presetKey)
           formData.append('cloud_name', cloudName)
@@ -98,6 +98,7 @@ export default function ListBusiness({ close }: ListBusinessProps) {
           axios.post("https://api.cloudinary.com/v1_1/dglfnmf0x/image/upload", formData,)
             .then(async (res) => {
               const url = res.data.secure_url
+              console.log(values);
               const { data } = await saveBussinessForm({ values, tags, url })
               if (data.success) {
                 close()

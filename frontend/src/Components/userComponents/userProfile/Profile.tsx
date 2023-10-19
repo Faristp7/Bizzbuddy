@@ -194,6 +194,7 @@ export default function Profile({ userId }: { userId: string }) {
                 </div>
               ))}
             </div>
+
             {
               userData?.bussinessId?.bussinessName || guestUser ? "" :
                 (
@@ -214,6 +215,7 @@ export default function Profile({ userId }: { userId: string }) {
                   </motion.button>
                 )
             }
+            
           </div>
 
           <div className="flex justify-center fixed w-screen">

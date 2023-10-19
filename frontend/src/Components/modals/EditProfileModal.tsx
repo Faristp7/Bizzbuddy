@@ -95,7 +95,7 @@ export default function EditProfileModal({ close, userData }: editprofileModalPr
             phone: userData.phone
         },
         validationSchema: editUserProfileValidationSchema,
-        onSubmit: async (values) => {
+        onSubmit: async (values) => {            
             try {
                 setLoading(true)
                 await editUserProfileValidationSchema.validate(values, { abortEarly: false })
