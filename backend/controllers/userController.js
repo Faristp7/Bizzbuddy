@@ -314,6 +314,7 @@ export async function getHomePagePost(req, res) {
       .sort(sortOption)
       .skip(skip)
       .limit(pageSize)
+      .populate("userId")
       .exec();
     res.status(200).json({ post });
   } catch (error) {

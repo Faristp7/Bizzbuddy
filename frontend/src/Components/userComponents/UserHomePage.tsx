@@ -1,14 +1,19 @@
 import { useState } from "react";
 import NavigationBar from "../../Components/userComponents/SideBar/NavigationBar"
-import { PostCollection } from './Index'
+import { PostCollection, Profile } from './Index'
 import './user.css'
 
 export default function UserHomePage() {
   const filters = ['All', 'Oldest', "Newest", "Popular"]
   const [selectedFilter, setSelectedFilter] = useState<string>('All')
+  const [userId , setUserId] = useState<string | null>('')
 
   const handleClick = (filter: string) => {
     setSelectedFilter(filter)
+  }
+
+  if(userId){
+    return <Profile userId={userId}/>
   }
   return (
     <div className="flex min-h-screen dark:bg-slate-950">
@@ -16,7 +21,7 @@ export default function UserHomePage() {
         <NavigationBar />
       </div>
       <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow dark:text-white">
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 justify-center">
           {filters.map((filter) => (
             <div
               key={filter}
@@ -27,7 +32,7 @@ export default function UserHomePage() {
             </div>
           ))}
         </div>
-        <PostCollection role="homePage" userIdForPost="" guestUser selectedFilter={selectedFilter} />
+        <PostCollection role="homePage" userIdForPost="" guestUser selectedFilter={selectedFilter} setUserId={setUserId}/>
       </div>
     </div>
   )

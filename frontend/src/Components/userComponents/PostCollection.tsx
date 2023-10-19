@@ -1,13 +1,17 @@
 import { PostCollectionProps, PropsData } from "../../interface/interface";
-import { deletePost, editUserPost, getHomePagePost, getProfilePost } from "../../Api/userApi";
+import {
+  deletePost,
+  editUserPost,
+  getHomePagePost,
+  getProfilePost,
+} from "../../Api/userApi";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import equal from "../../assets/icon/equal.png";
-import grid from "../../assets/icon/grid.png";
 import close from "../../assets/icon/close.png";
 import tick from "../../assets/icon/tick.png";
 import pencil from "../../assets/icon/pencil.png";
 import deleteIcon from "../../assets/icon/delete.png";
+import dots from "../../assets/icon/menu-vertical-50.png";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./user.css";
 import { Ring } from "@uiball/loaders";
@@ -15,25 +19,31 @@ import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
 import { useNavigate } from "react-router-dom";
 
-export default function PostCollection({ role, userIdForPost, guestUser, selectedFilter }: PostCollectionProps) {
+
+export default function PostCollection({
+  role,
+  userIdForPost,
+  guestUser,
+  selectedFilter,
+  setUserId
+}: PostCollectionProps) {
   const [datas, setData] = useState<PropsData[]>([]);
   const [selectedPost, setSelcetedPost] = useState<PropsData | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [Grid, setGrid] = useState<string>("grid-cols-2");
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isEditing, setisEditing] = useState<boolean>(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const fetchData = async (pageNumber: number) => {
     let response;
     if (role === "user") {
       response = await getProfilePost(userIdForPost, pageNumber);
     } else {
-      const queryParams = new URLSearchParams()
-      if (pageNumber) queryParams.append('page', pageNumber.toString())
-      if (selectedFilter) queryParams.append("filter", selectedFilter)
+      const queryParams = new URLSearchParams();
+      if (pageNumber) queryParams.append("page", pageNumber.toString());
+      if (selectedFilter) queryParams.append("filter", selectedFilter);
       response = await getHomePagePost(queryParams);
     }
     const newData = response?.data?.post;
@@ -48,10 +58,10 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
   };
 
   useEffect(() => {
-    fetchData(1)
-    setData([])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFilter])
+    fetchData(1);
+    setData([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilter]);
 
   const fetchMoreData = () => {
     fetchData(page + 1);
@@ -65,20 +75,20 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
     },
     validationSchema: editPostValidationSchema,
     onSubmit: async (values) => {
-      const id = selectedPost?._id
-      const { data } = await editUserPost({ values, id })
+      const id = selectedPost?._id;
+      const { data } = await editUserPost({ values, id });
       if (data.success) {
-        navigate('/userHomePage')
+        navigate("/userHomePage");
       }
     },
   });
 
   const deleteUserPost = async (id: string) => {
-    const { data } = await deletePost(id)
+    const { data } = await deletePost(id);
     if (data.success) {
-      navigate('/userHomePage')
+      navigate("/userHomePage");
     }
-  }
+  };
 
   useEffect(() => {
     fetchData(page);
@@ -96,23 +106,7 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
   }, [selectedPost, formik.setValues]);
 
   return (
-    <div>
-      <div className="hidden md:block">
-        <div className="flex justify-end gap-2 mr-5 mb-3">
-          <img
-            src={equal}
-            onClick={() => setGrid("grid-cols-1")}
-            className="w-7 h-7 cursor-pointer dark:invert"
-            alt="single"
-          />
-          <img
-            src={grid}
-            onClick={() => setGrid("grid-cols-2")}
-            className="w-7 h-7 cursor-pointer dark:invert"
-            alt="double"
-          />
-        </div>
-      </div>
+    <div className="container mx-auto md:w-[90%]">
       <div>
         <InfiniteScroll
           dataLength={datas.length}
@@ -123,29 +117,49 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
               <Ring size={40} lineWeight={5} speed={2} color="black" />
             </div>
           }
-          endMessage={<p className="text-center text-lg mb-5">Content over</p>}
+          endMessage={
+            <p className="text-center text-lg mb-5">
+              {datas.length === 0 ? "Nothing to show" : "Completed"}
+            </p>
+          }
         >
-          <div className={`grid grid-cols-1 md:${Grid} gap-3 mb-12 sm:mb-5`}>
+          <div className="mb-5 sm:mb-5 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
             {datas &&
               datas.map((item) => (
-                <motion.div
-                  layoutId={item._id}
-                  key={item._id}
-                  onClick={() => setSelectedId(item._id)}
-                  className="cursor-pointer p-2 border-b sm:border mb-2 rounded hover:bg-gray-100 dark:hover:bg-gray-900"
-                >
-                  <motion.h5 className="text-3xl font-extrabold tracking-tight leading-snug dark:text-white">
-                    {item.title}
-                  </motion.h5>
-                  <motion.p className="text-lg font-medium my-2 text-gray-600 dark:text-white">
-                    {item.description}
-                  </motion.p>
-                  <div className="flex items-center justify-center h-96">
-                    <img
-                      src={item.image}
-                      alt="post"
-                      className="w-auto h-full"
-                    />
+                <motion.div layoutId={item._id} key={item._id} className="my-10 mb-2 border-b">
+                  <div className="">
+                    <div className="flex justify-between px-1">
+                      <div className="flex space-x-3" onClick={() => setUserId && setUserId(item.userId._id)}>
+                        <img src={item.userId.profileImage} className="rounded-full w-8 h-8" alt="..." />
+                        <h6 className="text-xl mt-0.5">{item.userId.username}</h6>
+                      </div>
+                      <div>
+                        <img
+                          src={dots}
+                          className="w-5 h-5 dark:invert"
+                          alt="..."
+                        />
+                      </div>
+                    </div>
+                    <div
+                      onClick={() => setSelectedId(item._id)}
+                      className="cursor-pointer mt-3"
+                    >
+                      <motion.h5 className="text-4xl text-center font-extrabold tracking-tight leading-snug dark:text-white">
+                        {item.title}
+                      </motion.h5>
+                      <motion.p className="text-lg font-medium mt-4 my-2 text-gray-600 dark:text-white">
+                        {item.description}
+                      </motion.p>
+                      <div className="flex items-center mt-3 justify-center h-96 w-full">
+                        <img
+                          src={item.image}
+                          alt="post"
+                          className="sm:w-[100%] mt-5 rounded-lg  h-full"
+                        />
+                      </div>
+                    </div>
+                    <div>like</div>
                   </div>
                 </motion.div>
               ))}
@@ -158,12 +172,10 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
               className="fixed top-0 left-0 flex items-center p-3 justify-center w-full h-full bg-gray-800 bg-opacity-75"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
+              exit={{ opacity: 0 }}>
               <motion.div
                 className="bg-white w-auto sm:w-96 p-4 rounded shadow-lg dark:bg-slate-900"
-                layoutId={selectedId}
-              >
+                layoutId={selectedId}>
                 {datas.map((item) => {
                   if (item._id === selectedId) {
                     return (
@@ -181,9 +193,7 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
                         </div>
                         <h5 className="font-bold  text-3xl dark:text-white">
                           {!isEditing ? (
-                            <span className="text-center">
-                              {item.title}
-                            </span>
+                            <span className="text-center">{item.title}</span>
                           ) : (
                             <div className="relative z-0 w-full mb-2 group mt-3">
                               <input
@@ -244,24 +254,29 @@ export default function PostCollection({ role, userIdForPost, guestUser, selecte
                             </div>
                           )}
                         </div>
-                        {!guestUser &&
+                        {!guestUser && (
                           <div className="flex justify-end gap-3">
-                            <img src={deleteIcon} onClick={() => deleteUserPost(item._id)} className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert" alt="Delete" />
+                            <img
+                              src={deleteIcon}
+                              onClick={() => deleteUserPost(item._id)}
+                              className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert"
+                              alt="Delete"
+                            />
                             <img
                               src={!isEditing ? pencil : tick}
                               className="bg-gray-300 rounded-full w-7 cursor-pointer p-1 dark:invert"
                               alt="edit"
                               onClick={() => {
                                 if (!isEditing) {
-                                  setisEditing(true)
-                                  setSelcetedPost(item)
+                                  setisEditing(true);
+                                  setSelcetedPost(item);
                                 } else {
-                                  formik.handleSubmit()
+                                  formik.handleSubmit();
                                 }
                               }}
                             />
                           </div>
-                        }
+                        )}
                       </div>
                     );
                   }

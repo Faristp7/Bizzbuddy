@@ -54,11 +54,11 @@ export default function Search() {
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter)
   }
+  
   if (userId) {
-    return (
-      <Profile userId={userId} />
-    )
+    return <Profile userId={userId} />
   }
+
   return (
     <div className="flex duration-300 min-h-screen dark:bg-slate-950">
       <div>
