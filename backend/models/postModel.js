@@ -14,6 +14,18 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    reports: [
+      {
+        userId: {
+          type: String,
+          required: true,
+        },
+        message: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",

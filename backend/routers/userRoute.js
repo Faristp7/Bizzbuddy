@@ -16,6 +16,7 @@ import {
   editUserPost,
   deletePost,
   getAnotherUserProfile,
+  reportPost,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -34,6 +35,7 @@ router.post("/saveUser", saveUser);
 router.post("/googleSignin", googleSignin);
 router.post("/saveBussinessForm", BussinessForm);
 router.post("/createPost", verifyToken, createPost);
+router.post("/reportPost", verifyToken, reportPost);
 router.post("/editUserPost", verifyToken, editUserPost);
 
 router.patch("/updateUserData", verifyToken, updateUserData); //update user Data

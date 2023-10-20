@@ -226,7 +226,7 @@ export default function Profile({ userId }: { userId: string }) {
                 speed={1}
                 color="black"
               />}>
-              {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} />}
+              {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} _id=""/>}
             </Suspense>
           </div>
 

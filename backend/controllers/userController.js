@@ -155,7 +155,7 @@ export async function BussinessForm(req, res) {
   try {
     const { values, tags, url } = req.body;
     const { businessName, description, phone, email, location } = values;
-    const id = getUserId(req.headers.authorization)
+    const id = getUserId(req.headers.authorization);
 
     const bussinesSchema = new businessModel({
       bussinessName: businessName,
@@ -390,6 +390,27 @@ export async function searchBusiness(req, res) {
       .populate("userId");
 
     res.status(200).json({ userInfo: AccountData });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function reportPost(req, res) {
+  try {
+    const userId = getUserId(req.headers.authorization);
+    const { reportMsg, _id } = req.body;
+
+    const post = await postModel.findById(_id);
+
+    const newReport = {
+      userId: userId.Token,
+      message: reportMsg,
+    };
+
+    post.reports.push(newReport);
+    const updatedPost = await post.save();
+    if (updatedPost) res.status(200).json({success : true})
+
   } catch (error) {
     console.log(error);
   }

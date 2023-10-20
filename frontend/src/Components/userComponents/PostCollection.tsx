@@ -18,7 +18,7 @@ import { Ring } from "@uiball/loaders";
 import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
 import { useNavigate } from "react-router-dom";
-
+import ReportModal from "../modals/ReportModal";
 
 export default function PostCollection({
   role,
@@ -33,6 +33,8 @@ export default function PostCollection({
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isEditing, setisEditing] = useState<boolean>(false);
+  const [menuId, setMenuId] = useState<string>('')
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const navigate = useNavigate();
 
@@ -105,6 +107,8 @@ export default function PostCollection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPost, formik.setValues]);
 
+
+
   return (
     <div className="container mx-auto md:w-[90%]">
       <div>
@@ -133,12 +137,24 @@ export default function PostCollection({
                         <img src={item.userId.profileImage} className="rounded-full w-8 h-8" alt="..." />
                         <h6 className="text-xl mt-0.5">{item.userId.username}</h6>
                       </div>
-                      <div>
+                      <div className="relative">
                         <img
                           src={dots}
-                          className="w-5 h-5 dark:invert"
+                          className="w-5 h-5 dark:invert cursor-pointer"
                           alt="..."
+                          onClick={() => menuId === item._id ? setMenuId('') : setMenuId(item._id)}
                         />
+                        {menuId === item._id &&
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute right-5 bg-white dark:bg-slate-900 dark:border-0 border-2 rounded-md">
+                            <ul className="px-4 py-1">
+                              <li className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>Report</li>
+                            </ul>
+                          </motion.div>
+                        }
                       </div>
                     </div>
                     <div
@@ -165,6 +181,11 @@ export default function PostCollection({
               ))}
           </div>
         </InfiniteScroll>
+        <div>
+          {isOpen &&
+            <ReportModal close={() => setIsOpen(!isOpen)} _id={menuId}/>
+          }
+        </div>
 
         <AnimatePresence>
           {selectedId && (

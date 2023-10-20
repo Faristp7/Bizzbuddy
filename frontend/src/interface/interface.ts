@@ -1,4 +1,3 @@
-
 export interface loginFormData {
   email: string;
   password: string;
@@ -20,6 +19,7 @@ export interface signUpFormData {
 
 export interface ListBusinessProps {
   close: () => void;
+  _id: string;
 }
 
 export interface User {
@@ -53,14 +53,14 @@ export interface AccountProps {
   pending: boolean;
 }
 
-type SetUserIdFunction = (userId: string) => void
+type SetUserIdFunction = (userId: string) => void;
 
 export interface PostCollectionProps {
   role: string;
   userIdForPost: string;
   guestUser: boolean;
   selectedFilter: string;
-  setUserId?:  SetUserIdFunction
+  setUserId?: SetUserIdFunction;
 }
 
 export interface PropsData {
@@ -69,7 +69,7 @@ export interface PropsData {
   description: string;
   image: string;
   userId: {
-    _id : string,
+    _id: string;
     profileImage: string;
     username: string;
   };

@@ -17,6 +17,7 @@ export const updateBusinessData = (values: object) => axiosInstance('JwtToken').
 export const deletePost = (id: string) => axiosInstance('JwtToken').delete(`/deletePost/${id}`)
 
 export const userSignup = (values: object) => axiosInstance('JwtToken').post('/signUp', values)
+export const reportPost = (values: object) => axiosInstance('JwtToken').post('/reportPost', values)
 export const googleSignin = (values: object) => axiosInstance('JwtToken').post('/googleSignin', values)
 export const saveUser = (values: object) => axiosInstance('JwtToken').post('/saveUser', values)
 export const saveBussinessForm = (values: object) => axiosInstance('JwtToken').post('/saveBussinessForm', values)
