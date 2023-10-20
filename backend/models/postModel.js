@@ -14,6 +14,12 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     reports: [
       {
         userId: {

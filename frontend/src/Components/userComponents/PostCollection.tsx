@@ -4,6 +4,7 @@ import {
   editUserPost,
   getHomePagePost,
   getProfilePost,
+  manageLike,
 } from "../../Api/userApi";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,6 +13,8 @@ import tick from "../../assets/icon/tick.png";
 import pencil from "../../assets/icon/pencil.png";
 import deleteIcon from "../../assets/icon/delete.png";
 import dots from "../../assets/icon/menu-vertical-50.png";
+import beforeLikefrom from "../../assets/icon/like-Light.png";
+import afterLikefrom from "../../assets/icon/like-hard.png";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./user.css";
 import { Ring } from "@uiball/loaders";
@@ -19,13 +22,14 @@ import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
 import { useNavigate } from "react-router-dom";
 import ReportModal from "../modals/ReportModal";
+import Comment from "./Comment";
 
 export default function PostCollection({
   role,
   userIdForPost,
   guestUser,
   selectedFilter,
-  setUserId
+  setUserId,
 }: PostCollectionProps) {
   const [datas, setData] = useState<PropsData[]>([]);
   const [selectedPost, setSelcetedPost] = useState<PropsData | null>(null);
@@ -33,8 +37,8 @@ export default function PostCollection({
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isEditing, setisEditing] = useState<boolean>(false);
-  const [menuId, setMenuId] = useState<string>('')
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [menuId, setMenuId] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -107,7 +111,11 @@ export default function PostCollection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPost, formik.setValues]);
 
+  const likeAndDislike = async (postId: string) => {
+    const { data } = await manageLike({ postId })
+    console.log(data);
 
+  }
 
   return (
     <div className="container mx-auto md:w-[90%]">
@@ -122,41 +130,73 @@ export default function PostCollection({
             </div>
           }
           endMessage={
-            <p className="text-center text-lg mb-5">
-              {datas.length === 0 ? "Nothing to show" : "Completed"}
-            </p>
+            <div className="flex justify-center text-center text-lg mb-5">
+              {datas.length === 0 ? (
+                "Nothing to show"
+              ) : (
+                <img className="animate-bounce dark:invert" src={tick} />
+              )}
+            </div>
           }
         >
           <div className="mb-5 sm:mb-5 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
             {datas &&
               datas.map((item) => (
-                <motion.div layoutId={item._id} key={item._id} className="my-10 mb-2 border-b">
+                <motion.div
+                  layoutId={item._id}
+                  key={item._id}
+                  className="my-10 mb-2 border-b"
+                >
                   <div className="">
-                    <div className="flex justify-between px-1">
-                      <div className="flex space-x-3" onClick={() => setUserId && setUserId(item.userId._id)}>
-                        <img src={item.userId.profileImage} className="rounded-full w-8 h-8" alt="..." />
-                        <h6 className="text-xl mt-0.5">{item.userId.username}</h6>
+                    {guestUser && (
+                      <div className="flex justify-between px-1">
+                        <div
+                          className="flex space-x-3"
+                          onClick={() =>
+                            setUserId && setUserId(item.userId._id)
+                          }
+                        >
+                          <img
+                            src={item.userId.profileImage}
+                            className="rounded-full w-8 h-8 border"
+                            alt="..."
+                          />
+                          <h6 className="text-xl mt-0.5 cursor-pointer">
+                            {item.userId.username}
+                          </h6>
+                        </div>
+                        <div className="relative">
+                          <img
+                            src={dots}
+                            className="w-5 h-5 dark:invert cursor-pointer"
+                            alt="..."
+                            onClick={() =>
+                              menuId === item._id
+                                ? setMenuId("")
+                                : setMenuId(item._id)
+                            }
+                          />
+                          {menuId === item._id && (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="absolute right-5 bg-white dark:bg-slate-900 dark:border-0 border-2 rounded-md"
+                            >
+                              <ul className="px-4 py-1">
+                                <li
+                                  className="cursor-pointer"
+                                  onClick={() => setIsOpen(!isOpen)}
+                                >
+                                  Report
+                                </li>
+                              </ul>
+                            </motion.div>
+                          )}
+                        </div>
                       </div>
-                      <div className="relative">
-                        <img
-                          src={dots}
-                          className="w-5 h-5 dark:invert cursor-pointer"
-                          alt="..."
-                          onClick={() => menuId === item._id ? setMenuId('') : setMenuId(item._id)}
-                        />
-                        {menuId === item._id &&
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute right-5 bg-white dark:bg-slate-900 dark:border-0 border-2 rounded-md">
-                            <ul className="px-4 py-1">
-                              <li className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>Report</li>
-                            </ul>
-                          </motion.div>
-                        }
-                      </div>
-                    </div>
+                    )}
+
                     <div
                       onClick={() => setSelectedId(item._id)}
                       className="cursor-pointer mt-3"
@@ -175,16 +215,27 @@ export default function PostCollection({
                         />
                       </div>
                     </div>
-                    <div>like</div>
+                    <div className="my-5 flex justify-between">
+                      <div className="flex gap-2">
+                        <img src={beforeLikefrom} className="w-6 h-6 dark:invert" onClick={() => likeAndDislike(item._id)} alt="👍" />
+                        <p className="mt-0.5">10</p>
+                      </div>
+                      <div>
+                        <p className="underline cursor-pointer">View comment</p>
+                      </div>
+                    </div>
+                    <div>
+                      <Comment />
+                    </div>
                   </div>
                 </motion.div>
               ))}
           </div>
         </InfiniteScroll>
         <div>
-          {isOpen &&
-            <ReportModal close={() => setIsOpen(!isOpen)} _id={menuId}/>
-          }
+          {isOpen && (
+            <ReportModal close={() => setIsOpen(!isOpen)} _id={menuId} />
+          )}
         </div>
 
         <AnimatePresence>
@@ -193,10 +244,12 @@ export default function PostCollection({
               className="fixed top-0 left-0 flex items-center p-3 justify-center w-full h-full bg-gray-800 bg-opacity-75"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
+              exit={{ opacity: 0 }}
+            >
               <motion.div
                 className="bg-white w-auto sm:w-96 p-4 rounded shadow-lg dark:bg-slate-900"
-                layoutId={selectedId}>
+                layoutId={selectedId}
+              >
                 {datas.map((item) => {
                   if (item._id === selectedId) {
                     return (

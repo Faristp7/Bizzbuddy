@@ -33,6 +33,7 @@ export default function Profile({ userId }: { userId: string }) {
   const profileData = async () => {
     const { data } = await getUserProfile()
     setPostId(data._id)
+    
     setUserData(data)
   }
 
@@ -43,7 +44,7 @@ export default function Profile({ userId }: { userId: string }) {
   }
 
   useEffect(() => {
-    if (!userId) {
+    if (!userId) {      
       profileData()
     }
     else {
@@ -120,11 +121,11 @@ export default function Profile({ userId }: { userId: string }) {
             <div className="flex items-center">
               {
                 guestUser ? (
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center">
-                      Follow
-                    </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center">
+                    Follow
+                  </motion.button>
                 ) : (
 
                   <motion.button
@@ -215,7 +216,6 @@ export default function Profile({ userId }: { userId: string }) {
                   </motion.button>
                 )
             }
-            
           </div>
 
           <div className="flex justify-center fixed w-screen">
@@ -226,7 +226,7 @@ export default function Profile({ userId }: { userId: string }) {
                 speed={1}
                 color="black"
               />}>
-              {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} _id=""/>}
+              {isOpen && <ListBussinessModal close={() => setIsOpen(!isOpen)} _id="" />}
             </Suspense>
           </div>
 
@@ -272,7 +272,7 @@ export default function Profile({ userId }: { userId: string }) {
           </div>
           <div className="mt-5">'
             {postId &&
-              <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} selectedFilter=""/>
+              <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} selectedFilter="" />
             }
           </div>
         </div>

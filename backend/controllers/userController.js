@@ -333,7 +333,6 @@ export async function getProfilePost(req, res) {
       .skip(skip)
       .limit(pageSize)
       .exec();
-
     res.status(200).json({ post });
   } catch (error) {
     console.log(error);
@@ -409,7 +408,28 @@ export async function reportPost(req, res) {
 
     post.reports.push(newReport);
     const updatedPost = await post.save();
-    if (updatedPost) res.status(200).json({success : true})
+    if (updatedPost) res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function manageLike(req, res) {
+  try {
+    const { postId } = req.body;
+    const userId = getUserId(req.headers.authorization);
+
+    const post = await postModel.findById(postId);
+
+    const userLiked = post.likes.includes(userId.Token);
+
+    if (userLiked) {
+      post.likes = post.likes.filter((id) => id.toString() !== userId.Token);
+    }else{
+      post.likes.push(userId.Token)
+    }
+
+    await post.save()
 
   } catch (error) {
     console.log(error);
