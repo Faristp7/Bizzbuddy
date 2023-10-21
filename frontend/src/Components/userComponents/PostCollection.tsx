@@ -39,6 +39,7 @@ export default function PostCollection({
   const [isEditing, setisEditing] = useState<boolean>(false);
   const [menuId, setMenuId] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [likedPost, setlikedPost] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -53,6 +54,7 @@ export default function PostCollection({
       response = await getHomePagePost(queryParams);
     }
     const newData = response?.data?.post;
+
     setData((prevData) => {
       const uniqueNewData = newData.filter(
         (newItem: PropsData) =>
@@ -98,6 +100,8 @@ export default function PostCollection({
 
   useEffect(() => {
     fetchData(page);
+    console.log(likedPost);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, isEditing]);
 
@@ -112,10 +116,20 @@ export default function PostCollection({
   }, [selectedPost, formik.setValues]);
 
   const likeAndDislike = async (postId: string) => {
-    const { data } = await manageLike({ postId })
-    console.log(data);
-
-  }
+    const { data } = await manageLike({ postId });
+    if (data.success) {
+      console.log(likedPost, "1");
+      if (likedPost.includes(postId)) {
+        const filtered = likedPost.filter((prev) => prev !== postId )
+        setlikedPost([...filtered])
+      } else {
+        setlikedPost((prevLikedPosts) => [...prevLikedPosts, postId]);
+      }
+    } else {
+      console.log("failed");
+    }
+    console.log(likedPost, "2");
+  };
 
   return (
     <div className="container mx-auto md:w-[90%]">
@@ -217,7 +231,16 @@ export default function PostCollection({
                     </div>
                     <div className="my-5 flex justify-between">
                       <div className="flex gap-2">
-                        <img src={beforeLikefrom} className="w-6 h-6 dark:invert" onClick={() => likeAndDislike(item._id)} alt="👍" />
+                        <img
+                          src={
+                            !item?.likes?.includes(item.userId._id) || likedPost.includes(item._id)
+                              ? beforeLikefrom
+                              : afterLikefrom
+                          }
+                          className="w-6 h-6 dark:invert"
+                          onClick={() => likeAndDislike(item._id)}
+                          alt="👍"
+                        />
                         <p className="mt-0.5">10</p>
                       </div>
                       <div>

@@ -417,6 +417,7 @@ export async function reportPost(req, res) {
 export async function manageLike(req, res) {
   try {
     const { postId } = req.body;
+
     const userId = getUserId(req.headers.authorization);
 
     const post = await postModel.findById(postId);
@@ -425,12 +426,11 @@ export async function manageLike(req, res) {
 
     if (userLiked) {
       post.likes = post.likes.filter((id) => id.toString() !== userId.Token);
-    }else{
-      post.likes.push(userId.Token)
+    } else {
+      post.likes.push(userId.Token);
     }
-
-    await post.save()
-
+    await post.save();
+    res.status(200).json({success : true})  
   } catch (error) {
     console.log(error);
   }
