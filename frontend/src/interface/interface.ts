@@ -68,7 +68,7 @@ export interface PropsData {
   title: string;
   description: string;
   image: string;
-  likes : string,
+  likes: string[];
   userId: {
     _id: string;
     profileImage: string;

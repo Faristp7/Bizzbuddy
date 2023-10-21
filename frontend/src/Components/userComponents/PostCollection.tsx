@@ -39,7 +39,7 @@ export default function PostCollection({
   const [isEditing, setisEditing] = useState<boolean>(false);
   const [menuId, setMenuId] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [likedPost, setlikedPost] = useState<string[]>([]);
+  // const [likedPost, setlikedPost] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -100,8 +100,6 @@ export default function PostCollection({
 
   useEffect(() => {
     fetchData(page);
-    console.log(likedPost);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, isEditing]);
 
@@ -115,20 +113,20 @@ export default function PostCollection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPost, formik.setValues]);
 
-  const likeAndDislike = async (postId: string) => {
-    const { data } = await manageLike({ postId });
-    if (data.success) {
-      console.log(likedPost, "1");
-      if (likedPost.includes(postId)) {
-        const filtered = likedPost.filter((prev) => prev !== postId )
-        setlikedPost([...filtered])
-      } else {
-        setlikedPost((prevLikedPosts) => [...prevLikedPosts, postId]);
+
+  const likeAndDislike = async (postId: string, userId: string) => {
+    const updatedDatas: PropsData[] = datas.map((post) => {
+      if (post._id === postId) {
+        const likedByUser = post.likes && post.likes.includes(userId);
+        return {
+          ...post,
+          likes: likedByUser ? post.likes.filter(id => id !== userId) : [...(post.likes || []), userId]
+        };
       }
-    } else {
-      console.log("failed");
-    }
-    console.log(likedPost, "2");
+      return post;
+    });
+    await manageLike({ postId });
+    setData(updatedDatas);
   };
 
   return (
@@ -233,12 +231,15 @@ export default function PostCollection({
                       <div className="flex gap-2">
                         <img
                           src={
-                            !item?.likes?.includes(item.userId._id) || likedPost.includes(item._id)
+                            // likedPost.includes(item._id) ||
+                            !item?.likes?.includes(item.userId._id)
                               ? beforeLikefrom
                               : afterLikefrom
                           }
                           className="w-6 h-6 dark:invert"
-                          onClick={() => likeAndDislike(item._id)}
+                          onClick={() =>
+                            likeAndDislike(item._id, item.userId._id)
+                          }
                           alt="👍"
                         />
                         <p className="mt-0.5">10</p>
