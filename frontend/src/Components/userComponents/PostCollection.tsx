@@ -6,7 +6,7 @@ import {
   getProfilePost,
   manageLike,
 } from "../../Api/userApi";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import close from "../../assets/icon/close.png";
 import tick from "../../assets/icon/tick.png";
@@ -17,12 +17,12 @@ import beforeLikefrom from "../../assets/icon/like-Light.png";
 import afterLikefrom from "../../assets/icon/like-hard.png";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./user.css";
-import { Ring } from "@uiball/loaders";
+import { Ring, Waveform } from "@uiball/loaders";
 import { useFormik } from "formik";
 import { editPostValidationSchema } from "../../validations/validation";
 import { useNavigate } from "react-router-dom";
 import ReportModal from "../modals/ReportModal";
-import Comment from "./Comment";
+const Comment = lazy(() => import('../userComponents/Comment'))
 
 export default function PostCollection({
   role,
@@ -247,14 +247,25 @@ export default function PostCollection({
                       </div>
                       <div>
                         <p className="underline cursor-pointer" onClick={() =>
-                          viewComment  === item._id
+                          viewComment === item._id
                             ? setViewComment("")
                             : setViewComment(item._id)
                         }>View comment</p>
                       </div>
                     </div>
                     <div>
-                      <Comment viewComment={viewComment} itemId={item._id} />
+                      <Suspense fallback={
+                        <Waveform
+                          size={40}
+                          lineWeight={3.5}                                          //edit profile modal open
+                          speed={1}
+                          color="black"
+                        />}>
+                        {viewComment &&
+                          <Comment viewComment={viewComment} itemId={item._id} />
+                        }
+                      </Suspense>
+
                     </div>
                   </div>
                 </motion.div>

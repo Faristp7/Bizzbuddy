@@ -457,8 +457,16 @@ export async function addComment(req, res) {
 
 export async function getComment(req, res) {
   try {
-    const { id } = req.params;
-    const comment = await commentModel.find({postId : id}).populate("userId");
+    const { id, currentPage } = req.params;
+    const pageSize = 3;
+
+    const comment = await commentModel
+      .find({ postId: id })
+      .sort({ createdAt: -1 })
+      .populate("userId")
+      .skip((currentPage - 1) * pageSize)
+      .limit(pageSize);
+      
     res.json({ comment });
   } catch (error) {
     console.log(error);

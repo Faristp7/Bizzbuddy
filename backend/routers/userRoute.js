@@ -25,7 +25,7 @@ import verifyToken from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-router.get("/getComment/:id", getComment);
+router.get("/getComment/:id/:currentPage", getComment);
 router.get("/getUserProfile", verifyToken, userProfile);
 router.get("/getHomePagePost", verifyToken, getHomePagePost);
 router.get("/getProfilePost/:userId/:page", verifyToken, getProfilePost);
