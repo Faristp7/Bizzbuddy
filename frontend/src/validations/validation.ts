@@ -94,3 +94,11 @@ export const editPostValidationSchema = Yup.object().shape({
     .max(800, "Description must be at most 800 characters long")
     .required(),
 });
+
+export const addCommentValidation = Yup.object().shape({
+  comment: Yup.string()
+    .trim()
+    .matches(/\S/, "Whitespace is not allowed")
+    .max(60, "limit reached")
+    .required(),
+});

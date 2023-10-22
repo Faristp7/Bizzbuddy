@@ -18,11 +18,14 @@ import {
   getAnotherUserProfile,
   reportPost,
   manageLike,
+  addComment,
+  getComment,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
+router.get("/getComment/:id", getComment);
 router.get("/getUserProfile", verifyToken, userProfile);
 router.get("/getHomePagePost", verifyToken, getHomePagePost);
 router.get("/getProfilePost/:userId/:page", verifyToken, getProfilePost);
@@ -35,6 +38,7 @@ router.post("/signUp", signUp);
 router.post("/saveUser", saveUser);
 router.post("/googleSignin", googleSignin);
 router.post("/saveBussinessForm", BussinessForm);
+router.post("/addComment", verifyToken, addComment);
 router.post("/manageLike", verifyToken, manageLike);
 router.post("/createPost", verifyToken, createPost);
 router.post("/reportPost", verifyToken, reportPost);

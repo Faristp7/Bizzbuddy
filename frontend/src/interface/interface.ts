@@ -75,3 +75,8 @@ export interface PropsData {
     username: string;
   };
 }
+
+export interface commentProps {
+  viewComment: string
+  itemId: string
+}

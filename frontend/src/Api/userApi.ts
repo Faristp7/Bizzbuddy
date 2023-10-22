@@ -20,6 +20,7 @@ export const saveUser = (values: object) => axiosInstance('JwtToken').post('/sav
 export const createPost = (values: object) => axiosInstance('JwtToken').post('/createPost', values)
 export const manageLike = (values: object) => axiosInstance('JwtToken').post('/manageLike', values)
 export const reportPost = (values: object) => axiosInstance('JwtToken').post('/reportPost', values)
+export const addComment = (values: object) => axiosInstance('JwtToken').post('/addComment', values)
 export const editUserPost = (values: object) => axiosInstance('JwtToken').post('/editUserPost', values)
 export const googleSignin = (values: object) => axiosInstance('JwtToken').post('/googleSignin', values)
 export const saveBussinessForm = (values: object) => axiosInstance('JwtToken').post('/saveBussinessForm', values)

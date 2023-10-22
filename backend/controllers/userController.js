@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import adminModel from "../models/adminModel.js";
 import businessModel from "../models/bussinessModel.js";
+import commentModel from "../models/commentModel.js";
 import postModel from "../models/postModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -430,7 +431,36 @@ export async function manageLike(req, res) {
       post.likes.push(userId.Token);
     }
     await post.save();
-    res.status(200).json({success : true})  
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addComment(req, res) {
+  try {
+    const userId = getUserId(req.headers.authorization);
+    const { message, itemId } = req.body;
+
+    const newComment = new commentModel({
+      postId: itemId,
+      userId: userId.Token,
+      message,
+    });
+    await newComment.save();
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getComment(req, res) {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const comment = await commentModel.find({postId : id});
+    res.json({ comment });
   } catch (error) {
     console.log(error);
   }

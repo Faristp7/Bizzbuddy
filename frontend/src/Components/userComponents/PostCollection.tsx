@@ -37,9 +37,9 @@ export default function PostCollection({
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isEditing, setisEditing] = useState<boolean>(false);
-  const [menuId, setMenuId] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // const [likedPost, setlikedPost] = useState<string[]>([]);
+  const [menuId, setMenuId] = useState<string>("");
+  const [viewComment, setViewComment] = useState<string>("")
 
   const navigate = useNavigate();
 
@@ -227,29 +227,34 @@ export default function PostCollection({
                         />
                       </div>
                     </div>
-                    <div className="my-5 flex justify-between">
+                    <div className="mt-5 mb-4 flex justify-between">
                       <div className="flex gap-2">
-                        <img
+                        <motion.img
+                          whileTap={{ scale: 1.2 }}
+                          transition={{ duration: 0.2 }}
                           src={
-                            // likedPost.includes(item._id) ||
                             !item?.likes?.includes(item.userId._id)
                               ? beforeLikefrom
                               : afterLikefrom
                           }
-                          className="w-6 h-6 dark:invert"
+                          className="w-6 h-6 cursor-pointer dark:invert"
                           onClick={() =>
                             likeAndDislike(item._id, item.userId._id)
                           }
                           alt="👍"
                         />
-                        <p className="mt-0.5">10</p>
+                        <p className="mt-0.5">{item.likes.length}</p>
                       </div>
                       <div>
-                        <p className="underline cursor-pointer">View comment</p>
+                        <p className="underline cursor-pointer" onClick={() =>
+                          viewComment  === item._id
+                            ? setViewComment("")
+                            : setViewComment(item._id)
+                        }>View comment</p>
                       </div>
                     </div>
                     <div>
-                      <Comment />
+                      <Comment viewComment={viewComment} itemId={item._id} />
                     </div>
                   </div>
                 </motion.div>
