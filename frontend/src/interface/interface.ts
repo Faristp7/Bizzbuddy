@@ -77,6 +77,16 @@ export interface PropsData {
 }
 
 export interface commentProps {
-  viewComment: string
-  itemId: string
+  viewComment: string;
+  itemId: string;
+}
+
+export interface commentState {
+  _id: string;
+  message: string;
+  createdAt: string;
+  userId: {
+    username: string;
+    profileImage: string;
+  };
 }

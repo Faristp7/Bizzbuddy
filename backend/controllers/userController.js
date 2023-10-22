@@ -458,8 +458,7 @@ export async function addComment(req, res) {
 export async function getComment(req, res) {
   try {
     const { id } = req.params;
-    console.log(id);
-    const comment = await commentModel.find({postId : id});
+    const comment = await commentModel.find({postId : id}).populate("userId");
     res.json({ comment });
   } catch (error) {
     console.log(error);
