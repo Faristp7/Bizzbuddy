@@ -218,14 +218,29 @@ export async function updateUserData(req, res) {
     console.log(error);
   }
 }
-
+////////////////////////////////////////////////////
 export async function getAnotherUserProfile(req, res) {
   try {
     const id = req.params.id;
+    const userId = getUserId(req.headers.authorization);
+
     const userDetails = await userModel
       .findOne({ _id: id })
       .populate("bussinessId");
-    res.json(userDetails);
+
+    const follwingStatus = await FollowModel.findOne({
+      followerId: userId.Token,
+      followingId: id,
+    });
+
+    const { followerCount, followingCount } = await countFollow(id);
+
+    res.json({
+      userDetails,
+      isFollowing: follwingStatus !== null,
+      followerCount,
+      followingCount,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -484,12 +499,22 @@ export async function mangeFollow(req, res) {
 
     if (existingUser) {
       await FollowModel.findByIdAndDelete(existingUser._id);
-      res.json({ success: false, message: "Unfollowed" });
+      res.json({ success: false, message: "Follow" });
     } else {
       const newFollow = new FollowModel({ followerId, followingId });
       await newFollow.save();
-      res.json({ success: true, message: "Followed" });
+      res.json({ success: true, message: "Unfollow" });
     }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function countFollow(id) {
+  try {
+    const followerCount = await FollowModel.countDocuments({ followingId: id });
+    const followingCount = await FollowModel.countDocuments({ followerId: id });
+    return { followerCount, followingCount };
   } catch (error) {
     console.log(error);
   }

@@ -8,8 +8,8 @@ export const searchTags = (data: string) => axiosInstance('JwtToken').get('/sear
 export const getHomePagePost = (queryParams: object) => axiosInstance('JwtToken').get(`/getHomePagePost?${queryParams}`)
 export const searchAccount = (data: string) => axiosInstance('JwtToken').get('/searchAccount', { params: { data: data } })
 export const searchBusiness = (data: string) => axiosInstance('JwtToken').get('/searchBusiness', { params: { data: data } })
-export const getProfilePost = (userId: string, page: number) => axiosInstance('JwtToken').get(`/getProfilePost/${userId}/${page}`)
 export const getComment = (id: string, currentPage: number) => axiosInstance('JwtToken').get(`/getComment/${id}/${currentPage}`)
+export const getProfilePost = (userId: string, page: number) => axiosInstance('JwtToken').get(`/getProfilePost/${userId}/${page}`)
 
 export const userProfileUpdate = (values: object) => axiosInstance('JwtToken').patch('/updateUserData', values)
 export const updateBusinessData = (values: object) => axiosInstance('JwtToken').patch('/updateBusinessData', values)

@@ -21,6 +21,7 @@ import {
   addComment,
   getComment,
   mangeFollow,
+  countFollow,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 

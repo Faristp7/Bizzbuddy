@@ -18,6 +18,10 @@ import PostCollection from "../PostCollection"
 const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
+interface FollowCount {
+  followerCount: number
+  followingCount: number
+}
 const savedTheme = localStorage.getItem('theme');
 const subimage = 'https://res.cloudinary.com/dglfnmf0x/image/upload/v1698042901/ugwsothwchdhwbaz5qdr.jpg'
 
@@ -29,23 +33,30 @@ export default function Profile({ userId }: { userId: string }) {
   const [userData, setUserData] = useState<any>([])
   const [guestUser, setGuestUser] = useState<boolean>(false)
   const [postId, setPostId] = useState<string>('')
+  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+  const [followCount, setFollowCount] = useState<FollowCount>({ followerCount: 0, followingCount: 0 })
   const controls = useAnimation()
 
   const profileData = async () => {
     const { data } = await getUserProfile()
     setPostId(data._id)
-    
     setUserData(data)
   }
 
   const getGuesUserProfile = async (userId: string) => {
     const { data } = await getAnotherUserProfile(userId)
-    setUserData(data)
+    setUserData(data.userDetails)
+    setFollowCount({
+      followerCount: data.followerCount,
+      followingCount: data.followingCount
+    })
+
+    if (data.isFollowing) setIsFollowing(true)
     setGuestUser(true)
   }
 
   useEffect(() => {
-    if (!userId) {      
+    if (!userId) {
       profileData()
     }
     else {
@@ -53,7 +64,7 @@ export default function Profile({ userId }: { userId: string }) {
       setPostId(userId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, editModalOpen])
+  }, [isOpen, editModalOpen ,isFollowing])
 
   useEffect(() => {
     controls.start({
@@ -99,9 +110,9 @@ export default function Profile({ userId }: { userId: string }) {
     localStorage.setItem('theme', JSON.stringify(newTheme));
   }
 
-  const handleFollow = async(followingId : string) => {
-    const {data} = await manageFollow({followingId})
-    console.log(data);
+  const handleFollow = async (followingId: string) => {
+    const { data } = await manageFollow({ followingId })
+    if (data) setIsFollowing(!isFollowing)
   }
 
   return (
@@ -131,7 +142,7 @@ export default function Profile({ userId }: { userId: string }) {
                     whileTap={{ scale: 0.95 }}
                     className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center"
                     onClick={() => handleFollow(userData?._id)}>
-                    Follow
+                    {!isFollowing ? "Follow" : "Unfollow"}
                   </motion.button>
                 ) : (
 
@@ -273,8 +284,8 @@ export default function Profile({ userId }: { userId: string }) {
               )}
             </div>
             <div className="px-6">
-              <h6 className="text-lg font-bold">0 Followers</h6>
-              <h6 className="text-lg font-bold">0 Following</h6>
+              <h6 className="text-lg font-bold">{followCount.followerCount} Follower</h6>
+              <h6 className="text-lg font-bold">{followCount.followingCount} Following</h6>
             </div>
           </div>
           <div className="mt-5">'
