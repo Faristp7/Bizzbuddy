@@ -22,6 +22,7 @@ import {
   getComment,
   mangeFollow,
   countFollow,
+  getFollowData,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -29,6 +30,7 @@ const router = express.Router();
 
 router.get("/getComment/:id/:currentPage", getComment);
 router.get("/getUserProfile", verifyToken, userProfile);
+router.get("/getFollowData/:id", verifyToken, getFollowData);
 router.get("/getHomePagePost", verifyToken, getHomePagePost);
 router.get("/getProfilePost/:userId/:page", verifyToken, getProfilePost);
 router.get("/getAnotherUserProfile/:id", verifyToken, getAnotherUserProfile);

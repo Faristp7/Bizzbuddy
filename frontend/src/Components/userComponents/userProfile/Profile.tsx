@@ -17,11 +17,11 @@ import { adminLoggedOut } from "../../../Redux/admin/adminAuth"
 import PostCollection from "../PostCollection"
 const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
+const ViewFollow = lazy(() => import('../../modals/ViewFollow'))
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+import { FollowCount } from "../../../interface/interface"
 
-interface FollowCount {
-  followerCount: number
-  followingCount: number
-}
 const savedTheme = localStorage.getItem('theme');
 const subimage = 'https://res.cloudinary.com/dglfnmf0x/image/upload/v1698042901/ugwsothwchdhwbaz5qdr.jpg'
 
@@ -35,12 +35,17 @@ export default function Profile({ userId }: { userId: string }) {
   const [postId, setPostId] = useState<string>('')
   const [isFollowing, setIsFollowing] = useState<boolean>(false)
   const [followCount, setFollowCount] = useState<FollowCount>({ followerCount: 0, followingCount: 0 })
+  const [openFollow, setOpenFollow] = useState<boolean>(false)
   const controls = useAnimation()
 
   const profileData = async () => {
     const { data } = await getUserProfile()
-    setPostId(data._id)
-    setUserData(data)
+    setPostId(data.userDetails._id)
+    setUserData(data.userDetails)
+    setFollowCount({
+      followerCount: data.followerCount,
+      followingCount: data.followingCount
+    })
   }
 
   const getGuesUserProfile = async (userId: string) => {
@@ -64,7 +69,7 @@ export default function Profile({ userId }: { userId: string }) {
       setPostId(userId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, editModalOpen ,isFollowing])
+  }, [isOpen, editModalOpen, isFollowing])
 
   useEffect(() => {
     controls.start({
@@ -128,12 +133,12 @@ export default function Profile({ userId }: { userId: string }) {
               className="rounded-sm h-40 sm:h-56 w-full" alt="banner"
               loading="lazy" />
             <div className="absolute bottom-0  left-2/4 sm:left-28 transform -translate-x-1/2 translate-y-1/2">
-              <img className="rounded-full h-28 w-28 sm:h-36 sm:w-36 border-4 border-white dark:border-slate-950" src={userData?.profileImage} alt="profile" loading="lazy" />
+              <img className="rounded-full h-28 w-28 sm:h-36 sm:w-36 border-4 border-white dark:border-slate-950" src={userData?.profileImage || subimage} alt="profile" loading="lazy" />
             </div>
           </div>
           <div className="flex justify-between m-2 sm:ml-48 sm:mt-3 leading-none">
             <div className="">
-              <h3 className="font-semibold text-xl sm:text-3xl">{userData?.username}</h3>
+              <h3 className="font-semibold text-xl sm:text-3xl">{userData?.username || <Skeleton />}</h3>
             </div>
             <div className="flex items-center">
               {
@@ -201,7 +206,7 @@ export default function Profile({ userId }: { userId: string }) {
               initial={{ opacity: 0 }}
               animate={controls}
               className="font-bold text-3xl sm:text-6xl text-center">
-              {userData?.bussinessId?.bussinessName}
+              {userData?.bussinessId?.bussinessName || <Skeleton  />}
             </motion.h1>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">
@@ -283,8 +288,8 @@ export default function Profile({ userId }: { userId: string }) {
                 </div>
               )}
             </div>
-            <div className="px-6">
-              <h6 className="text-lg font-bold">{followCount.followerCount} Follower</h6>
+            <div className="px-6 cursor-pointer" onClick={() => setOpenFollow(true)}>
+              <h6 className="text-lg font-bold">{followCount.followerCount} Followers</h6>
               <h6 className="text-lg font-bold">{followCount.followingCount} Following</h6>
             </div>
           </div>
@@ -292,6 +297,18 @@ export default function Profile({ userId }: { userId: string }) {
             {postId &&
               <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} selectedFilter="" />
             }
+          </div>
+          <div className="flex justify-center">
+            <Suspense fallback={
+              <Waveform
+                size={40}
+                lineWeight={3.5}
+                speed={1}
+                color="black"
+              />
+            }>
+              {openFollow && <ViewFollow close={() => setOpenFollow(!openFollow)} _id={postId} />}
+            </Suspense>
           </div>
         </div>
       </div>

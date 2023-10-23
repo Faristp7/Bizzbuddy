@@ -90,3 +90,8 @@ export interface commentState {
     profileImage: string;
   };
 }
+
+export interface FollowCount {
+  followerCount: number
+  followingCount: number
+}

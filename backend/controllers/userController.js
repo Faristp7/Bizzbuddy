@@ -186,10 +186,14 @@ export async function userProfile(req, res) {
   try {
     const decodedToken = getUserId(req.headers.authorization);
 
+    const { followerCount, followingCount } = await countFollow(
+      decodedToken.Token
+    );
+
     const userDetails = await userModel
       .findOne({ _id: decodedToken.Token })
       .populate("bussinessId");
-    res.json(userDetails);
+    res.json({ userDetails, followerCount, followingCount });
   } catch (error) {
     console.log(error);
   }
@@ -218,7 +222,7 @@ export async function updateUserData(req, res) {
     console.log(error);
   }
 }
-////////////////////////////////////////////////////
+
 export async function getAnotherUserProfile(req, res) {
   try {
     const id = req.params.id;
@@ -515,6 +519,15 @@ export async function countFollow(id) {
     const followerCount = await FollowModel.countDocuments({ followingId: id });
     const followingCount = await FollowModel.countDocuments({ followerId: id });
     return { followerCount, followingCount };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getFollowData(req, res) {
+  try {
+    const id = req.params.id
+    console.log(id);
   } catch (error) {
     console.log(error);
   }
