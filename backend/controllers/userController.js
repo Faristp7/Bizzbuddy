@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import adminModel from "../models/adminModel.js";
 import businessModel from "../models/bussinessModel.js";
+import FollowModel from "../models/followModel.js";
 import commentModel from "../models/commentModel.js";
 import postModel from "../models/postModel.js";
 import jwt from "jsonwebtoken";
@@ -466,8 +467,29 @@ export async function getComment(req, res) {
       .populate("userId")
       .skip((currentPage - 1) * pageSize)
       .limit(pageSize);
-      
+
     res.json({ comment });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function mangeFollow(req, res) {
+  try {
+    const { followingId } = req.body;
+    const userId = getUserId(req.headers.authorization);
+    const followerId = userId.Token;
+
+    const existingUser = await FollowModel.findOne({ followerId, followingId });
+
+    if (existingUser) {
+      await FollowModel.findByIdAndDelete(existingUser._id);
+      res.json({ success: false, message: "Unfollowed" });
+    } else {
+      const newFollow = new FollowModel({ followerId, followingId });
+      await newFollow.save();
+      res.json({ success: true, message: "Followed" });
+    }
   } catch (error) {
     console.log(error);
   }

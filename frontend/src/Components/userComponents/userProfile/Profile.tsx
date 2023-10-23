@@ -9,7 +9,7 @@ import { NavigationBar } from "../Index";
 import { motion, useAnimation } from "framer-motion";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Waveform } from "@uiball/loaders"
-import { getAnotherUserProfile, getUserProfile } from "../../../Api/userApi";
+import { getAnotherUserProfile, getUserProfile, manageFollow } from "../../../Api/userApi";
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { userLoggedOut } from "../../../Redux/user/authSlice"
@@ -19,6 +19,7 @@ const EditProfileModal = lazy(() => import("../../modals/EditProfileModal"))
 const ListBussinessModal = lazy(() => import("../../modals/ListBussinessModal"))
 
 const savedTheme = localStorage.getItem('theme');
+const subimage = 'https://res.cloudinary.com/dglfnmf0x/image/upload/v1698042901/ugwsothwchdhwbaz5qdr.jpg'
 
 export default function Profile({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -98,6 +99,11 @@ export default function Profile({ userId }: { userId: string }) {
     localStorage.setItem('theme', JSON.stringify(newTheme));
   }
 
+  const handleFollow = async(followingId : string) => {
+    const {data} = await manageFollow({followingId})
+    console.log(data);
+  }
+
   return (
     <div className="flex min-h-screen dark:bg-slate-950">
       <div>
@@ -107,7 +113,7 @@ export default function Profile({ userId }: { userId: string }) {
         <div>
           <div className="relative">
             <img
-              src={userData?.bussinessId?.bannerImage}
+              src={userData?.bussinessId?.bannerImage || subimage}
               className="rounded-sm h-40 sm:h-56 w-full" alt="banner"
               loading="lazy" />
             <div className="absolute bottom-0  left-2/4 sm:left-28 transform -translate-x-1/2 translate-y-1/2">
@@ -123,7 +129,8 @@ export default function Profile({ userId }: { userId: string }) {
                 guestUser ? (
                   <motion.button
                     whileTap={{ scale: 0.95 }}
-                    className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center">
+                    className="bg-blue-900 rounded-md m-2 px-2 py-2 sm:px-5 text-white flex items-center"
+                    onClick={() => handleFollow(userData?._id)}>
                     Follow
                   </motion.button>
                 ) : (

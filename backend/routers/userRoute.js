@@ -20,6 +20,7 @@ import {
   manageLike,
   addComment,
   getComment,
+  mangeFollow,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -42,6 +43,7 @@ router.post("/addComment", verifyToken, addComment);
 router.post("/manageLike", verifyToken, manageLike);
 router.post("/createPost", verifyToken, createPost);
 router.post("/reportPost", verifyToken, reportPost);
+router.post("/manageFollow", verifyToken, mangeFollow);
 router.post("/editUserPost", verifyToken, editUserPost);
 
 router.patch("/updateUserData", verifyToken, updateUserData); //update user Data

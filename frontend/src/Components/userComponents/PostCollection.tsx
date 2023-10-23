@@ -233,7 +233,7 @@ export default function PostCollection({
                           whileTap={{ scale: 1.2 }}
                           transition={{ duration: 0.2 }}
                           src={
-                            !item?.likes?.includes(item.userId._id)
+                            !item.likes.includes(item.userId._id)
                               ? beforeLikefrom
                               : afterLikefrom
                           }
