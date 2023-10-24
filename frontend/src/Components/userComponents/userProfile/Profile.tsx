@@ -206,11 +206,11 @@ export default function Profile({ userId }: { userId: string }) {
               initial={{ opacity: 0 }}
               animate={controls}
               className="font-bold text-3xl sm:text-6xl text-center">
-              {userData?.bussinessId?.bussinessName || <Skeleton  />}
+              {userData?.bussinessId?.bussinessName}
             </motion.h1>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">
-            <p className="text-md font-medium leading-none">{userData?.bussinessId?.Description}</p>
+            <p className="text-md font-medium leading-none">{userData?.bussinessId?.Description || <Skeleton width={300}/>}</p>
             <div className="flex flex-wrap gap-3 text-center mt-4">
               {userData?.bussinessId?.tags.map((item: string, index: number) => (
                 <div className="bg-gray-200 dark:bg-gray-600 rounded-md" key={index}>
@@ -265,7 +265,7 @@ export default function Profile({ userId }: { userId: string }) {
             </Suspense>
           </div>
           <div className="flex justify-between">
-            <div className="mt-3 ml-1 sm:ml-6 flex gap-1 sm:gap-5 flex-col sm:flex-row ">
+            <div className="mt-3 ml-1 sm:ml-6 flex gap-1 sm:gap-5 flex-col sm:flex-row">
               {userData?.bussinessId?.bussinessName && (
                 <div>
                   <div className="flex gap-1">

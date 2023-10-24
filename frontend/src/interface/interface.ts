@@ -92,6 +92,22 @@ export interface commentState {
 }
 
 export interface FollowCount {
-  followerCount: number
-  followingCount: number
+  followerCount: number;
+  followingCount: number;
+}
+
+export interface Followers {
+  followerId: {
+    _id: string;
+    username: string;
+    profileImage: string;
+  };
+}
+
+export interface Following {
+  followingId: {
+    _id: string;
+    username: string;
+    profileImage: string;
+  };
 }

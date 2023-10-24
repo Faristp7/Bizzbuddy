@@ -442,6 +442,7 @@ export async function manageLike(req, res) {
     const userId = getUserId(req.headers.authorization);
 
     const post = await postModel.findById(postId);
+    console.log(post.likes);
 
     const userLiked = post.likes.includes(userId.Token);
 
@@ -524,10 +525,33 @@ export async function countFollow(id) {
   }
 }
 
-export async function getFollowData(req, res) {
+export async function getFollowersData(req, res) {
   try {
-    const id = req.params.id
-    console.log(id);
+    const { id, currentPage } = req.params;
+    const page = 5;
+    const followers = await FollowModel.find({ followerId: id })
+      .populate("followingId")
+      .skip((currentPage - 1) * page)
+      .limit(page)
+      .exec();
+
+    res.status(200).json(followers);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getFollowingData(req, res) {
+  try {
+    const { id, currentPage } = req.params;
+    const page = 5;
+
+    const following = await FollowModel.find({ followingId: id })
+      .populate("followerId")
+      .skip((currentPage - 1) * page)
+      .limit(page)
+      .exec();
+    res.status(200).json(following);
   } catch (error) {
     console.log(error);
   }
