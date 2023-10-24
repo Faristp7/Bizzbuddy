@@ -41,13 +41,11 @@ export async function googleSignin(req, res) {
 
     if (alreadyExistUser) {
       if (alreadyExistUser.activeStatus) {
-        const userId = alreadyExistUser.id;
-        jwt.sign({ userId }, secrectKey, { expiresIn: "6h" }, (err, token) => {
-          if (err) {
-            return res.json({ message: "Failed to generate token" });
-          }
-          res.json({ token });
-        });
+        const Token = alreadyExistUser.id;
+        const token = jwt.sign({ Token }, secrectKey, {
+          expiresIn: "6h",
+        });                                                                                                                                                                                                                                                                                                                                                                                           
+        res.json({ token , alreadyExistUser});
       } else {
         res.json({ message: "Account blocked", err: true });
       }
@@ -61,12 +59,10 @@ export async function googleSignin(req, res) {
       await userSchema.save();
 
       const Token = userSchema.id;
-      jwt.sign({ Token }, secrectKey, { expiresIn: "6h" }, (err, token) => {
-        if (err) {
-          return res.json({ message: "failed to generate token", err: true });
-        }
-        res.json({ token });
-      });
+      const token = jwt.sign({ Token }, secrectKey, {
+        expiresIn: "6h",
+      });   
+      res.json({token , alreadyExistUser})
     }
   } catch (error) {
     console.log(error);
@@ -104,12 +100,15 @@ export async function roleLogIn(req, res) {
       if (!userId) return res.json({ message: "credential not matching" });
       role = "user";
     }
-    if (userId) {
+    if (userId && userId.activeStatus) {
       const Token = userId._id;
       const token = jwt.sign({ Token }, secrectKey, {
         expiresIn: "6h",
       });
       res.json({ token, role, userId });
+    }
+    else{
+      res.json({message : "Account Blocked"})
     }
   } catch (error) {
     console.log(error);
@@ -442,7 +441,6 @@ export async function manageLike(req, res) {
     const userId = getUserId(req.headers.authorization);
 
     const post = await postModel.findById(postId);
-    console.log(post.likes);
 
     const userLiked = post.likes.includes(userId.Token);
 

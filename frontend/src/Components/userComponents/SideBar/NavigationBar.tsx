@@ -10,6 +10,7 @@ import moon from '../../../assets/icon/moon.png'
 import exclamation from '../../../assets/icon/exclamation.png'
 import mangment from '../../../assets/icon/management.png'
 import verification from '../../../assets/icon/verification.png'
+import { googleLogout } from '@react-oauth/google'
 
 import { useEffect, useState } from 'react'
 import { motion } from "framer-motion"
@@ -53,6 +54,7 @@ export default function NavigationBar() {
     localStorage.removeItem('JwtToken')
     dispatch(userLoggedOut(false))
     dispatch(adminLoggedOut(false))
+    googleLogout()
     navigate('/')
   }
 

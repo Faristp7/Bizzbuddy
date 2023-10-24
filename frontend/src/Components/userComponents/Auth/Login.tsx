@@ -68,15 +68,17 @@ export default function Login() {
     const dispatch = useDispatch();
 
     const handleSuccess = async (credentialResponse: CredentialResponse) => {
+        setLoading(true)
         if (credentialResponse.credential) {
             const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
             const { email, given_name, picture } = credentialResponseDecoded as googleData
             const { data } = await googleSignin({ email, given_name, picture })
-
+            setLoading(false)
             if (data.err) {
                 setError(data.message)
                 setShowError(true)
             } else {
+                dispatch(getUserInfo(data.alreadyExistUser))
                 localStorage.setItem('JwtToken', data.token)
                 dispatch(userLoggedIn(true))
                 navigate('/userHomePage')

@@ -210,7 +210,7 @@ export default function Profile({ userId }: { userId: string }) {
             </motion.h1>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">
-            <p className="text-md font-medium leading-none">{userData?.bussinessId?.Description || <Skeleton width={300}/>}</p>
+            <p className="text-md font-medium leading-none">{userData?.bussinessId?.Description}</p>
             <div className="flex flex-wrap gap-3 text-center mt-4">
               {userData?.bussinessId?.tags.map((item: string, index: number) => (
                 <div className="bg-gray-200 dark:bg-gray-600 rounded-md" key={index}>
