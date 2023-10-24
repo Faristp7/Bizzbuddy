@@ -111,3 +111,8 @@ export interface Following {
     profileImage: string;
   };
 }
+
+export interface count {
+  postCount: number;
+  blockedUser: number;
+}

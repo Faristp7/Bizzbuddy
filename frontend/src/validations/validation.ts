@@ -27,7 +27,7 @@ export const validationSchema = Yup.object().shape({
         return true;
       }
       if (value instanceof File && value.type) {
-        return ["Image/jpeg", "image/png"].includes(value.type.toLowerCase());
+        return ["image/jpeg", "image/png"].includes(value.type.toLowerCase());
       }
       return false;
     }),

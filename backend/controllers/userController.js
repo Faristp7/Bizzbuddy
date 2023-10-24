@@ -44,8 +44,8 @@ export async function googleSignin(req, res) {
         const Token = alreadyExistUser.id;
         const token = jwt.sign({ Token }, secrectKey, {
           expiresIn: "6h",
-        });                                                                                                                                                                                                                                                                                                                                                                                           
-        res.json({ token , alreadyExistUser});
+        });
+        res.json({ token, alreadyExistUser });
       } else {
         res.json({ message: "Account blocked", err: true });
       }
@@ -61,8 +61,8 @@ export async function googleSignin(req, res) {
       const Token = userSchema.id;
       const token = jwt.sign({ Token }, secrectKey, {
         expiresIn: "6h",
-      });   
-      res.json({token , alreadyExistUser})
+      });
+      res.json({ token, alreadyExistUser });
     }
   } catch (error) {
     console.log(error);
@@ -97,18 +97,18 @@ export async function roleLogIn(req, res) {
       role = "admin";
     } else {
       userId = await userLogin(email, password);
+      if (!userId.activeStatus) return res.json({ message: "Account Blocked" });
       if (!userId) return res.json({ message: "credential not matching" });
       role = "user";
     }
-    if (userId && userId.activeStatus) {
+    if (userId) {
       const Token = userId._id;
       const token = jwt.sign({ Token }, secrectKey, {
         expiresIn: "6h",
       });
       res.json({ token, role, userId });
-    }
-    else{
-      res.json({message : "Account Blocked"})
+    } else {
+      res.json({ message: "Account Blocked" });
     }
   } catch (error) {
     console.log(error);
@@ -324,6 +324,8 @@ export async function getHomePagePost(req, res) {
     if (filter === "Oldest") {
       sortOption.createdAt = 1;
     } else if (filter === "Newest") {
+      sortOption.createdAt = -1;
+    } else {
       sortOption.createdAt = -1;
     }
 

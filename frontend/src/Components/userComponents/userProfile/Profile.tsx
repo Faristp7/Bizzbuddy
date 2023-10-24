@@ -29,7 +29,7 @@ export default function Profile({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openSettings, setOpenSettings] = useState<boolean>(false)
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
-  const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : false); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [theme, setTheme] = useState(savedTheme ? JSON.parse(savedTheme) : null); // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([])
   const [guestUser, setGuestUser] = useState<boolean>(false)
   const [postId, setPostId] = useState<string>('')
@@ -96,6 +96,7 @@ export default function Profile({ userId }: { userId: string }) {
 
   useEffect(() => {
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
     if (theme === true) {
       document.documentElement.classList.add('dark');
     } else if (theme === false) {
@@ -293,7 +294,7 @@ export default function Profile({ userId }: { userId: string }) {
               <h6 className="text-lg font-bold">{followCount.followingCount} Following</h6>
             </div>
           </div>
-          <div className="mt-5">'
+          <div className="mt-5">
             {postId &&
               <PostCollection role={"user"} userIdForPost={postId} guestUser={guestUser} selectedFilter="" />
             }

@@ -9,7 +9,6 @@ import sun from '../../../assets/icon/sun.png'
 import moon from '../../../assets/icon/moon.png'
 import exclamation from '../../../assets/icon/exclamation.png'
 import mangment from '../../../assets/icon/management.png'
-import verification from '../../../assets/icon/verification.png'
 import { googleLogout } from '@react-oauth/google'
 
 import { useEffect, useState } from 'react'
@@ -134,12 +133,7 @@ export default function NavigationBar() {
                   <img src={exclamation} className="navigationBarIcon " alt="home" />
                   <p className="navigationBarText">Report Section</p>
                 </motion.div>
-                <motion.div
-                  className="navationDivIconBar order-4 sm:order-2"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={verification} className="navigationBarIcon " alt="home" />
-                  <p className="navigationBarText">Verifcation</p>
-                </motion.div>
+                
               </>
             }
           </div>

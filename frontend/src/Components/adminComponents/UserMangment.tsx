@@ -1,38 +1,37 @@
 import { motion } from "framer-motion";
 import { NavigationBar } from "../userComponents/Index";
-import CountUp from 'react-countup'
+import CountUp from "react-countup";
 import { useState, useEffect } from "react";
 import { blockAndunBlock, getUserData } from "../../Api/userApi";
-import { User } from '../../interface/interface'
+import { User , count} from "../../interface/interface";
 
 export default function UserMangment() {
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [userData, setUserData] = useState<User[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [userData, setUserData] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [count , setCount] = useState<count>({postCount : 0 , blockedUser : 0})
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getUserData()
-        setUserData(response.data.userData)
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchData()
-  }, [loading])
 
-  const filteredUsers = userData.filter(user =>
+    (async () => {
+      const respone = await getUserData()
+      setUserData(respone.data.userData)
+      setCount({postCount : respone.data.postCount , blockedUser : respone.data.blockedUser})
+    })()
+
+  }, [loading]);
+
+  const filteredUsers = userData.filter((user) =>
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleUser = async (id: string, activeStatus: boolean) => {
-    setLoading((prevLoading) => !prevLoading)
-    const response = await blockAndunBlock({ id, activeStatus })
+    setLoading((prevLoading) => !prevLoading);
+    const response = await blockAndunBlock({ id, activeStatus });
     if (response.data.success) {
-      setLoading((prevLoading) => !prevLoading)
+      setLoading((prevLoading) => !prevLoading);
     }
-  }
+  };
 
   return (
     <div>
@@ -48,35 +47,47 @@ export default function UserMangment() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <span className="cursor-pointer" ref={countUpRef} onClick={start} />
+                  <span
+                    className="cursor-pointer"
+                    ref={countUpRef}
+                    onClick={start}
+                  />
                 </motion.h6>
               )}
             </CountUp>
           </div>
           <div className="bg-gray-200 rounded-md p-3 text-center">
-            <h3 className="font-bold text-4xl">Active User</h3>
-            <CountUp start={0} end={userData.length} duration={2.5}>
+            <h3 className="font-bold text-4xl">Blocked Users</h3>
+            <CountUp start={0} end={count.blockedUser} duration={2.5}>
               {({ countUpRef, start }) => (
                 <motion.h6
                   className="font-semibold text-3xl mt-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <span className="cursor-pointer" ref={countUpRef} onClick={start} />
+                  <span
+                    className="cursor-pointer"
+                    ref={countUpRef}
+                    onClick={start}
+                  />
                 </motion.h6>
               )}
             </CountUp>
           </div>
           <div className="bg-gray-200 rounded-md p-3 text-center">
-            <h3 className="font-bold text-4xl">Verified User</h3>
-            <CountUp start={0} end={userData.length} duration={2.5}>
+            <h3 className="font-bold text-4xl">Total Post</h3>
+            <CountUp start={0} end={count.postCount} duration={2.5}>
               {({ countUpRef, start }) => (
                 <motion.h6
                   className="font-semibold text-3xl mt-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <span className="cursor-pointer" ref={countUpRef} onClick={start} />
+                  <span
+                    className="cursor-pointer"
+                    ref={countUpRef}
+                    onClick={start}
+                  />
                 </motion.h6>
               )}
             </CountUp>
@@ -90,7 +101,7 @@ export default function UserMangment() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="mb-4 p-2 pr-16 border border-neutral-600 rounded-md"
           />
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[69vh]">
             <table className="min-w-full text-center">
               <thead>
                 <tr>
@@ -108,14 +119,16 @@ export default function UserMangment() {
                     <td className="border-2  p-4">{user.email}</td>
                     <td className="border-2  p-4">{user.phone}</td>
                     <td className="border-2  p-4">
-                      {user.activeStatus ? 'Active' : 'Inactive'}
+                      {user.activeStatus ? "Active" : "Inactive"}
                     </td>
                     <td className="border-2  p-2">
                       {user.activeStatus ? (
                         <motion.button
                           whileTap={{ scale: 0.9 }}
                           className="bg-red-700 text-white px-4 py-1 rounded-lg"
-                          onClick={() => handleUser(user._id, user.activeStatus)}
+                          onClick={() =>
+                            handleUser(user._id, user.activeStatus)
+                          }
                         >
                           Block
                         </motion.button>
@@ -123,7 +136,9 @@ export default function UserMangment() {
                         <motion.button
                           whileTap={{ scale: 0.9 }}
                           className="bg-green-700 text-white px-2 py-1 rounded-lg"
-                          onClick={() => handleUser(user._id, user.activeStatus)}
+                          onClick={() =>
+                            handleUser(user._id, user.activeStatus)
+                          }
                         >
                           Unblock
                         </motion.button>
@@ -135,8 +150,7 @@ export default function UserMangment() {
             </table>
           </div>
         </div>
-
       </div>
     </div>
-  )
+  );
 }

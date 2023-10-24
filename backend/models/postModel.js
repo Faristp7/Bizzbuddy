@@ -15,6 +15,10 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    view: {
+      type : Boolean,
+      default : false
+    },
     likes: [
       {
         type: Schema.Types.ObjectId,
