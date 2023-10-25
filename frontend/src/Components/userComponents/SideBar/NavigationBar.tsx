@@ -100,7 +100,7 @@ export default function NavigationBar() {
                 </Link>
 
                 {/* message */}
-                <Link to={"/userHomePage"}>
+                <Link to={"/Chat"}>
                   <motion.div
                     className="navationDivIconBar order-4 sm:order-2"
                     whileTap={{ scale: 1.1 }}>

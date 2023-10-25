@@ -1,7 +1,9 @@
 import "dotenv/config";
-import express from "express";
 import cors from "cors";
+import http from "http";
 import morgan from "morgan";
+import express from "express";
+import { Server } from "socket.io";
 import dbConnect from "./config/config.js";
 import userRouter from "./routers/userRoute.js";
 import adminRouter from "./routers/adminRoute.js";
@@ -10,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+
 app.use(
   cors({
     origin: [process.env.FRONTEND],
@@ -18,12 +21,31 @@ app.use(
   })
 );
 
+dbConnect();
+
+const server = http.createServer(app);
+const io = new Server(server);
+
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
-dbConnect();
 
-const port = process.env.PORT;
-app.listen(port || 5000, () => {
-  console.log(`server running on ${port}`);
+const port = process.env.PORT || 5000;
+
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
+
+io.use((socket, next) => {
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
+    credentials: true,
+  })(socket.request, socket.request.res, next);
+});
+
+io.on("connection", (socket) => {
+  console.log("A user connected" , socket);
+});
+
+export { io };

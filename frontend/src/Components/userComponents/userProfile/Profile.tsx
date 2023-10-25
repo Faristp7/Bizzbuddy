@@ -5,7 +5,7 @@ import moon from '../../../assets/icon/moon.png'
 import logout from '../../../assets/icon/logout.png'
 import edit from '../../../assets/icon/edit.png'
 import add from '../../../assets/icon/add.png'
-import { NavigationBar } from "../Index";
+import { Chat, NavigationBar } from "../Index";
 import { motion, useAnimation } from "framer-motion";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Waveform } from "@uiball/loaders"
@@ -36,6 +36,7 @@ export default function Profile({ userId }: { userId: string }) {
   const [isFollowing, setIsFollowing] = useState<boolean>(false)
   const [followCount, setFollowCount] = useState<FollowCount>({ followerCount: 0, followingCount: 0 })
   const [openFollow, setOpenFollow] = useState<boolean>(false)
+  const [chatUserId, setChatUserId] = useState<string>('')
   const controls = useAnimation()
 
   const profileData = async () => {
@@ -59,6 +60,7 @@ export default function Profile({ userId }: { userId: string }) {
     if (data.isFollowing) setIsFollowing(true)
     setGuestUser(true)
   }
+
 
   useEffect(() => {
     if (!userId) {
@@ -96,7 +98,7 @@ export default function Profile({ userId }: { userId: string }) {
 
   useEffect(() => {
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     if (theme === true) {
       document.documentElement.classList.add('dark');
     } else if (theme === false) {
@@ -121,6 +123,10 @@ export default function Profile({ userId }: { userId: string }) {
     if (data) setIsFollowing(!isFollowing)
   }
 
+  if (chatUserId) {
+    return <Chat userId={chatUserId} />
+  }
+
   return (
     <div className="flex min-h-screen dark:bg-slate-950">
       <div>
@@ -142,6 +148,15 @@ export default function Profile({ userId }: { userId: string }) {
               <h3 className="font-semibold text-xl sm:text-3xl">{userData?.username || <Skeleton />}</h3>
             </div>
             <div className="flex items-center">
+              <div className="hidden sm:block">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gray-800 rounded-md px-2 py-2.5 sm:px-5 text-white flex items-center"
+                  onClick={() => setChatUserId(userData?._id)}
+                >
+                  Message
+                </motion.button>
+              </div>
               {
                 guestUser ? (
                   <motion.button
@@ -202,13 +217,24 @@ export default function Profile({ userId }: { userId: string }) {
               </div>
             </div>
           </div>
-          <div className="flex justify-center">
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={controls}
-              className="font-bold text-3xl sm:text-6xl text-center">
-              {userData?.bussinessId?.bussinessName}
-            </motion.h1>
+          <div className="grid gap-2 place-items-center">
+            <div>
+              <motion.h1
+                initial={{ opacity: 0 }}
+                animate={controls}
+                className="font-bold text-3xl sm:text-6xl text-center">
+                {userData?.bussinessId?.bussinessName}
+              </motion.h1>
+            </div>
+            <div className="sm:hidden">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                className="bg-gray-800 rounded-md px-2 py-1 sm:px-5 text-white flex items-center"
+                onClick={() => setChatUserId(userData?._id)}
+              >
+                Message
+              </motion.button>
+            </div>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">
             <p className="text-md font-medium leading-none">{userData?.bussinessId?.Description}</p>

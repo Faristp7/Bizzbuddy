@@ -155,8 +155,8 @@ export default function PostCollection({
             {datas &&
               datas.map((item) => (
                 <motion.div
-                  layoutId={item._id}
-                  key={item._id}
+                  layoutId={item?._id}
+                  key={item?._id}
                   className="my-10 mb-2 border-b"
                 >
                   <div className="">
@@ -165,16 +165,16 @@ export default function PostCollection({
                         <div
                           className="flex space-x-3"
                           onClick={() =>
-                            setUserId && setUserId(item.userId._id)
+                            setUserId && setUserId(item?.userId?._id)
                           }
                         >
                           <img
-                            src={item.userId.profileImage}
+                            src={item?.userId?.profileImage}
                             className="rounded-full w-8 h-8 border"
                             alt="..."
                           />
                           <h6 className="text-xl mt-0.5 cursor-pointer">
-                            {item.userId.username}
+                            {item?.userId?.username}
                           </h6>
                         </div>
                         <div className="relative">
@@ -233,13 +233,13 @@ export default function PostCollection({
                           whileTap={{ scale: 1.2 }}
                           transition={{ duration: 0.2 }}
                           src={
-                            !item.likes.includes(item.userId._id)
+                            !item.likes.includes(item?.userId?._id)
                               ? beforeLikefrom
                               : afterLikefrom
                           }
                           className="w-6 h-6 cursor-pointer dark:invert"
                           onClick={() =>
-                            likeAndDislike(item._id, item.userId._id)
+                            likeAndDislike(item._id, item?.userId?._id)
                           }
                           alt="👍"
                         />

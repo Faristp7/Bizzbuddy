@@ -3,9 +3,11 @@ import adminModel from "../models/adminModel.js";
 import businessModel from "../models/bussinessModel.js";
 import FollowModel from "../models/followModel.js";
 import commentModel from "../models/commentModel.js";
+import messageModel from "../models/messageModel.js";
 import postModel from "../models/postModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { io } from "../server.js";
 
 function getUserId(Bearer) {
   const token = Bearer.replace("Bearer", "").trim();
@@ -483,8 +485,8 @@ export async function getComment(req, res) {
 
     const comment = await commentModel
       .find({ postId: id })
-      .sort({ createdAt: -1 })
       .populate("userId")
+      .sort({createdAt : -1})
       .skip((currentPage - 1) * pageSize)
       .limit(pageSize);
 
@@ -552,6 +554,30 @@ export async function getFollowingData(req, res) {
       .limit(page)
       .exec();
     res.status(200).json(following);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function sendMessage(req, res) {
+  try {
+    const { recipientId, text } = req.body;
+    const userId = getUserId(req.headers.authorization);
+
+    // const newMessage = new messageModel({
+    //   senderId: userId.Token,
+    //   recipientId,
+    //   text,
+    // });
+    // await newMessage.save();
+
+    // io.to(recipientId).emit("new-message", newMessage);
+
+    // return res.status(200).json({ message: "newMessage", success: true });
+
+    io.on('connection' ,(socket) => {
+      console.log("user Connected" , socket.id);
+    })
   } catch (error) {
     console.log(error);
   }

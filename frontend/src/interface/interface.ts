@@ -116,3 +116,7 @@ export interface count {
   postCount: number;
   blockedUser: number;
 }
+
+export interface ChatProps{
+  userId : string
+}

@@ -7,6 +7,7 @@ import Profile from "./userProfile/Profile";
 import CreatePost from "./CreatePost";
 import Search from "./search/Search";
 import PostCollection from "./PostCollection";
+import Chat from "./message/Chat";
 
 // admin
 import UserMangment from "../adminComponents/UserMangment";
@@ -22,4 +23,5 @@ export {
   CreatePost,
   Search,
   PostCollection,
+  Chat
 };

@@ -24,6 +24,7 @@ export const createPost = (values: object) => axiosInstance('JwtToken').post('/c
 export const manageLike = (values: object) => axiosInstance('JwtToken').post('/manageLike', values)
 export const reportPost = (values: object) => axiosInstance('JwtToken').post('/reportPost', values)
 export const addComment = (values: object) => axiosInstance('JwtToken').post('/addComment', values)
+export const sendMessage = (values: object) => axiosInstance('JwtToken').post('/sendMessage', values)
 export const editUserPost = (values: object) => axiosInstance('JwtToken').post('/editUserPost', values)
 export const googleSignin = (values: object) => axiosInstance('JwtToken').post('/googleSignin', values)
 export const manageFollow = (values: object) => axiosInstance('JwtToken').post('/manageFollow', values)
