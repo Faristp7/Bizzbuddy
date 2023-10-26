@@ -563,17 +563,18 @@ export async function sendMessage(req, res) {
   try {
     const { recipientId, text } = req.body;
     const userId = getUserId(req.headers.authorization);
+    console.log(recipientId);
 
-    // const newMessage = new messageModel({
-    //   senderId: userId.Token,
-    //   recipientId,
-    //   text,
-    // });
-    // await newMessage.save();
+    const newMessage = new messageModel({
+      senderId: userId.Token,
+      recipientId,
+      text,
+    });
+    await newMessage.save();
 
-    // io.to(recipientId).emit("new-message", newMessage);
+    io.to(recipientId).emit("newMessage", newMessage);
 
-    // return res.status(200).json({ message: "newMessage", success: true });
+    return res.status(200).json({ message: "newMessage", success: true });
 
     io.on('connection' ,(socket) => {
       console.log("user Connected" , socket.id);

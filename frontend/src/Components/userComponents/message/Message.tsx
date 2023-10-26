@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { ChatProps } from "../../../interface/interface";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 
-const socket = socketIOClient(import.meta.env.VITE_BACKENDURL);
+// const socket = socketIOClient(import.meta.env.VITE_BACKENDURL);
+// import.meta.env.VITE_BACKENDURL
 
+const socket = io("http://localhost:3000/")
 
 export default function Message({ userId }: ChatProps) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [messsages, setMessages] = useState<any>([]);
-    const [newMessage, setNewMessage] = useState<string>("");
-
+    const [newMessage, setNewMessage] = useState<string>("");    
 
     useEffect(() => {
-        
-        socket.on("message", (message) => {
+        socket.on("message", (message : string) => {
             setMessages([...messsages, message]);
         });
 
@@ -21,14 +21,14 @@ export default function Message({ userId }: ChatProps) {
             socket.disconnect();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [messsages]);
+    }, []);
 
     const sendMessage = () => {
         const message = {
             recipientId: userId,
             text: newMessage
         }
-        socket.emit('sendMessage', message)
+        socket.emit('sendMessage', {message})
         setMessages([...messsages, message])
         setNewMessage('')
     }
