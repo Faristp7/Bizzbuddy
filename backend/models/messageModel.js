@@ -2,11 +2,9 @@ import mongoose, { Schema } from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    senderId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+    roomId: {
+      type: String,
       required: true,
-      index: true,
     },
     recipientId: {
       type: Schema.Types.ObjectId,
@@ -14,10 +12,23 @@ const messageSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    text: {
-      type: String,
-      required: true,
-    },
+    messages: [
+      {
+        sender: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        message: {
+          type: String,
+          required: true,
+        },
+        timestamps: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

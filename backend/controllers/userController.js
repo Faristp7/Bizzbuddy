@@ -486,7 +486,7 @@ export async function getComment(req, res) {
     const comment = await commentModel
       .find({ postId: id })
       .populate("userId")
-      .sort({createdAt : -1})
+      .sort({ createdAt: -1 })
       .skip((currentPage - 1) * pageSize)
       .limit(pageSize);
 
@@ -559,20 +559,50 @@ export async function getFollowingData(req, res) {
   }
 }
 
+function getCombainedId(userId1, userId2) {
+  const userIds = userId1 + userId2;
+  const roomId = userIds.split("").sort().join("");
+  return roomId;
+}
+
 export async function sendMessage(req, res) {
   try {
     const { recipientId, text } = req.body;
     const userId = getUserId(req.headers.authorization);
-    console.log(recipientId, 'controller');
+    const roomId = getCombainedId(userId.Token, recipientId);
 
-    const newMessage = new messageModel({
-      senderId: userId.Token,
-      recipientId,
-      text,
-    });
-    await newMessage.save();
+    const existingRoom = await messageModel.find({roomId})
+    if(existingRoom){
+      console.log("yes");
+    }
+    else{
+      console.log("false");
+    }
 
-    return res.status(200).json({ message: "newMessage", success: true });
+    // const newMessage = new messageModel({
+    //   roomId,
+    //   senderId: userId.Token,
+    //   recipientId,
+    //   text,
+    // });
+    // await newMessage.save();
+
+    // res.status(200).json({ message: "newMessage", success: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getMessage(req, res) {
+  try {
+    const recipientId = req.params.id;
+console.log(recipientId);
+    const userId = getUserId(req.headers.authorization);
+    const roomId = getCombainedId(userId.Token, recipientId);
+    console.log(roomId);   
+    const message = await messageModel.find({ roomId });
+    console.log(message);
+    res.json(message);
   } catch (error) {
     console.log(error);
   }

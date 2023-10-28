@@ -3,6 +3,7 @@ import axiosInstance from "../axios/axios";
 //- user -\\
 
 export const getUserProfile = () => axiosInstance('JwtToken').get('/getUserProfile')
+export const getMessage = (id: string) => axiosInstance('JwtToken').get(`/getMessage/${id}`)
 export const getFollowersData = (id : string , page : number) => axiosInstance('JwtToken').get(`/getFollowersData/${id}/${page}`)
 export const getFollowingData = (id : string , page : number) => axiosInstance('JwtToken').get(`/getFollowingData/${id}/${page}`)
 export const getAnotherUserProfile = (id: string) => axiosInstance('JwtToken').get(`/getAnotherUserProfile/${id}`)
