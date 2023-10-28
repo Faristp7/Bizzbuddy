@@ -563,7 +563,7 @@ export async function sendMessage(req, res) {
   try {
     const { recipientId, text } = req.body;
     const userId = getUserId(req.headers.authorization);
-    console.log(recipientId);
+    console.log(recipientId, 'controller');
 
     const newMessage = new messageModel({
       senderId: userId.Token,
@@ -572,13 +572,7 @@ export async function sendMessage(req, res) {
     });
     await newMessage.save();
 
-    io.to(recipientId).emit("newMessage", newMessage);
-
     return res.status(200).json({ message: "newMessage", success: true });
-
-    io.on('connection' ,(socket) => {
-      console.log("user Connected" , socket.id);
-    })
   } catch (error) {
     console.log(error);
   }
