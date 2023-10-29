@@ -2,6 +2,7 @@ import axiosInstance from "../axios/axios";
 
 //- user -\\
 
+export const getChatUsers = () => axiosInstance('JwtToken').get('/getChatUsers')
 export const getUserProfile = () => axiosInstance('JwtToken').get('/getUserProfile')
 export const getMessage = (id: string) => axiosInstance('JwtToken').get(`/getMessage/${id}`)
 export const getFollowersData = (id : string , page : number) => axiosInstance('JwtToken').get(`/getFollowersData/${id}/${page}`)

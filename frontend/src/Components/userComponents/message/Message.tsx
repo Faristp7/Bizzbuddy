@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChatProps } from "../../../interface/interface";
 import io from "socket.io-client";
-import { sendMessage , getMessage} from "../../../Api/userApi";
+import { sendMessage, getMessage } from "../../../Api/userApi";
 
 const socket = io(import.meta.env.VITE_BACKENDURL)
 
@@ -9,7 +9,8 @@ export default function Message({ userId }: ChatProps) {
     const [room, setRoom] = useState<string>('')
     const [newMessage, setNewMessage] = useState<string>("");
     const [m, setM] = useState<string>('')
-  
+    const [roomId ,setRoomId] = useState<string>('')
+
     const joinRoom = () => {
         if (room !== "") {
             socket.emit("joinRoom", room)
@@ -24,18 +25,22 @@ export default function Message({ userId }: ChatProps) {
     }
 
     const setmessageToDatabase = async (text: string) => {
-        console.log(newMessage);
-
         await sendMessage({ text, recipientId: userId })
         setNewMessage('')
     }
 
     useEffect(() => {
         (async () => {
-            const data = await getMessage(userId)
-            console.log(data);
+            const { data } = await getMessage(userId)
+          
+            if (data.roomId) {
+                setRoom(data.roomId)   
+                setRoomId(data.roomId) 
+                            
+                joinRoom()
+            }
         })()
-    },[])
+    }, [])
 
     useEffect(() => {
         socket.on('receiveMessage', (data) => {
@@ -49,14 +54,8 @@ export default function Message({ userId }: ChatProps) {
 
     return (
         <div>
-            {userId}
+            {roomId}
             <div className="flex flex-col gap-5">
-                <input type="text"
-                    placeholder="Room"
-                    onChange={(e) => {
-                        setRoom(e.target.value)
-                    }} />
-                <button className="bg-green-600" onClick={joinRoom}>Join Room</button>
                 <input type="text"
                     className="border"
                     placeholder="value"

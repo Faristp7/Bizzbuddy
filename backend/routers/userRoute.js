@@ -25,6 +25,7 @@ import {
   getFollowingData,
   sendMessage,
   getMessage,
+  getChatUsers,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -33,6 +34,7 @@ const router = express.Router();
 router.get("/getMessage/:id", verifyToken, getMessage);
 router.get("/getComment/:id/:currentPage", getComment);
 router.get("/getUserProfile", verifyToken, userProfile);
+router.get("/getChatUsers", verifyToken, getChatUsers);
 router.get("/getFollowersData/:id/:page", verifyToken, getFollowersData);
 router.get("/getFollowingData/:id/:page", verifyToken, getFollowingData);
 router.get("/getHomePagePost", verifyToken, getHomePagePost);

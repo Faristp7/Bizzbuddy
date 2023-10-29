@@ -7,7 +7,7 @@ import messageModel from "../models/messageModel.js";
 import postModel from "../models/postModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { io } from "../server.js";
+import crypto from "crypto";
 
 function getUserId(Bearer) {
   const token = Bearer.replace("Bearer", "").trim();
@@ -559,9 +559,10 @@ export async function getFollowingData(req, res) {
   }
 }
 
-function getCombainedId(userId1, userId2) {
-  const userIds = userId1 + userId2;
-  const roomId = userIds.split("").sort().join("");
+function generateUniqueRoomId(senderId, receiverId) {
+  const sortedIds = [senderId, receiverId].sort();
+  const combinedIds = sortedIds.join("");
+  const roomId = crypto.createHash("sha1").update(combinedIds).digest("hex");
   return roomId;
 }
 
@@ -569,25 +570,29 @@ export async function sendMessage(req, res) {
   try {
     const { recipientId, text } = req.body;
     const userId = getUserId(req.headers.authorization);
-    const roomId = getCombainedId(userId.Token, recipientId);
+    const roomId = generateUniqueRoomId(userId.Token, recipientId);
 
-    const existingRoom = await messageModel.find({roomId})
-    if(existingRoom){
+    const existingRoom = await messageModel.find({ roomId });
+
+    if (existingRoom) {
       console.log("yes");
-    }
-    else{
+    } else {
       console.log("false");
     }
 
-    // const newMessage = new messageModel({
-    //   roomId,
-    //   senderId: userId.Token,
-    //   recipientId,
-    //   text,
-    // });
-    // await newMessage.save();
+    const message = {
+      sender: recipientId,
+      message: text,
+    };
 
-    // res.status(200).json({ message: "newMessage", success: true });
+    const newMessage = new messageModel({
+      roomId,
+      userId: userId.Token,
+      messages: [message],
+    });
+    await newMessage.save();
+
+    res.status(200).json({ message: "newMessage", success: true });
   } catch (error) {
     console.log(error);
   }
@@ -596,13 +601,29 @@ export async function sendMessage(req, res) {
 export async function getMessage(req, res) {
   try {
     const recipientId = req.params.id;
-console.log(recipientId);
+
     const userId = getUserId(req.headers.authorization);
-    const roomId = getCombainedId(userId.Token, recipientId);
-    console.log(roomId);   
-    const message = await messageModel.find({ roomId });
-    console.log(message);
-    res.json(message);
+    let roomId = generateUniqueRoomId(userId.Token, recipientId);
+
+    const existingRoom = await messageModel.findOne({ roomId });
+    if (existingRoom) {
+      roomId = existingRoom.roomId;
+      return res.status(200).json({ existingRoom, roomId });
+    } else {
+      return res.status(200).json({ roomId });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getChatUsers(req, res) {
+  try {
+    const header = getUserId(req.headers.authorization);
+    const userId = header.Token;
+
+    const chats = await messageModel.find({ "userid.userIds": userId });
+    res.status(200).json({ chats });
   } catch (error) {
     console.log(error);
   }
