@@ -6,21 +6,21 @@ import { sendMessage, getMessage } from "../../../Api/userApi";
 const socket = io(import.meta.env.VITE_BACKENDURL)
 
 export default function Message({ userId }: ChatProps) {
-    const [room, setRoom] = useState<string>('')
     const [newMessage, setNewMessage] = useState<string>("");
     const [m, setM] = useState<string>('')
-    const [roomId ,setRoomId] = useState<string>('')
+    const [roomId, setRoomId] = useState<string>('')
 
-    const joinRoom = () => {
-        if (room !== "") {
-            socket.emit("joinRoom", room)
-        }
+    const joinRoom = (roomId : string) => {
+        // if (roomId) {            
+            socket.emit("joinRoom", roomId)
+        // }
     }
+
     const sendMessageSocket = () => {
         const message = {
-            room,
+            roomId,
             text: newMessage
-        }
+        }        
         socket.emit('sendMessage', message)
     }
 
@@ -32,14 +32,10 @@ export default function Message({ userId }: ChatProps) {
     useEffect(() => {
         (async () => {
             const { data } = await getMessage(userId)
-          
-            if (data.roomId) {
-                setRoom(data.roomId)   
-                setRoomId(data.roomId) 
-                            
-                joinRoom()
-            }
+            setRoomId(data.roomId)
+            joinRoom(data.roomId)
         })()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {

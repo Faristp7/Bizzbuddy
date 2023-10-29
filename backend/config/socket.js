@@ -1,13 +1,13 @@
 const configureSocket = (io) => {
   io.on("connection", (socket) => {
-    console.log("A user connected", socket.id);
+    console.log("Socket connected", socket.id);
 
     socket.on("joinRoom", (data) => {
       socket.join(data);
     });
 
     socket.on("sendMessage", (data) => {
-      socket.to(data.room).emit("receiveMessage", data);
+      socket.to(data.roomId).emit("receiveMessage", data);
     });
 
     socket.on("disconnect", () => {
