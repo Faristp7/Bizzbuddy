@@ -10,9 +10,8 @@ export default function Chat({ userId }: ChatProps) {
   const [searchData, setSearchData] = useState<string>('')
 
   useEffect(() => {
-    (async () => {
+    (async () => {      
       const { data } = await getChatUsers()
-      console.log(data.chats);
 
       setChats(data.chats)
     })()

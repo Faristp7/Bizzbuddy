@@ -1,13 +1,20 @@
 import mongoose, { Schema } from "mongoose";
 
 const messageSchema = new mongoose.Schema({
-  roomId: {
+  conversationId: {
     type: String,
     required: true,
+    unique: true,
   },
+  participants: [
+    {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+  ],
   messages: [
     {
-      userId: {
+      senderId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,

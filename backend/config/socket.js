@@ -2,12 +2,12 @@ const configureSocket = (io) => {
   io.on("connection", (socket) => {
     console.log("Socket connected", socket.id);
 
-    socket.on("joinRoom", (data) => {
-      socket.join(data);
+    socket.on("joinRoom", (conversationId) => {
+      socket.join(conversationId)
     });
 
     socket.on("sendMessage", (data) => {
-      socket.to(data.roomId).emit("receiveMessage", data);
+      io.to(data.conversationId).emit("receiveMessage", data);
     });
 
     socket.on("disconnect", () => {

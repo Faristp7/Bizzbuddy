@@ -601,14 +601,15 @@ export async function getMessage(req, res) {
     const recipientId = req.params.id;
 
     const userId = getUserId(req.headers.authorization);
-    let roomId = generateUniqueRoomId(userId.Token, recipientId);
+    let conversationId = generateUniqueRoomId(userId.Token, recipientId);
 
-    const existingRoom = await messageModel.findOne({ roomId });
+    const existingRoom = await messageModel.findOne({ conversationId });
+
     if (existingRoom) {
-      roomId = existingRoom.roomId;
-      return res.status(200).json({ existingRoom, roomId });
+      conversationId = existingRoom.conversationId;
+      return res.status(200).json({ existingRoom, conversationId });
     } else {
-      return res.status(200).json({ roomId });
+      return res.status(200).json({ conversationId });
     }
   } catch (error) {
     console.log(error);
@@ -621,7 +622,7 @@ export async function getChatUsers(req, res) {
     const userId = header.Token;
 
     const chats = await messageModel.find({ userId }).populate("recipientId");
-    console.log(chats);
+
     res.status(200).json({ chats });
   } catch (error) {
     console.log(error);
