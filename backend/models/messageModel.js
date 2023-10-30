@@ -5,18 +5,13 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userid: [
+  messages: [
     {
-      userIds: {
+      userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
-        index: true,
       },
-    },
-  ],
-  messages: [
-    {
       message: {
         type: String,
         required: true,

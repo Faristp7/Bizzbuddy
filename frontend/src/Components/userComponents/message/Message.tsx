@@ -10,17 +10,15 @@ export default function Message({ userId }: ChatProps) {
     const [m, setM] = useState<string>('')
     const [roomId, setRoomId] = useState<string>('')
 
-    const joinRoom = (roomId : string) => {
-        // if (roomId) {            
-            socket.emit("joinRoom", roomId)
-        // }
+    const joinRoom = (roomId: string) => {
+        socket.emit("joinRoom", roomId)
     }
 
-    const sendMessageSocket = () => {
+    const sendMessageSocket = async () => {
         const message = {
             roomId,
             text: newMessage
-        }        
+        }
         socket.emit('sendMessage', message)
     }
 
@@ -45,6 +43,10 @@ export default function Message({ userId }: ChatProps) {
                 setmessageToDatabase(data.text)
             }
         })
+
+        return () => {
+            socket.off('receiveMessage')
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket])
 

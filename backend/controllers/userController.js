@@ -572,25 +572,23 @@ export async function sendMessage(req, res) {
     const userId = getUserId(req.headers.authorization);
     const roomId = generateUniqueRoomId(userId.Token, recipientId);
 
-    const existingRoom = await messageModel.find({ roomId });
-
-    if (existingRoom) {
-      console.log("yes");
-    } else {
-      console.log("false");
-    }
-
-    const message = {
-      sender: recipientId,
+    const newMessage = {
       message: text,
+      userId : userId.Token
     };
 
-    const newMessage = new messageModel({
-      roomId,
-      userId: userId.Token,
-      messages: [message],
-    });
-    await newMessage.save();
+    let existingRoom = await messageModel.findOne({ roomId });
+
+    if (!existingRoom) {
+      existingRoom = new messageModel({
+        roomId,
+        messages: [newMessage],
+      });
+    } else {
+      existingRoom.messages.push(newMessage);
+    }
+console.log(newMessage);
+    await existingRoom.save();
 
     res.status(200).json({ message: "newMessage", success: true });
   } catch (error) {
@@ -622,7 +620,8 @@ export async function getChatUsers(req, res) {
     const header = getUserId(req.headers.authorization);
     const userId = header.Token;
 
-    const chats = await messageModel.find({ "userid.userIds": userId });
+    const chats = await messageModel.find({ userId }).populate("recipientId");
+    console.log(chats);
     res.status(200).json({ chats });
   } catch (error) {
     console.log(error);
