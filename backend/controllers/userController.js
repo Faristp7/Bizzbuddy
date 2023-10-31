@@ -604,7 +604,7 @@ export async function getMessage(req, res) {
     const existingRoom = await messageModel.findOne({ conversationId });
 
     if (existingRoom) {
-      conversationId = existingRoom.conversationId;
+      conversationId = existingRoom.conversationId; 
       return res.status(200).json({ existingRoom, conversationId });
     } else {
       return res.status(200).json({ existingRoom, conversationId });

@@ -9,6 +9,7 @@ const configureSocket = (io) => {
     });
 
     socket.on("sendMessage", (data) => {
+      console.log(data);
       socket.broadcast.to(data.conversationId).emit("receiveMessage", data);
       sendMessage(data)
     });

@@ -101,6 +101,12 @@ export interface userChat {
   participants: Participant[];
 }
 
+export interface userChats {
+  senderId : string
+  message : string
+  timestamp : string
+}
+
 export interface FollowCount {
   followerCount: number;
   followingCount: number;
