@@ -91,6 +91,16 @@ export interface commentState {
   };
 }
 
+interface Participant {
+  username: string;
+  _id: string;
+  profileImage?: string;
+}
+
+export interface userChat {
+  participants: Participant[];
+}
+
 export interface FollowCount {
   followerCount: number;
   followingCount: number;
@@ -117,6 +127,6 @@ export interface count {
   blockedUser: number;
 }
 
-export interface ChatProps{
-  userId : string
+export interface ChatProps {
+  userId: string;
 }

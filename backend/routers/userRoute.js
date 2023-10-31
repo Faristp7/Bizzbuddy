@@ -46,7 +46,7 @@ router.get("/searchBusiness", verifyToken, searchBusiness); //search tags
 
 router.post("/signUp", signUp);
 router.post("/saveUser", saveUser);
-router.post("/sendMessage", sendMessage);
+// router.post("/sendMessage", sendMessage);
 router.post("/googleSignin", googleSignin);
 router.post("/saveBussinessForm", BussinessForm);
 router.post("/addComment", verifyToken, addComment);

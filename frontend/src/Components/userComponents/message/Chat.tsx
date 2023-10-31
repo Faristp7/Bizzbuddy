@@ -1,20 +1,23 @@
 import { RefObject, useEffect, useRef, useState } from "react";
-import { ChatProps } from "../../../interface/interface";
+import { ChatProps, userChat } from "../../../interface/interface";
+import noChat from '../../../assets/icon/sad.png'
 import { NavigationBar } from "../Index";
 import Messsage from './Message'
 import { getChatUsers } from "../../../Api/userApi";
 
 export default function Chat({ userId }: ChatProps) {
   const searchInputRef: RefObject<HTMLInputElement> = useRef(null)
-  const [chats, setChats] = useState<any>([])
+  const [chats, setChats] = useState<userChat[]>([])
   const [searchData, setSearchData] = useState<string>('')
+  const [filteredChats, setFilteredChats] = useState<userChat[]>([])
+  const [chatId, setChatId] = useState<string>('')
 
   useEffect(() => {
-    (async () => {      
+    (async () => {
       const { data } = await getChatUsers()
-
-      setChats(data.chats)
+      setChats(data.formattedChats)
     })()
+    setChatId(userId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -23,16 +26,23 @@ export default function Chat({ userId }: ChatProps) {
       searchInputRef.current.focus()
   }, [])
 
+  useEffect(() => {
+    const filteredChats = chats.filter(item =>
+      item.participants[0].username.toLowerCase().includes(searchData.toLowerCase())
+    );
+    setFilteredChats(filteredChats);
+  }, [searchData, chats])
+
   return (
     <div className="flex min-h-screen dark:bg-slate-950">
       <div>
         <NavigationBar />
       </div>
-      <div className="mr-2 ml-2 mt-3 sm:ml-20 md:ml-60 flex-grow dark:text-white">
+      <div className="mr-2 ml-2 sm:ml-20 md:ml-60 flex-grow dark:text-white">
         <div className="grid grid-cols-1 sm:grid-cols-3">
           <div className="border-r">
             <div className="sm:mr-2">
-              <div className="w-grow sm:flex-shrink">
+              <div className="w-grow mt-3 sm:flex-shrink">
                 <label
                   htmlFor="default-search"
                   className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -70,26 +80,33 @@ export default function Chat({ userId }: ChatProps) {
                 </div>
               </div>
             </div>
-            {chats && chats.length > 0 ? (
-              <div>
+            {filteredChats && filteredChats.length > 0 ? (
+              <div className="mt-3">
                 {
-                  chats.map((item) => {
+                  filteredChats.map((item) => {
                     return (
-                      <div>
-                        <h1>{item.recipientId.username}</h1>
+                      <div key={item.participants[0]._id} className="flex gap-3 my-5 cursor-pointer" onClick={() => setChatId(item.participants[0]._id)}>
+                        <img src={item.participants[0].profileImage} className="rounded-full w-9 h-9" alt="" />
+                        <h1 className="mt-1 text-lg font-medium">{item.participants[0].username}</h1>
                       </div>
                     )
                   })
                 }
               </div>
             ) : (
-              <div className="min-h-full flex items-center align-middle justify-center">
+              <div className="flex items-center mt-10 align-middle justify-center">
                 <h1>No Chats</h1>
               </div>
             )}
           </div>
           <div className="col-span-2">
-            <Messsage userId={userId} />
+            {chatId ? (
+              <Messsage userId={chatId} />
+            ) : (
+              <div className="min-h-screen flex justify-center align-middle items-center">
+                <img src={noChat} alt="" className="cursor-not-allowed"/>
+              </div>
+            )}
           </div>
         </div>
       </div>

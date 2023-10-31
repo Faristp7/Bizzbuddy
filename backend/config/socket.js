@@ -1,3 +1,5 @@
+import { sendMessage } from "../controllers/userController.js";
+
 const configureSocket = (io) => {
   io.on("connection", (socket) => {
     console.log("Socket connected", socket.id);
@@ -7,7 +9,8 @@ const configureSocket = (io) => {
     });
 
     socket.on("sendMessage", (data) => {
-      io.to(data.conversationId).emit("receiveMessage", data);
+      socket.broadcast.to(data.conversationId).emit("receiveMessage", data);
+      sendMessage(data)
     });
 
     socket.on("disconnect", () => {

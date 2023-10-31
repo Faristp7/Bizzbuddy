@@ -566,31 +566,29 @@ function generateUniqueRoomId(senderId, receiverId) {
   return roomId;
 }
 
-export async function sendMessage(req, res) {
+export async function sendMessage(data) {
   try {
-    const { recipientId, text } = req.body;
-    const userId = getUserId(req.headers.authorization);
-    const roomId = generateUniqueRoomId(userId.Token, recipientId);
+    const { message, userId, conversationId, Token } = data;
+    const token = getUserId(Token);
 
     const newMessage = {
-      message: text,
-      userId : userId.Token
+      senderId: token.Token,
+      message,
     };
 
-    let existingRoom = await messageModel.findOne({ roomId });
+    let existingRoom = await messageModel.findOne({ conversationId });
 
     if (!existingRoom) {
       existingRoom = new messageModel({
-        roomId,
+        conversationId,
+        participants: [userId, token.Token],
         messages: [newMessage],
       });
     } else {
       existingRoom.messages.push(newMessage);
     }
-console.log(newMessage);
-    await existingRoom.save();
 
-    res.status(200).json({ message: "newMessage", success: true });
+    await existingRoom.save();
   } catch (error) {
     console.log(error);
   }
@@ -609,7 +607,7 @@ export async function getMessage(req, res) {
       conversationId = existingRoom.conversationId;
       return res.status(200).json({ existingRoom, conversationId });
     } else {
-      return res.status(200).json({ conversationId });
+      return res.status(200).json({ existingRoom, conversationId });
     }
   } catch (error) {
     console.log(error);
@@ -621,9 +619,21 @@ export async function getChatUsers(req, res) {
     const header = getUserId(req.headers.authorization);
     const userId = header.Token;
 
-    const chats = await messageModel.find({ userId }).populate("recipientId");
+    const chats = await messageModel
+      .find({ participants: { $elemMatch: { $eq: userId } } })
+      .populate("participants")
+      .sort({ updatedAt: -1 });
 
-    res.status(200).json({ chats });
+    const formattedChats = chats.map((chat) => {
+      const participant = chat.participants.find((entry) => entry != userId); // Find opposite user ID
+      return {
+        conversationId: chat.conversationId,
+        participants: chat.participants,
+        oppositeUserId: participant,
+      };
+    });
+
+    res.status(200).json({ formattedChats });
   } catch (error) {
     console.log(error);
   }
