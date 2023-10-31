@@ -3,6 +3,7 @@ import { ChatProps, userChats } from "../../../interface/interface";
 import io from "socket.io-client";
 import { getMessage } from "../../../Api/userApi";
 import { motion } from "framer-motion";
+import TimeAgo from "timeago-react";
 
 const socket = io(import.meta.env.VITE_BACKENDURL)
 const Token = localStorage.getItem('JwtToken')
@@ -18,8 +19,9 @@ export default function Message({ userId }: ChatProps) {
         (async () => {
             const { data } = await getMessage(userId)
             setConversationId(data.conversationId)
-            
-            setMessages(data.existingRoom.messages)
+            if (data.existingRoom) {
+                setMessages(data.existingRoom.messages)
+            }
             socket.emit('joinRoom', data.conversationId)
         })()
 
@@ -30,13 +32,16 @@ export default function Message({ userId }: ChatProps) {
     }, [userId])
 
     const sendMessageHandler = async () => {
-        const newMessage = {
-            senderId : messages[0].senderId,
-            message,
-            timestamp : new Date().toISOString() 
-        }
 
-        setMessages(prevMessages => [...prevMessages , newMessage])
+
+        if (messages) {
+            const newMessage = {
+                senderId: messages[0].senderId,
+                message,
+                timestamps: new Date().toISOString()
+            }
+            setMessages(prevMessages => [...prevMessages, newMessage])
+        }
 
         socket.emit("sendMessage", {
             message,
@@ -44,14 +49,14 @@ export default function Message({ userId }: ChatProps) {
             userId,
             senderSocketId: socket.id,
             Token
-        })  
-              
+        })
+
         setMessage('')
     }
 
     useEffect(() => {
         socket.on("receiveMessage", (data) => {
-            setMessages([...message, data.message])        
+            setMessages([...message, data.message])
         })
 
         return () => {
@@ -64,26 +69,33 @@ export default function Message({ userId }: ChatProps) {
         <div className="flex flex-col justify-end p-3 min-h-screen">
             <div className="flex flex-col gap-5 rounded-lg">
                 <div className="overflow-y-auto h-96">
-                    {messages.map((msg ,index) => (
+                    {messages.map((msg, index) => (
                         <div key={index} className="mb-2 flex">
                             {msg.senderId !== userId ? (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="bg-blue-200 dark:bg-blue-600 bg p-2 mr-3 rounded-lg ml-auto rounded-tr-none"
-                            >
-                                <h1 className="">{msg.message}</h1>
-                            </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className=" mr-3 ml-auto "
+                                >
+                                    <div className="flex gap-1.5">
+                                        <p className="text-gray-300 text-sm mt-5"><TimeAgo datetime={msg.timestamps} /></p>
+                                        <h1 className="bg-blue-200 dark:bg-blue-600 p-2 rounded-lg ml-auto rounded-tr-none">{msg.message}</h1>
+                                    </div>
+                                </motion.div>
                             ) : (
                                 <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="bg-gray-200 dark:bg-gray-500 p-2 rounded-lg rounded-tr-none"
-                            >
-                                <h1 className="">{msg.message}</h1>
-                            </motion.div>
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className=""
+                                >
+                                    <div className="flex gap-1">
+                                        <h1 className="bg-gray-200 dark:bg-gray-500 p-2 rounded-lg ml-auto rounded-tr-none">{msg.message}</h1>
+                                        <p className="text-gray-300 text-sm mt-5"><TimeAgo datetime={msg.timestamps} /></p>
+
+                                    </div>
+                                </motion.div>
                             )}
                         </div>
                     ))}

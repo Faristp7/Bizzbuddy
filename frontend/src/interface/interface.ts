@@ -104,7 +104,7 @@ export interface userChat {
 export interface userChats {
   senderId : string
   message : string
-  timestamp : string
+  timestamps : string
 }
 
 export interface FollowCount {

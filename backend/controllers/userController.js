@@ -8,6 +8,7 @@ import postModel from "../models/postModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import mongoose from "mongoose";
 
 function getUserId(Bearer) {
   const token = Bearer.replace("Bearer", "").trim();
@@ -604,7 +605,7 @@ export async function getMessage(req, res) {
     const existingRoom = await messageModel.findOne({ conversationId });
 
     if (existingRoom) {
-      conversationId = existingRoom.conversationId; 
+      conversationId = existingRoom.conversationId;
       return res.status(200).json({ existingRoom, conversationId });
     } else {
       return res.status(200).json({ existingRoom, conversationId });
@@ -619,21 +620,70 @@ export async function getChatUsers(req, res) {
     const header = getUserId(req.headers.authorization);
     const userId = header.Token;
 
-    const chats = await messageModel
-      .find({ participants: { $elemMatch: { $eq: userId } } })
-      .populate("participants")
-      .sort({ updatedAt: -1 });
+    // const chats = await messageModel
+    //   .find({ participants: { $elemMatch: { $eq: userId } } })
+    //   .populate("participants")
+    //   .sort({ updatedAt: -1 });
 
-    const formattedChats = chats.map((chat) => {
-      const participant = chat.participants.find((entry) => entry != userId); // Find opposite user ID
-      return {
-        conversationId: chat.conversationId,
-        participants: chat.participants,
-        oppositeUserId: participant,
-      };
-    });
+    // const formattedChats = chats.map((chat) => {
+    //   const participant = chat.participants.find((entry) => entry != userId); // Find opposite user ID
+    //   return {
+    //     conversationId: chat.conversationId,
+    //     participants: chat.participants,
+    //     oppositeUserId: participant,
+    //   };
+    // });
+    // console.log(formattedChats);
 
-    res.status(200).json({ formattedChats });
+    // res.status(200).json({ formattedChats })
+    const yourUserId = new mongoose.Types.ObjectId(userId); // Replace with your actual user ID
+
+    const chat = await messageModel.aggregate([
+      {
+        $match: {
+          participants: { $in: [yourUserId] }, // Filter documents that include your user ID in participants array
+        },
+      },
+      {
+        $project: {
+          participants: 1, // Include the participants field
+          updatedAt: 1, // Include the updatedAt field
+        }
+      },
+      {
+        $unwind: "$participants", // Unwind the participants array
+      },
+      {
+        $match: {
+          participants: { $ne: yourUserId }, // Exclude your user ID
+        },
+      },
+      {
+        $lookup: {
+          from: 'users', // Assuming 'users' is the name of the User collection
+          localField: 'participants',
+          foreignField: '_id',
+          as: 'participantDetails'
+        }
+      },
+      {
+        $project: {
+          'participantDetails.password': 0,
+          'participantDetails.phone': 0,
+          'participantDetails.email': 0,
+          'participantDetails.activeStatus': 0,
+          'participantDetails.createdAt': 0,
+          'participantDetails.updatedAt': 0,
+          'participantDetails.__v': 0,
+        }
+      },
+      {
+        $sort: {
+          updatedAt: -1, 
+        },
+      },
+    ]);
+    console.log(chat);
   } catch (error) {
     console.log(error);
   }
