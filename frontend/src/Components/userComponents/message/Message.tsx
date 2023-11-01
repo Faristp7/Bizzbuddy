@@ -64,7 +64,7 @@ export default function Message({ userId }: ChatProps) {
     useEffect(() => {
         socket.on("receiveMessage", (data) => {
             const c = data.message
-            if (message.length !== 0) {
+            if (messages.length !== 0) {
                 const newMessage = {
                     senderId: messages[0].senderId,
                     message: c,
@@ -78,6 +78,8 @@ export default function Message({ userId }: ChatProps) {
                     message : c,
                     timestamps: new Date().toISOString()
                 }
+                console.log(newMessage);
+                
                 setMessages([...messages, newMessage])
             }
         })
