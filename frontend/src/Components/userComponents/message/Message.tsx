@@ -63,32 +63,32 @@ export default function Message({ userId }: ChatProps) {
 
     useEffect(() => {
         socket.on("receiveMessage", (data) => {
-            const c = data.message
-            if (messages.length !== 0) {
-                const newMessage = {
-                    senderId: messages[0].senderId,
-                    message: c,
-                    timestamps: new Date().toISOString()
+            const c = data.message;
+
+            setMessages(prevMessages => {
+                if (prevMessages.length !== 0) {
+                    const newMessage = {
+                        senderId: prevMessages[0].senderId,
+                        message: c,
+                        timestamps: new Date().toISOString()
+                    };
+                    return [...prevMessages, newMessage];
+                } else {
+                    const newMessage = {
+                        senderId: userId,
+                        message: c,
+                        timestamps: new Date().toISOString()
+                    };
+                    return [...prevMessages, newMessage];
                 }
-                setMessages(prevMessages => [...prevMessages, newMessage])
-            }
-            else {
-                const newMessage = {
-                    senderId: userId,
-                    message : c,
-                    timestamps: new Date().toISOString()
-                }
-                console.log(newMessage);
-                
-                setMessages([...messages, newMessage])
-            }
-        })
+            });
+        });
 
         return () => {
-            socket.off('receiveMessage')
-        }
+            socket.off('receiveMessage');
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, []);
 
     return (
         <div className="flex flex-col justify-end p-3 min-h-screen">
