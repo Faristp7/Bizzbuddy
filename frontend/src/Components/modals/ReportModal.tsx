@@ -31,7 +31,7 @@ export default function ReportModal({ close, _id }: ListBusinessProps) {
     const submitReport = async () => {
         const {data} = await reportPost({reportMsg , _id})
         if(data) close()
-    }
+    }   
     return (
         <div className="fixed inset-0 z-10 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50">
             <div ref={modalRef} className="bg-white dark:bg-slate-900 p-2 rounded-lg">

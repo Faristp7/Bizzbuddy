@@ -11,6 +11,7 @@ import Chat from "./message/Chat";
 
 // admin
 import UserMangment from "../adminComponents/UserMangment";
+import Report from "../adminComponents/Report";
 
 export {
   Login,
@@ -19,6 +20,7 @@ export {
   UserHomePage,
   NavigationBar,
   UserMangment,
+  Report,
   Profile,
   CreatePost,
   Search,

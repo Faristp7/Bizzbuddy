@@ -121,19 +121,23 @@ export default function NavigationBar() {
               </>
             ) :
               <>
-                <motion.div
-                  className="navationDivIconBar order-4 sm:order-2"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={mangment} className="navigationBarIcon " alt="home" />
-                  <p className="navigationBarText">User Management</p>
-                </motion.div>
-                <motion.div
-                  className="navationDivIconBar order-4 sm:order-2"
-                  whileTap={{ scale: 1.1 }}>
-                  <img src={exclamation} className="navigationBarIcon " alt="home" />
-                  <p className="navigationBarText">Report Section</p>
-                </motion.div>
-                
+                <Link to={"/admin/userMangment"}>
+                  <motion.div
+                    className="navationDivIconBar order-4 sm:order-2"
+                    whileTap={{ scale: 1.1 }}>
+                    <img src={mangment} className="navigationBarIcon " alt="home" />
+                    <p className="navigationBarText">User Management</p>
+                  </motion.div>
+                </Link>
+                <Link to={"/admin/Report"}>
+                  <motion.div
+                    className="navationDivIconBar order-4 sm:order-2"
+                    whileTap={{ scale: 1.1 }}>
+                    <img src={exclamation} className="navigationBarIcon " alt="home" />
+                    <p className="navigationBarText">Report Section</p>
+                  </motion.div>
+                </Link>
+
               </>
             }
           </div>

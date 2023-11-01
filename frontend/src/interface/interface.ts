@@ -102,9 +102,9 @@ export interface userChat {
 }
 
 export interface userChats {
-  senderId : string
-  message : string
-  timestamps : string
+  senderId: string;
+  message: string;
+  timestamps: string;
 }
 
 export interface FollowCount {
@@ -135,4 +135,28 @@ export interface count {
 
 export interface ChatProps {
   userId: string;
+}
+
+interface Reports {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
+  message: string;
+  userId: string;
+  _id: string;
+}
+
+export interface ReportState {
+  _id: string;
+  title: string;
+  image: string;
+  description: string;
+  message: string;
+  userId: string;
+  view : boolean
+  reports: Reports[];
+}
+
+export interface ReportModalProps {
+  close: () => void;
+  reports: Reports[];
 }

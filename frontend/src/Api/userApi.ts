@@ -34,6 +34,8 @@ export const saveBussinessForm = (values: object) => axiosInstance('JwtToken').p
 //- admin -\\
 
 export const getUserData = () => axiosInstance('JwtToken').get('/admin/getUserData')
+export const reportMangment = () => axiosInstance('JwtToken').get('/admin/reportMangment')
 
 export const adminLogin = (values: object) => axiosInstance('JwtToken').post('/admin/roleLogIn', values)
 export const blockAndunBlock = (values: object) => axiosInstance('JwtToken').post('/admin/blockAndBlock', values)  
+export const blockPost = (values: object) => axiosInstance('JwtToken').post('/admin//blockPost', values)  
