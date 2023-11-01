@@ -8,7 +8,6 @@ import TimeAgo from "timeago-react";
 const socket = io(import.meta.env.VITE_BACKENDURL)
 const Token = localStorage.getItem('JwtToken')
 
-
 export default function Message({ userId }: ChatProps) {
     const [message, setMessage] = useState<string>('')
     const [conversationId, setConversationId] = useState<string>('')
@@ -17,6 +16,7 @@ export default function Message({ userId }: ChatProps) {
     useEffect(() => {
         (async () => {
             const { data } = await getMessage(userId)
+
             setConversationId(data.conversationId)
             if (data.existingRoom) {
                 setMessages(data.existingRoom.messages)
@@ -33,13 +33,22 @@ export default function Message({ userId }: ChatProps) {
     const sendMessageHandler = async () => {
         const trimmedMessage = message.trim();
         const wordCount = trimmedMessage.split(/\s+/).filter(Boolean).length;
-        if (messages && trimmedMessage && wordCount <= 50) {
-            const newMessage = {
-                senderId: messages[0].senderId,
-                message,
-                timestamps: new Date().toISOString()
+        if (trimmedMessage && wordCount <= 50) {
+            if (messages.length !== 0) {
+                const newMessage = {
+                    senderId: messages[0].senderId,
+                    message,
+                    timestamps: new Date().toISOString()
+                }
+                setMessages(prevMessages => [...prevMessages, newMessage])
+            } else {
+                const newMessage = {
+                    senderId: userId,
+                    message,
+                    timestamps: new Date().toISOString()
+                }
+                setMessages([...messages, newMessage])
             }
-            setMessages(prevMessages => [...prevMessages, newMessage])
 
             socket.emit("sendMessage", {
                 message,
@@ -55,12 +64,22 @@ export default function Message({ userId }: ChatProps) {
     useEffect(() => {
         socket.on("receiveMessage", (data) => {
             const c = data.message
-            const newMessage = {
-                senderId: messages[0].senderId,
-                message : c,
-                timestamps: new Date().toISOString()
+            if (message.length !== 0) {
+                const newMessage = {
+                    senderId: messages[0].senderId,
+                    message: c,
+                    timestamps: new Date().toISOString()
+                }
+                setMessages(prevMessages => [...prevMessages, newMessage])
             }
-            setMessages(prevMessages => [...prevMessages, newMessage])
+            else {
+                const newMessage = {
+                    senderId: userId,
+                    message : c,
+                    timestamps: new Date().toISOString()
+                }
+                setMessages([...messages, newMessage])
+            }
         })
 
         return () => {

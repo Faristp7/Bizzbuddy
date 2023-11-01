@@ -149,13 +149,15 @@ export default function Profile({ userId }: { userId: string }) {
             </div>
             <div className="flex items-center">
               <div className="hidden sm:block">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gray-800 rounded-md px-2 py-2.5 sm:px-5 text-white flex items-center"
-                  onClick={() => setChatUserId(userData?._id)}
-                >
-                  Message
-                </motion.button>
+                {guestUser &&
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gray-800 rounded-md px-2 py-2.5 sm:px-5 text-white flex items-center"
+                    onClick={() => setChatUserId(userData?._id)}
+                  >
+                    Message
+                  </motion.button>
+                }
               </div>
               {
                 guestUser ? (
@@ -227,13 +229,15 @@ export default function Profile({ userId }: { userId: string }) {
               </motion.h1>
             </div>
             <div className="sm:hidden">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                className="bg-gray-800 rounded-md px-2 py-1 sm:px-5 text-white flex items-center"
-                onClick={() => setChatUserId(userData?._id)}
-              >
-                Message
-              </motion.button>
+              {guestUser &&
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gray-800 rounded-md px-2 py-1 sm:px-5 text-white flex items-center"
+                  onClick={() => setChatUserId(userData?._id)}
+                >
+                  Message
+                </motion.button>
+              }
             </div>
           </div>
           <div className="mt-5 ml-1 sm:ml-6">

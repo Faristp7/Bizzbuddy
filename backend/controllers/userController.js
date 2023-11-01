@@ -604,7 +604,7 @@ export async function getMessage(req, res) {
 
     const existingRoom = await messageModel.findOne({ conversationId });
 
-    if (existingRoom) {
+    if (existingRoom) {           
       conversationId = existingRoom.conversationId;
       return res.status(200).json({ existingRoom, conversationId });
     } else {
@@ -620,22 +620,6 @@ export async function getChatUsers(req, res) {
     const header = getUserId(req.headers.authorization);
     const userId = header.Token;
 
-    // const chats = await messageModel
-    //   .find({ participants: { $elemMatch: { $eq: userId } } })
-    //   .populate("participants")
-    //   .sort({ updatedAt: -1 });
-
-    // const formattedChats = chats.map((chat) => {
-    //   const participant = chat.participants.find((entry) => entry != userId); // Find opposite user ID
-    //   return {
-    //     conversationId: chat.conversationId,
-    //     participants: chat.participants,
-    //     oppositeUserId: participant,
-    //   };
-    // });
-    // console.log(formattedChats);
-
-    // res.status(200).json({ formattedChats })
     const yourUserId = new mongoose.Types.ObjectId(userId); // Replace with your actual user ID
 
     const formattedChats = await messageModel.aggregate([
