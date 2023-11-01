@@ -45,7 +45,6 @@ export default function Message({ userId }: ChatProps) {
                     message,
                     timestamps: new Date().toISOString()
                 }
-                console.log(userId);
 
                 setMessages(prevMessages => [...prevMessages, newMessage])
             } else {

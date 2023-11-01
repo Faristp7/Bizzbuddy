@@ -570,10 +570,10 @@ function generateUniqueRoomId(senderId, receiverId) {
 export async function sendMessage(data) {
   try {
     const { message, userId, conversationId, Token } = data;
-    const token = getUserId(Token);
+    // const token = getUserId(Token);
 
     const newMessage = {
-      senderId: token.Token,
+      senderId: userId,
       message,
     };
 
@@ -582,7 +582,7 @@ export async function sendMessage(data) {
     if (!existingRoom) {
       existingRoom = new messageModel({
         conversationId,
-        participants: [userId, token.Token],
+        participants: [userId],
         messages: [newMessage],
       });
     } else {
