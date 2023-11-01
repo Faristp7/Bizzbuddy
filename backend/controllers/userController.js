@@ -335,7 +335,7 @@ export async function getHomePagePost(req, res) {
     const pageSize = 2;
     const skip = (page - 1) * pageSize;
     const post = await postModel
-      .find()
+      .find({view : false})
       .sort(sortOption)
       .skip(skip)
       .limit(pageSize)
@@ -353,7 +353,7 @@ export async function getProfilePost(req, res) {
     const pageSize = 2;
     const skip = (page - 1) * pageSize;
     const post = await postModel
-      .find({ userId })
+      .find({ userId , view : false })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageSize)

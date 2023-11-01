@@ -4,6 +4,9 @@ import io from "socket.io-client";
 import { getMessage } from "../../../Api/userApi";
 import { motion } from "framer-motion";
 import TimeAgo from "timeago-react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/user/userInfo";
+
 
 const socket = io(import.meta.env.VITE_BACKENDURL)
 const Token = localStorage.getItem('JwtToken')
@@ -12,6 +15,7 @@ export default function Message({ userId }: ChatProps) {
     const [message, setMessage] = useState<string>('')
     const [conversationId, setConversationId] = useState<string>('')
     const [messages, setMessages] = useState<userChats[]>([])
+    const userInfo = useSelector((state: RootState) => state.userInformation)
 
     useEffect(() => {
         (async () => {
@@ -19,6 +23,7 @@ export default function Message({ userId }: ChatProps) {
 
             setConversationId(data.conversationId)
             if (data.existingRoom) {
+
                 setMessages(data.existingRoom.messages)
             }
             socket.emit('joinRoom', data.conversationId)
@@ -36,17 +41,21 @@ export default function Message({ userId }: ChatProps) {
         if (trimmedMessage && wordCount <= 50) {
             if (messages.length !== 0) {
                 const newMessage = {
-                    senderId: messages[0].senderId,
+                    senderId: userInfo._id,
                     message,
                     timestamps: new Date().toISOString()
                 }
+                console.log(userId);
+
                 setMessages(prevMessages => [...prevMessages, newMessage])
             } else {
                 const newMessage = {
-                    senderId: userId,
+                    senderId: userInfo._id,
                     message,
                     timestamps: new Date().toISOString()
                 }
+                console.log(messages);
+
                 setMessages([...messages, newMessage])
             }
 
@@ -68,7 +77,7 @@ export default function Message({ userId }: ChatProps) {
             setMessages(prevMessages => {
                 if (prevMessages.length !== 0) {
                     const newMessage = {
-                        senderId: prevMessages[0].senderId,
+                        senderId: userId,
                         message: c,
                         timestamps: new Date().toISOString()
                     };
@@ -101,11 +110,11 @@ export default function Message({ userId }: ChatProps) {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className=" mr-3 ml-auto "
+                                    className=""
                                 >
-                                    <div className="flex gap-1.5">
+                                    <div className="flex gap-1">
+                                        <h1 className="bg-gray-200 dark:bg-gray-500 p-2 rounded-lg ml-auto rounded-tr-none">{msg.message}</h1>
                                         <p className="text-gray-300 text-sm mt-5"><TimeAgo datetime={msg.timestamps} /></p>
-                                        <h1 className="bg-blue-200 dark:bg-blue-600 p-2 rounded-lg ml-auto rounded-tr-none">{msg.message}</h1>
                                     </div>
                                 </motion.div>
                             ) : (
@@ -113,12 +122,11 @@ export default function Message({ userId }: ChatProps) {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className=""
+                                    className=" mr-3 ml-auto "
                                 >
-                                    <div className="flex gap-1">
-                                        <h1 className="bg-gray-200 dark:bg-gray-500 p-2 rounded-lg ml-auto rounded-tr-none">{msg.message}</h1>
+                                    <div className="flex gap-1.5">
                                         <p className="text-gray-300 text-sm mt-5"><TimeAgo datetime={msg.timestamps} /></p>
-
+                                        <h1 className="bg-blue-200 dark:bg-blue-600 p-2 rounded-lg ml-auto rounded-tr-none">{msg.message}</h1>
                                     </div>
                                 </motion.div>
                             )}
