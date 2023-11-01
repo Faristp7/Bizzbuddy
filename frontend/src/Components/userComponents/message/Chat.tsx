@@ -15,6 +15,7 @@ export default function Chat({ userId }: ChatProps) {
   useEffect(() => {
     (async () => {
       const { data } = await getChatUsers()
+
       setChats(data.formattedChats)
     })()
     setChatId(userId)
@@ -28,7 +29,7 @@ export default function Chat({ userId }: ChatProps) {
 
   useEffect(() => {
     const filteredChats = chats.filter(item =>
-      item.participants[0].username.toLowerCase().includes(searchData.toLowerCase())
+      item.participantDetails[0].username.toLowerCase().includes(searchData.toLowerCase())
     );
     setFilteredChats(filteredChats);
   }, [searchData, chats])
@@ -85,9 +86,9 @@ export default function Chat({ userId }: ChatProps) {
                 {
                   filteredChats.map((item) => {
                     return (
-                      <div key={item.participants[0]._id} className="flex gap-3 my-5 cursor-pointer" onClick={() => setChatId(item.participants[0]._id)}>
-                        <img src={item.participants[0].profileImage} className="rounded-full w-9 h-9" alt="" />
-                        <h1 className="mt-1 text-lg font-medium">{item.participants[0].username}</h1>
+                      <div key={item.participantDetails[0]._id} className="flex gap-3 my-5 cursor-pointer" onClick={() => setChatId(item.participantDetails[0]._id)}>
+                        <img src={item?.participantDetails[0]?.profileImage} className="rounded-full w-9 h-9" alt="" />
+                        <h1 className="mt-1 text-lg font-medium">{item.participantDetails[0].username}</h1>
                       </div>
                     )
                   })
@@ -104,7 +105,7 @@ export default function Chat({ userId }: ChatProps) {
               <Messsage userId={chatId} />
             ) : (
               <div className="min-h-screen flex justify-center align-middle items-center">
-                <img src={noChat} alt="" className="cursor-not-allowed"/>
+                <img src={noChat} alt="" className="cursor-not-allowed" />
               </div>
             )}
           </div>

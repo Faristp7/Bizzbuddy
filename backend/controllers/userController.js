@@ -638,7 +638,7 @@ export async function getChatUsers(req, res) {
     // res.status(200).json({ formattedChats })
     const yourUserId = new mongoose.Types.ObjectId(userId); // Replace with your actual user ID
 
-    const chat = await messageModel.aggregate([
+    const formattedChats = await messageModel.aggregate([
       {
         $match: {
           participants: { $in: [yourUserId] }, // Filter documents that include your user ID in participants array
@@ -648,7 +648,7 @@ export async function getChatUsers(req, res) {
         $project: {
           participants: 1, // Include the participants field
           updatedAt: 1, // Include the updatedAt field
-        }
+        },
       },
       {
         $unwind: "$participants", // Unwind the participants array
@@ -660,30 +660,31 @@ export async function getChatUsers(req, res) {
       },
       {
         $lookup: {
-          from: 'users', // Assuming 'users' is the name of the User collection
-          localField: 'participants',
-          foreignField: '_id',
-          as: 'participantDetails'
-        }
+          from: "users", // Assuming 'users' is the name of the User collection
+          localField: "participants",
+          foreignField: "_id",
+          as: "participantDetails",
+        },
       },
       {
         $project: {
-          'participantDetails.password': 0,
-          'participantDetails.phone': 0,
-          'participantDetails.email': 0,
-          'participantDetails.activeStatus': 0,
-          'participantDetails.createdAt': 0,
-          'participantDetails.updatedAt': 0,
-          'participantDetails.__v': 0,
-        }
+          "participantDetails.password": 0,
+          "participantDetails.phone": 0,
+          "participantDetails.email": 0,
+          "participantDetails.activeStatus": 0,
+          "participantDetails.createdAt": 0,
+          "participantDetails.updatedAt": 0,
+          "participantDetails.__v": 0,
+        },
       },
       {
         $sort: {
-          updatedAt: -1, 
+          updatedAt: -1,
         },
       },
     ]);
-    console.log(chat);
+
+    res.status(200).json({ formattedChats });
   } catch (error) {
     console.log(error);
   }

@@ -12,7 +12,6 @@ const Token = localStorage.getItem('JwtToken')
 export default function Message({ userId }: ChatProps) {
     const [message, setMessage] = useState<string>('')
     const [conversationId, setConversationId] = useState<string>('')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [messages, setMessages] = useState<userChats[]>([])
 
     useEffect(() => {
@@ -32,31 +31,36 @@ export default function Message({ userId }: ChatProps) {
     }, [userId])
 
     const sendMessageHandler = async () => {
-
-
-        if (messages) {
+        const trimmedMessage = message.trim();
+        const wordCount = trimmedMessage.split(/\s+/).filter(Boolean).length;
+        if (messages && trimmedMessage && wordCount <= 50) {
             const newMessage = {
                 senderId: messages[0].senderId,
                 message,
                 timestamps: new Date().toISOString()
             }
             setMessages(prevMessages => [...prevMessages, newMessage])
+
+            socket.emit("sendMessage", {
+                message,
+                conversationId,
+                userId,
+                senderSocketId: socket.id,
+                Token
+            })
+            setMessage('')
         }
-
-        socket.emit("sendMessage", {
-            message,
-            conversationId,
-            userId,
-            senderSocketId: socket.id,
-            Token
-        })
-
-        setMessage('')
     }
 
     useEffect(() => {
         socket.on("receiveMessage", (data) => {
-            setMessages([...message, data.message])
+            const c = data.message
+            const newMessage = {
+                senderId: messages[0].senderId,
+                message : c,
+                timestamps: new Date().toISOString()
+            }
+            setMessages(prevMessages => [...prevMessages, newMessage])
         })
 
         return () => {
@@ -68,10 +72,10 @@ export default function Message({ userId }: ChatProps) {
     return (
         <div className="flex flex-col justify-end p-3 min-h-screen">
             <div className="flex flex-col gap-5 rounded-lg">
-                <div className="overflow-y-auto h-96">
+                <div className="overflow-y-auto">
                     {messages.map((msg, index) => (
                         <div key={index} className="mb-2 flex">
-                            {msg.senderId !== userId ? (
+                            {msg.senderId === userId ? (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}

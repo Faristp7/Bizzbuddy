@@ -98,7 +98,7 @@ interface Participant {
 }
 
 export interface userChat {
-  participants: Participant[];
+  participantDetails: Participant[];
 }
 
 export interface userChats {
