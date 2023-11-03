@@ -106,9 +106,11 @@ export async function roleLogIn(req, res) {
     }
     if (userId) {
       const Token = userId._id;
+      console.log(Token);
       const token = jwt.sign({ Token }, secrectKey, {
         expiresIn: "6h",
       });
+      console.log(token);
       res.json({ token, role, userId });
     } else {
       res.json({ message: "Account Blocked" });
@@ -313,7 +315,6 @@ export async function deletePost(req, res) {
 
     await postModel.findByIdAndDelete({ _id: id });
     res.status(200).json({ success: true });
-    console.log(id);
   } catch (error) {
     console.log(error);
   }
@@ -570,7 +571,7 @@ function generateUniqueRoomId(senderId, receiverId) {
 export async function sendMessage(data) {
   try {
     const { message, userId, conversationId, Token } = data;
-    // const token = getUserId(Token);
+    const decodedToken = jwt.verify(Token, process.env.SECRECTKEY);
 
     const newMessage = {
       senderId: userId,
@@ -582,7 +583,7 @@ export async function sendMessage(data) {
     if (!existingRoom) {
       existingRoom = new messageModel({
         conversationId,
-        participants: [userId],
+        participants: [userId , decodedToken.Token],
         messages: [newMessage],
       });
     } else {
