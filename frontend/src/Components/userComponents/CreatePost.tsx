@@ -245,7 +245,7 @@ export default function CreatePost() {
               <div className="flex justify-between mt-3">
                 <div className="flex gap-2">
                   <img src={like} alt="like" className="w-6 dark:invert" />
-                  <p>1</p>
+                  <p>0</p>
                 </div>
                 <div>
                   <p className="underline text-gray-500 text-sm">Add comment</p>

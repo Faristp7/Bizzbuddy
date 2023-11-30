@@ -100,17 +100,16 @@ export async function roleLogIn(req, res) {
       role = "admin";
     } else {
       userId = await userLogin(email, password);
+    
+      if (!userId) return res.json({ message: "Invalid credentials" });
       if (!userId.activeStatus) return res.json({ message: "Account Blocked" });
-      if (!userId) return res.json({ message: "credential not matching" });
       role = "user";
     }
     if (userId) {
       const Token = userId._id;
-      console.log(Token);
       const token = jwt.sign({ Token }, secrectKey, {
         expiresIn: "6h",
       });
-      console.log(token);
       res.json({ token, role, userId });
     } else {
       res.json({ message: "Account Blocked" });

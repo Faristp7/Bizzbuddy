@@ -41,7 +41,7 @@ export const editUserProfileValidationSchema = Yup.object().shape({
     .trim(),
   email: Yup.string().email("invalid email"),
   phone: Yup.string()
-    .matches(/^\d{10}$/, "10 numbers needed")
+    .matches(/^\d{10}$/, "Enter Valid number")
     .required("Enter your phone number"),
   Profilephoto: Yup.mixed()
     .nullable()
@@ -70,6 +70,7 @@ export const createPostValidationSchema = Yup.object().shape({
     .required(),
   image: Yup.mixed()
     .nullable()
+    .required()
     .test("fileSize", "file size is to large ", (value) => {
       if (value === null) return true;
       if (value instanceof File && value.size) {
