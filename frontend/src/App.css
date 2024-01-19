@@ -6,3 +6,20 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"]::-moz-appearance {
   appearance: textfield;
 }
+
+::-webkit-scrollbar {
+  width: 6px; /* width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #493737; /* color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #505064; /* color of the scrollbar */
+  border-radius: 3px; /* roundness of the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #272424; /* color of the scrollbar thumb on hover */
+}
