@@ -12,13 +12,15 @@ import { Wobble } from "@uiball/loaders";
 import { adminLoggedIn, rootState } from "../../../Redux/admin/adminAuth";
 import { loginFormData, googleData } from "../../../interface/interface";
 import { getUserInfo } from "../../../Redux/user/userInfo";
-import LoginInfo from "./LoginInfo";
+import {driver} from 'driver.js'
+import 'driver.js/dist/driver.css'
 
 export default function Login() {
   const [formData, setFormData] = useState<loginFormData>({
-    email: "",
-    password: "",
+    email: "afsal@gmail.com",
+    password: "123as",
   });
+
 
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
   const adminIsLoggedin = useSelector(
@@ -104,14 +106,21 @@ export default function Login() {
       if (isLoggedIn) navigate("/userHomePage");
       if (adminIsLoggedin) navigate("/admin/UserMangment");
     }
+
+    const driverObj = driver();
+    driverObj.highlight({
+      element: '#loadingButton',
+      popover: {
+        title: 'Demo Login',
+        description: 'Already provided a value just click the button feel free.',
+      },
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-    <div className="absolute inset-3 w-60 h-11">
-     <LoginInfo/>
-    </div>
       <div className="flex flex-col justify-center gap-9 sm:gap-44 items-center mt-10 sm:mt-0 sm:min-h-screen sm:flex-row">
         <div className="hidden lg:block ">
           <motion.div
@@ -185,6 +194,7 @@ export default function Login() {
                     <Wobble size={45} speed={0.9} color="black" />
                   ) : (
                     <button
+                    id="loadingButton"
                       type="submit"
                       className="px-10 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:ring focus:border-blue-500"
                     >
